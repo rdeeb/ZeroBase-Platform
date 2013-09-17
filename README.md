@@ -1,4 +1,4 @@
 ZeroBase-Platform
 =================
 
-ZeroBase Platform Plugin, this serves as base for ZeroBase based themes and plugins
+This is the base of the ZeroBase Wordpress Framework. This gives the ZeroBase powered plugins and themes a common base to work on. This consists in a combination of mini frameworks wich aids in the extention of wordpress functionalities.
