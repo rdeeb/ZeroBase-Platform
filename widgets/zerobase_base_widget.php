@@ -133,10 +133,15 @@ abstract class zerobase_base_widget extends WP_Widget
         $form = new zerobase_widget_form_builder( get_class($this) );
         foreach ($fields as $name => $options)
         {
-            $form->addWidget( $name, $options['type'], array(
+            $args = array(
                 'id' => $this->get_field_id( $name ),
                 'name' => $this->get_field_name( $name )
-            ), $options['default'] );
+            );
+            if ( $args['label'] )
+            {
+                $args['label'] = __( 'Show logo?', 'zerobase' );
+            }
+            $form->addWidget( $name, $options['type'], $args, $options['default'] );
         }
         return $form;
     }

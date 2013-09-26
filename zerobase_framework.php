@@ -20,6 +20,9 @@ require_once( __dir__.'/forms/zerobase_tax_form_builder.php' );
 require_once( __dir__.'/forms/zerobase_widget_form_builder.php' );
 //Load the Metabox Builder
 require_once( __dir__.'/metaboxes/zerobase_metabox.php' );
+//Load the post type interface and the widgets base class
+require_once( __dir__.'/post-types/zerobase_post_type_interface.php' );
+require_once( __dir__.'/widgets/zerobase_base_widget.php' );
 
 function zerobase_framework_init()
 {

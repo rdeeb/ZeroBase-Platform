@@ -50,11 +50,13 @@ class ZeroExampleWidget extends zerobase_base_widget
         return array(
             'title' => array(                   //The name of the field
                 'type' => 'text',               //The type of widget to display
-                'default' => 'Test Widget'      //The default value
+                'default' => 'Test Widget',     //The default value
+                'label' => 'Title'              //The widget label (Optional)
             ),
             'name' => array(
                 'type' => 'text',
-                'default' => 'Your Name'
+                'default' => 'John Doe',
+                'lable' => 'Your Name'
             ),
         );
     }
