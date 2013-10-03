@@ -79,7 +79,7 @@ class zerobase_platform
             throw new Exception( 'Before adding post types, you need first to add a path' );
         }
         $tainted_file = $this->post_type_path . '/' . $class . 'php';
-        if ( !is_file( $tainted_file ) )
+        if ( !file_exists( $tainted_file ) )
         {
             throw new Exception( "A file named '$class.php' couldn't be found at '{$this->post_type_path}'" );
         }

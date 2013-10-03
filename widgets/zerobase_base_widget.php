@@ -16,8 +16,6 @@ abstract class zerobase_base_widget extends WP_Widget
      * @return void
      * @author Ramy Deeb <me@ramydeeb.com>
      **/
-    function ();
-
     public function __construct()
     {
         parent::__construct(
@@ -44,7 +42,7 @@ abstract class zerobase_base_widget extends WP_Widget
         extract( $args );
         foreach ( $instance as $name => $value )
         {
-            $instance[$name] = $this->sanitizeField( $name, $value )
+            $instance[$name] = $this->sanitizeField( $name, $value );
         }
         extract( $instance );
         include( $this->getTemplate() );
@@ -64,7 +62,7 @@ abstract class zerobase_base_widget extends WP_Widget
         $instance = array();
         foreach ( $new_instance as $name => $value )
         {
-            $instance[$name] = $this->sanitizeField( $name, $value )
+            $instance[$name] = $this->sanitizeField( $name, $value );
         }
 
         return $instance;
@@ -123,7 +121,7 @@ abstract class zerobase_base_widget extends WP_Widget
                 $value = (bool) $value;
                 break;
             default:
-                $value = strip_tags( $value )
+                $value = strip_tags( $value );
                 break;
         }
     }
