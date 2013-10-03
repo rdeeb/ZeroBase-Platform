@@ -1,12 +1,12 @@
 <?php
-require_once(__DIR__.'/BaseWidget.php');
+require_once( __DIR__ . '/BaseWidget.php' );
 
 /**
  * InputHiddenWidget
  * Renders a hidden input
  *
  * @package ZeroBase
- * @author Ramy Deeb <me@ramydeeb.com>
+ * @author  Ramy Deeb <me@ramydeeb.com>
  * @license Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. http://creativecommons.org/licenses/by-nc-nd/3.0/.
  **/
 class InputHiddenWidget extends BaseWidget
@@ -18,11 +18,11 @@ class InputHiddenWidget extends BaseWidget
      * @return string
      * @author Ramy Deeb
      **/
-    public function getType ()
+    public function getType()
     {
         return 'hidden';
     }
-    
+
     /**
      * render
      * Returns the tag html code
@@ -32,12 +32,13 @@ class InputHiddenWidget extends BaseWidget
      **/
     public function renderWidget()
     {
-        if ( isset( $this->params['required'] ) && $this->params['required'] ) 
+        if ( isset( $this->params['required'] ) && $this->params['required'] )
         {
             $this->attr['required'] = 'required';
         }
         $this->attr['value'] = $this->getValue();
-        $this->attr['type'] = $this->getType();
+        $this->attr['type']  = $this->getType();
+
         return zerobase_html_toolkit::buildTag( 'input', $this->attr, true );
     }
 } // END class InputHiddenWidget

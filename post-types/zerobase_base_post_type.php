@@ -36,7 +36,7 @@ abstract class zerobase_base_post_type implements zerobase_post_type_interface
      **/
     public function getName()
     {
-        throw new Exception('This function needs to be implemented');
+        throw new Exception( 'This function needs to be implemented' );
     }
 
     /**
@@ -48,7 +48,7 @@ abstract class zerobase_base_post_type implements zerobase_post_type_interface
      **/
     public function getDescription()
     {
-        throw new Exception('This function needs to be implemented');
+        throw new Exception( 'This function needs to be implemented' );
     }
 
     /**
@@ -60,7 +60,7 @@ abstract class zerobase_base_post_type implements zerobase_post_type_interface
      **/
     public function getOptions()
     {
-        throw new Exception('This function needs to be implemented');
+        throw new Exception( 'This function needs to be implemented' );
     }
 
     /**

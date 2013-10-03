@@ -1,12 +1,12 @@
 <?php
-require_once(__DIR__.'/BaseWidget.php');
+require_once( __DIR__ . '/BaseWidget.php' );
 
 /**
  * InputFileWidget
  * Renders a text input box
  *
  * @package ZeroBase
- * @author Ramy Deeb <me@ramydeeb.com>
+ * @author  Ramy Deeb <me@ramydeeb.com>
  * @license Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. http://creativecommons.org/licenses/by-nc-nd/3.0/.
  **/
 class InputFileWidget extends BaseWidget
@@ -18,11 +18,11 @@ class InputFileWidget extends BaseWidget
      * @return string
      * @author Ramy Deeb
      **/
-    public function getType ()
+    public function getType()
     {
         return 'file';
     }
-    
+
     /**
      * render
      * Returns the tag html code
@@ -30,19 +30,20 @@ class InputFileWidget extends BaseWidget
      * @return array
      * @author Ramy Deeb
      **/
-    public function renderWidget ()
+    public function renderWidget()
     {
-        if (isset($this->params['required']) && $this->params['required']) 
+        if ( isset( $this->params['required'] ) && $this->params['required'] )
         {
             $this->attr['required'] = 'required';
         }
         $this->attr['value'] = $this->getValue();
-        $this->attr['type'] = 'hidden';
-        $base_widget = zerobase_html_toolkit::buildTag( 'input', $this->attr, true ).zerobase_html_toolkit::buildTag( 'button', array( 'type' => 'button', 'class' => 'button action uploader' ), false, __( 'Select File', 'zerobase' ) );
+        $this->attr['type']  = 'hidden';
+        $base_widget         = zerobase_html_toolkit::buildTag( 'input', $this->attr, true ) . zerobase_html_toolkit::buildTag( 'button', array( 'type' => 'button', 'class' => 'button action uploader' ), false, __( 'Select File', 'zerobase' ) );
         if ( $this->getValue() )
         {
-            return wp_get_attachment_image( $this->getValue(), array( 60, 60 ), true, array( 'class' => 'doc preview' ) ).$base_widget.zerobase_html_toolkit::buildTag( 'button', array( 'type' => 'button', 'class' => 'button delete' ), false, __( 'Remove File', 'zerobase' ) );
+            return wp_get_attachment_image( $this->getValue(), array( 60, 60 ), true, array( 'class' => 'doc preview' ) ) . $base_widget . zerobase_html_toolkit::buildTag( 'button', array( 'type' => 'button', 'class' => 'button delete' ), false, __( 'Remove File', 'zerobase' ) );
         }
+
         return $base_widget;
     }
 } // END class InputFileWidget

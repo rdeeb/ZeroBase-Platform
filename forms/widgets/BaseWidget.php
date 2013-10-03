@@ -1,30 +1,31 @@
 <?php
-require_once(__DIR__.'/WidgetInterface.php');
+require_once( __DIR__ . '/WidgetInterface.php' );
 
 /**
  * BaseWidget
  * An abstract class that handles the base functionalities of a widget
  *
  * @package ZeroBase
- * @author Ramy Deeb <me@ramydeeb.com>
+ * @author  Ramy Deeb <me@ramydeeb.com>
  * @license Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. http://creativecommons.org/licenses/by-nc-nd/3.0/.
  **/
 abstract class BaseWidget implements WidgetInterface
 {
     //Internal variables
-    protected $value;                       //The value stored by the widget
-    protected $attr;                  //The HTML attributes
-    protected $params;                      //Any widgets params
-    
+    protected $value; //The value stored by the widget
+    protected $attr; //The HTML attributes
+    protected $params; //Any widgets params
+
     /**
      * constructor
      * Creates the widget with the options defined for it
      *
      * @param $options array
+     *
      * @return void
      * @author Ramy Deeb
      **/
-    public function __construct ( array $options = array() )
+    public function __construct( array $options = array() )
     {
         if ( $this->validateParams( $options ) )
         {
@@ -35,7 +36,7 @@ abstract class BaseWidget implements WidgetInterface
             $this->params = $options;
         }
     }
-    
+
     /**
      * getParams
      * Returns the parameters list
@@ -47,20 +48,21 @@ abstract class BaseWidget implements WidgetInterface
     {
         return $this->params;
     }
-    
+
     /**
      * setValue
      * Sets the value for the widget
      *
      * @param $v mixed the value to set on the widget
+     *
      * @return void
      * @author Ramy Deeb
      **/
-    public function setValue ( $v )
+    public function setValue( $v )
     {
         $this->value = $v;
     }
-    
+
     /**
      * getValue
      * Returns the value of the widget
@@ -68,11 +70,11 @@ abstract class BaseWidget implements WidgetInterface
      * @return mixed
      * @author Ramy Deeb
      **/
-    public function getValue ()
+    public function getValue()
     {
         return $this->value;
     }
-    
+
     /**
      * supportedParams
      * Returns the supported parameters by this widget
@@ -94,28 +96,30 @@ abstract class BaseWidget implements WidgetInterface
             'choices'
         );
     }
-    
+
     /**
      * validateParams
      * Validates if the params sent are supported by this widget
      *
      * @param $params array This are the params sent by the user
+     *
      * @return bool
      * @author Ramy Deeb
      **/
-    private function validateParams ( array $params )
+    private function validateParams( array $params )
     {
         $supported = $this->supportedParams();
-        foreach( $params as $key => $trash )
+        foreach ( $params as $key => $trash )
         {
             if ( !in_array( $key, $supported, true ) && $key != 'attr' )
             {
-                throw new Exception("The parameter $key is not supported by this widget");
+                throw new Exception( "The parameter $key is not supported by this widget" );
             }
         }
+
         return true;
     }
-    
+
     public function render()
     {
         $widget = $this->renderWidget();
@@ -125,8 +129,9 @@ abstract class BaseWidget implements WidgetInterface
         }
         if ( isset( $this->params['prepend'] ) && $this->params['prepend'] )
         {
-            $widget = '<span class="prepend">' . $this->params['prepend'] . '</span>'.$widget;
+            $widget = '<span class="prepend">' . $this->params['prepend'] . '</span>' . $widget;
         }
+
         return $widget;
     }
 } // END class BaseWidget

@@ -3,7 +3,7 @@
  * zerobase_base_widget
  * Defines a base way to generate widgets
  *
- * @author Ramy Deeb <me@ramydeeb.com>
+ * @author  Ramy Deeb <me@ramydeeb.com>
  * @package ZeroBase
  * @license Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. http://creativecommons.org/licenses/by-nc-nd/3.0/.
  */
@@ -17,13 +17,14 @@ abstract class zerobase_base_widget extends WP_Widget
      * @author Ramy Deeb <me@ramydeeb.com>
      **/
     function ();
+
     public function __construct()
     {
         parent::__construct(
-            get_class($this),
+            get_class( $this ),
             $this->getName(),
             array(
-                'class_name' => get_class($this),
+                'class_name'  => get_class( $this ),
                 'description' => $this->getDescription()
             )
         );
@@ -32,8 +33,9 @@ abstract class zerobase_base_widget extends WP_Widget
     /**
      * widget Prints the widget, requires the getTemplate function
      *
-     * @param $args array Arguments
+     * @param $args     array Arguments
      * @param $instance array The data of this instance
+     *
      * @return void
      * @author Ramy Deeb <me@ramydeeb.com>
      **/
@@ -53,6 +55,7 @@ abstract class zerobase_base_widget extends WP_Widget
      *
      * @param $new_instance array New Values
      * @param $old_instance array Old values
+     *
      * @return array
      * @author Ramy Deeb <me@ramydeeb.com>
      **/
@@ -63,6 +66,7 @@ abstract class zerobase_base_widget extends WP_Widget
         {
             $instance[$name] = $this->sanitizeField( $name, $value )
         }
+
         return $instance;
     }
 
@@ -70,6 +74,7 @@ abstract class zerobase_base_widget extends WP_Widget
      * form Displays the widget option form
      *
      * @param $instance array Instance values
+     *
      * @return void
      * @author Ramy Deeb <me@ramydeeb.com>
      **/
@@ -87,15 +92,16 @@ abstract class zerobase_base_widget extends WP_Widget
      **/
     private function widgetFields()
     {
-        $fields = $this->getFields();
+        $fields  = $this->getFields();
         $ret_arr = array();
-        foreach( $fields as $name => $options )
+        foreach ( $fields as $name => $options )
         {
             $ret_arr[$name] = array_merge( $options, array(
-                'type' => 'text',
+                'type'    => 'text',
                 'default' => ''
             ) );
         }
+
         return $ret_arr;
     }
 
@@ -104,13 +110,14 @@ abstract class zerobase_base_widget extends WP_Widget
      *
      * @param $field string New Values
      * @param $value mixed Old values
+     *
      * @return mixed
      * @author Ramy Deeb <me@ramydeeb.com>
      **/
     private function sanitizeField( $field, $value )
     {
         $fields = $this->widgetFields();
-        switch( $fields[$field]['type'] )
+        switch ( $fields[$field]['type'] )
         {
             case 'checkbox':
                 $value = (bool) $value;
@@ -130,11 +137,11 @@ abstract class zerobase_base_widget extends WP_Widget
     private function buildForm()
     {
         $fields = $this->widgetFields();
-        $form = new zerobase_widget_form_builder( get_class($this) );
-        foreach ($fields as $name => $options)
+        $form   = new zerobase_widget_form_builder( get_class( $this ) );
+        foreach ( $fields as $name => $options )
         {
             $args = array(
-                'id' => $this->get_field_id( $name ),
+                'id'   => $this->get_field_id( $name ),
                 'name' => $this->get_field_name( $name )
             );
             if ( $args['label'] )
@@ -143,6 +150,7 @@ abstract class zerobase_base_widget extends WP_Widget
             }
             $form->addWidget( $name, $options['type'], $args, $options['default'] );
         }
+
         return $form;
     }
 

@@ -5,7 +5,7 @@
  * Generates custom metaboxes for your post, pages and custom post types
  *
  * @package ZeroBase
- * @author Ramy Deeb <me@ramydeeb.com>
+ * @author  Ramy Deeb <me@ramydeeb.com>
  * @license Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. http://creativecommons.org/licenses/by-nc-nd/3.0/.
  **/
 class zerobase_metabox
@@ -14,12 +14,13 @@ class zerobase_metabox
      * __construct
      *
      * @param array $options The options for building the custom meta box
+     *
      * @return void
      * @author Ramy Deeb
      **/
     public function __construct( array $options )
     {
-        $defaults = array(
+        $defaults      = array(
             'id'        => 'zb_metabox',
             'title'     => __( 'Zerobase Metabox', 'zerobase' ),
             'post_type' => array( 'post' ),
@@ -45,12 +46,13 @@ class zerobase_metabox
             }
         }
     }
-    
+
     /**
      * save_meta_info
      * Saves the custom meta info for the post
      *
      * @param int $_post_id The Post ID
+     *
      * @return void
      * @author Ramy Deeb
      **/
@@ -58,17 +60,17 @@ class zerobase_metabox
     {
         if ( $_SERVER['REQUEST_METHOD'] === 'POST' )
         {
-            $form = $this->get_form( $post_id );
-            $values = $form->getValues();
+            $form    = $this->get_form( $post_id );
+            $values  = $form->getValues();
             $post_ID = isset( $_POST['post_ID'] ) ? $_POST['post_ID'] : $post_id;
-            foreach ($values as $key => $value)
+            foreach ( $values as $key => $value )
             {
                 update_post_meta( $post_ID, $key, $value );
             }
         }
-        
+
     }
-    
+
     /**
      * render_meta_box
      * Renders the custom meta box
@@ -78,18 +80,18 @@ class zerobase_metabox
      **/
     public function render_meta_box( $post )
     {
-        $form = $this->get_form( $post->ID );
+        $form  = $this->get_form( $post->ID );
         $nonce = wp_nonce_field( $this->options['id'], 'zerobase_metabox' );
-        switch($this->options['template'])
+        switch ( $this->options['template'] )
         {
             case 'default':
             default:
                 extract( $this->options );
-                require( __DIR__.'/templates/zerobase_metabox_default.php' );
+                require( __DIR__ . '/templates/zerobase_metabox_default.php' );
                 break;
         }
     }
-    
+
     /**
      * get_form
      * Returns the zerobase_form_builder object
@@ -99,27 +101,28 @@ class zerobase_metabox
      **/
     private function get_form( $post_id )
     {
-        $form = new zerobase_form_builder( $this->options['id'] );
+        $form     = new zerobase_form_builder( $this->options['id'] );
         $defaults = array(
-            'type' => 'text',
-            'default' => null
+            'type'    => 'text',
+            'default' => NULL
         );
         foreach ( $this->options['fields'] as $name => $options )
         {
             $options = array_merge( $defaults, $options );
-            $type = $options['type'];
+            $type    = $options['type'];
             $default = $options['default'];
-            $value = get_post_meta( $post_id, $name, true );
-            $value = $value ? $value : $default;
-            unset( 
-                $options['type'],
-                $options['default']
+            $value   = get_post_meta( $post_id, $name, true );
+            $value   = $value ? $value : $default;
+            unset(
+            $options['type'],
+            $options['default']
             );
             $form->addWidget( $name, $type, $options, $value );
         }
+
         return $form;
     }
-    
+
     /**
      * get_current_post_type
      * gets the current post type in the WordPress Admin
@@ -127,36 +130,51 @@ class zerobase_metabox
      * @return mixed
      * @author http://themergency.com/wordpress-tip-get-post-type-in-admin/, Ramy Deeb
      */
-    private function get_current_post_type() {
-      global $post, $typenow, $current_screen;
+    private function get_current_post_type()
+    {
+        global $post, $typenow, $current_screen;
 
-      //we have a post so we can just get the post type from that
-      if ( $post && $post->post_type )
-        return $post->post_type;
-
-      //check the global $typenow - set in admin.php
-      elseif( $typenow )
-        return $typenow;
-
-      //check the global $current_screen object - set in sceen.php
-      elseif( $current_screen && $current_screen->post_type )
-        return $current_screen->post_type;
-
-      //lastly check the post_type querystring
-      elseif( isset( $_REQUEST['post_type'] ) )
-        return sanitize_key( $_REQUEST['post_type'] );
-        
-        else if ( isset( $_REQUEST['post'] ) )
+        //we have a post so we can just get the post type from that
+        if ( $post && $post->post_type )
         {
-            return get_post_type( $_REQUEST['post'] );
-        }
-        
-        else if ( isset( $_REQUEST['post_ID'] ) )
-        {
-            return get_post_type( $_REQUEST['post_ID'] );
+            return $post->post_type;
         }
 
-      //we do not know the post type!
-      return null;
+        //check the global $typenow - set in admin.php
+        elseif ( $typenow )
+        {
+            return $typenow;
+        }
+
+        //check the global $current_screen object - set in sceen.php
+        elseif ( $current_screen && $current_screen->post_type )
+        {
+            return $current_screen->post_type;
+        }
+
+        //lastly check the post_type querystring
+        elseif ( isset( $_REQUEST['post_type'] ) )
+        {
+            return sanitize_key( $_REQUEST['post_type'] );
+        }
+
+        else
+        {
+            if ( isset( $_REQUEST['post'] ) )
+            {
+                return get_post_type( $_REQUEST['post'] );
+            }
+
+            else
+            {
+                if ( isset( $_REQUEST['post_ID'] ) )
+                {
+                    return get_post_type( $_REQUEST['post_ID'] );
+                }
+            }
+        }
+
+        //we do not know the post type!
+        return NULL;
     }
 }

@@ -1,12 +1,12 @@
 <?php
-require_once(__DIR__.'/BaseWidget.php');
+require_once( __DIR__ . '/BaseWidget.php' );
 
 /**
  * InputTextareaWidget
  * Renders a textarea input box
  *
  * @package ZeroBase
- * @author Ramy Deeb <me@ramydeeb.com>
+ * @author  Ramy Deeb <me@ramydeeb.com>
  * @license Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. http://creativecommons.org/licenses/by-nc-nd/3.0/.
  **/
 class InputTextareaWidget extends BaseWidget
@@ -18,11 +18,11 @@ class InputTextareaWidget extends BaseWidget
      * @return string
      * @author Ramy Deeb
      **/
-    public function getType ()
+    public function getType()
     {
         return 'textarea';
     }
-    
+
     /**
      * getValue
      * Returns the value of the widget
@@ -30,11 +30,11 @@ class InputTextareaWidget extends BaseWidget
      * @return mixed
      * @author Ramy Deeb
      **/
-    public function getValue ()
+    public function getValue()
     {
         return sanitize_text_field( $this->value );
     }
-    
+
     /**
      * render
      * Returns the tag html code
@@ -42,12 +42,13 @@ class InputTextareaWidget extends BaseWidget
      * @return array
      * @author Ramy Deeb
      **/
-    public function renderWidget ()
+    public function renderWidget()
     {
-        if (isset($this->params['required']) && $this->params['required']) 
+        if ( isset( $this->params['required'] ) && $this->params['required'] )
         {
             $this->attr['required'] = 'required';
         }
+
         return zerobase_html_toolkit::buildTag( 'textarea', $this->attr, false, $this->getValue() );
     }
 } // END class InputTextareaWidget
