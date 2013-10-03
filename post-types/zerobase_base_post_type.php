@@ -69,7 +69,7 @@ abstract class zerobase_base_post_type implements zerobase_post_type_interface
      * @return void
      * @author Ramy Deeb
      **/
-    private function registerPostType()
+    public function registerPostType()
     {
         return;
     }
@@ -80,7 +80,7 @@ abstract class zerobase_base_post_type implements zerobase_post_type_interface
      * @return void
      * @author Ramy Deeb
      **/
-    private function registerTaxonomy()
+    public function registerTaxonomy()
     {
         return;
     }
@@ -91,7 +91,7 @@ abstract class zerobase_base_post_type implements zerobase_post_type_interface
      * @return array
      * @author Ramy Deeb
      **/
-    private function registerMetaboxes()
+    public function registerMetaboxes()
     {
         return;
     }

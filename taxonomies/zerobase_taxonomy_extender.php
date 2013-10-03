@@ -47,7 +47,7 @@ class zerobase_taxonomy_extender
     public function addField( $name, $options )
     {
         $options = array_merge( $options, array(
-            'type' => 'text'
+            'type' => 'text',
             'default' => '',
             'options' => array(),
             'single' => true

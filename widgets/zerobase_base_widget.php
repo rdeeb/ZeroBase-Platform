@@ -151,48 +151,4 @@ abstract class zerobase_base_widget extends WP_Widget
 
         return $form;
     }
-
-    /**
-     * getName Returns this widget name
-     *
-     * @return void
-     * @author Ramy Deeb <me@ramydeeb.com>
-     **/
-    private function getName()
-    {
-        throw new Exception( 'This should return the name of the widget' );
-    }
-
-    /**
-     * getDescription Returns this widget description
-     *
-     * @return void
-     * @author Ramy Deeb <me@ramydeeb.com>
-     **/
-    private function getDescription()
-    {
-        throw new Exception( 'This should return the widget description' );
-    }
-
-    /**
-     * getFields Returns this widget fields
-     *
-     * @return void
-     * @author Ramy Deeb <me@ramydeeb.com>
-     **/
-    private function getFields()
-    {
-        throw new Exception( 'This should return an array of fields' );
-    }
-
-    /**
-     * getTemplate Returns this widget template path
-     *
-     * @return void
-     * @author Ramy Deeb <me@ramydeeb.com>
-     **/
-    private function getTemplate()
-    {
-        throw new Exception( 'This should return an string with the path of the template' );
-    }
 }

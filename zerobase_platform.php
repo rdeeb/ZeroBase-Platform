@@ -36,6 +36,8 @@ class zerobase_platform
         //Load the post type interface and base class
         require_once( __DIR__ . '/post-types/zerobase_post_type_interface.php' );
         require_once( __DIR__ . '/post-types/zerobase_base_post_type.php' );
+        //Load the taxonomy extender class
+        require_once( __DIR__ . '/taxonomies/zerobase_taxonomy_extender.php' );
         //Load the widget base class
         require_once( __DIR__ . '/widgets/zerobase_base_widget.php' );
         //Register the framework scripts and styles
@@ -78,7 +80,7 @@ class zerobase_platform
         {
             throw new Exception( 'Before adding post types, you need first to add a path' );
         }
-        $tainted_file = $this->post_type_path . '/' . $class . 'php';
+        $tainted_file = $this->post_type_path . '/' . $class . '.php';
         if ( !file_exists( $tainted_file ) )
         {
             throw new Exception( "A file named '$class.php' couldn't be found at '{$this->post_type_path}'" );
