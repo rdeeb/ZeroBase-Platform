@@ -21,8 +21,8 @@ abstract class zerobase_base_post_type implements zerobase_post_type_interface
         //Register the Post Type, taxonomies, and metaboxes (if any)
         $this->registerPostType();
         $this->registerTaxonomy();
-        $this->registerMetaboxes();
-        //Registers the hooks for the widgets and scripts (if any)
+        //Registers the hooks for the metaboxes, widgets and scripts (if any)
+        add_action( 'add_meta_boxes', array( &$this, 'registerMetaboxes' ) );
         add_action( 'widgets_init', array( &$this, 'registerWidgets' ) );
         add_action( 'wp_register_scripts', array( &$this, 'registerScripts' ) );
     }

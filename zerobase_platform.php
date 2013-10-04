@@ -40,6 +40,14 @@ class zerobase_platform
         require_once( __DIR__ . '/taxonomies/zerobase_taxonomy_extender.php' );
         //Load the widget base class
         require_once( __DIR__ . '/widgets/zerobase_base_widget.php' );
+        //Extend the database
+        require_once( __DIR__ . '/installation/zerobase_create_tables.php' );
+        global $wpdb;
+        $type = 'zerobase_term';
+        $table_name = $wpdb->prefix . $type . 'meta';
+        $variable_name = $type . 'meta';
+        $wpdb->$variable_name = $table_name;
+        zerobase_create_metadata_table( $table_name, $type );
         //Register the framework scripts and styles
         add_action( 'wp_register_scripts', array( &$this, 'registerScripts' ) );
     }
