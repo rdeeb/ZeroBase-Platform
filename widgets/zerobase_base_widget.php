@@ -94,10 +94,10 @@ abstract class zerobase_base_widget extends WP_Widget
         $ret_arr = array();
         foreach ( $fields as $name => $options )
         {
-            $ret_arr[$name] = array_merge( $options, array(
+            $ret_arr[$name] = array_merge( array(
                 'type'    => 'text',
                 'default' => ''
-            ) );
+            ), $options );
         }
 
         return $ret_arr;

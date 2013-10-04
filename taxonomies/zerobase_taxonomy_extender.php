@@ -46,12 +46,12 @@ class zerobase_taxonomy_extender
      **/
     public function addField( $name, $options )
     {
-        $options = array_merge( $options, array(
+        $options = array_merge( array(
             'type' => 'text',
             'default' => '',
             'options' => array(),
             'single' => true
-        ) );
+        ), $options );
         $this->tax_fields[$name] = $options;
     }
 
@@ -141,8 +141,8 @@ class zerobase_taxonomy_extender
     public function register()
     {
         //Hook the custom fields for the taxonomy fields
-        add_action( 'zerobase_' . $this->tax_name . '_add_form_fields', array( &$this, 'showFields' ), 10, 2 );
-        add_action( 'zerobase_' . $this->tax_name . '_edit_form_fields', array( &$this, 'editFields' ), 10, 2 );
+        add_action( $this->tax_name . '_add_form_fields', array( &$this, 'showFields' ), 10, 2 );
+        add_action( $this->tax_name . '_edit_form_fields', array( &$this, 'editFields' ), 10, 2 );
         add_action( 'created_' . $this->tax_name, array( &$this, 'fieldSave' ), 10, 2 );
         add_action( 'edited_' . $this->tax_name, array( &$this, 'fieldSave' ), 10, 2 );
     }

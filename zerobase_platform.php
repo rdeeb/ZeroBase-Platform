@@ -49,7 +49,7 @@ class zerobase_platform
         $wpdb->$variable_name = $table_name;
         zerobase_create_metadata_table( $table_name, $type );
         //Register the framework scripts and styles
-        add_action( 'wp_register_scripts', array( &$this, 'registerScripts' ) );
+        add_action( 'admin_enqueue_scripts', array( &$this, 'registerAdminScripts' ) );
     }
 
     /**
@@ -133,12 +133,12 @@ class zerobase_platform
      * @return void
      * @author Ramy Deeb
      */
-    public function registerScripts()
+    public function registerAdminScripts()
     {
         //Register the color picker script & styles
         wp_register_script(
             'zerobase_js_colorpicker',
-            __DIR__ . '/forms/js/colorpicker.min.js',
+            plugins_url( '/assets/js/colorpicker.min.js' , __FILE__ ),
             array(
                 'jquery'
             ),
@@ -147,11 +147,11 @@ class zerobase_platform
         );
         wp_register_style(
             'zerobase_css_colorpicker',
-            __DIR__ . '/forms/css/colorpicker.css'
+            plugins_url( '/assets/css/colorpicker.css' , __FILE__ )
         );
         wp_register_script(
             'zerobase_js_forms',
-            __DIR__ . '/forms/js/forms.min.js',
+            plugins_url( '/assets/js/forms.min.js' , __FILE__ ),
             array(
                 'jquery',
                 'jquery-ui-core',
@@ -173,7 +173,7 @@ class zerobase_platform
         ) );
         wp_register_style(
             'zerobase_css_forms',
-            __DIR__ . '/forms/css/forms.css',
+            plugins_url( '/assets/css/forms.css' , __FILE__ ),
             array(
                 'thickbox'
             )
