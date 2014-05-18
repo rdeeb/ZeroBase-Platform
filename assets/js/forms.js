@@ -208,4 +208,33 @@
 
     });
 
+    $('.map-selector').each(function(i, item){
+        var mapOptions = {
+            center: new google.maps.LatLng(9.040860, -79.483337),
+            zoom: 13
+        }
+        if ($(item).find('.gmap-latlong').val() != "")
+        {
+            mapOptions.center = $(item).find('.gmap-latlong').val();
+        }
+
+        var canvas = $(item).find('.map-canvas');
+        var map = new google.maps.Map(canvas[0], mapOptions);
+
+        var marker = new google.maps.Marker({
+            position: map.getCenter(),
+            map: map,
+            title: 'Click to zoom'
+        });
+
+        google.maps.event.addListener(map, 'center_changed', function() {
+            // 3 seconds after the center of the map has changed, pan back to the
+            // marker.
+            window.setTimeout(function() {
+                marker.setPosition(map.getCenter())
+                $(item).find('.gmap-latlong').val(map.getCenter());
+            }, 500);
+        });
+    });
+
 })(jQuery);

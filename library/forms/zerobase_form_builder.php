@@ -11,6 +11,7 @@ require_once( __DIR__ . '/widgets/InputColorWidget.php' );
 require_once( __DIR__ . '/widgets/InputImageWidget.php' );
 require_once( __DIR__ . '/widgets/InputFileWidget.php' );
 require_once( __DIR__ . '/widgets/InputGalleryWidget.php' );
+require_once( __DIR__ . '/widgets/InputGoogleMapsWidget.php' );
 
 /**
  * zerobase_form_builder
@@ -91,6 +92,9 @@ class zerobase_form_builder
                 break;
             case 'gallery':
                 $widget = new InputGalleryWidget( $options );
+                break;
+            case 'google_map':
+                $widget = new InputGoogleMapsWidget( $options );
                 break;
             default:
                 throw new Exception( "The widget type $type is not defined" );

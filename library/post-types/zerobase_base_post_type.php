@@ -9,6 +9,16 @@
 
 abstract class zerobase_base_post_type implements zerobase_post_type_interface
 {
+    private $metaboxes = array();
+
+    public function __construct()
+    {
+        //Registers the hooks for the metaboxes, widgets and scripts (if any)
+        add_action( 'add_meta_boxes', array( &$this, 'registerMetaboxes' ) );
+        add_action( 'widgets_init', array( &$this, 'registerWidgets' ) );
+        add_action( 'wp_register_scripts', array( &$this, 'registerScripts' ) );
+    }
+
     /**
      * Configure
      * Makes the post type available in Wordpress
@@ -21,19 +31,16 @@ abstract class zerobase_base_post_type implements zerobase_post_type_interface
         //Register the Post Type, taxonomies, and metaboxes (if any)
         $this->registerPostType();
         $this->registerTaxonomy();
-        //Registers the hooks for the metaboxes, widgets and scripts (if any)
-        add_action( 'add_meta_boxes', array( &$this, 'registerMetaboxes' ) );
-        add_action( 'widgets_init', array( &$this, 'registerWidgets' ) );
-        add_action( 'wp_register_scripts', array( &$this, 'registerScripts' ) );
     }
 
     /**
      * getName
      * Returns the name of the post type
      *
+     * @throws Exception
      * @return string
      * @author Ramy Deeb
-     **/
+     */
     public function getName()
     {
         throw new Exception( 'This function needs to be implemented' );
@@ -116,5 +123,16 @@ abstract class zerobase_base_post_type implements zerobase_post_type_interface
     public function registerScripts()
     {
         return;
+    }
+
+    /**
+     * Returns the configured metaboxes
+     *
+     * @return array
+     * @author Ramy Deeb
+     */
+    public function getMetaboxes()
+    {
+        return $this->metaboxes;
     }
 } 

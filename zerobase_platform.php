@@ -14,34 +14,33 @@
 
 class zerobase_platform
 {
-    private $post_type_path;
-    private $post_types;
-
     /**
      * __construct Initializes the platform
      *
-     * @return void
      * @author Ramy Deeb
      */
     public function __construct()
     {
+        // Define the plugin base directory
+        $dir = plugin_dir_path( __FILE__ );
+        $lib_dir = $dir.'/library';
         //Load the toolkit
-        require_once( __DIR__ . '/toolkit/zerobase_html_toolkit.php' );
+        require_once( $lib_dir . '/toolkit/zerobase_html_toolkit.php' );
         //Load the Form Builder
-        require_once( __DIR__ . '/forms/zerobase_form_builder.php' );
-        require_once( __DIR__ . '/forms/zerobase_tax_form_builder.php' );
-        require_once( __DIR__ . '/forms/zerobase_widget_form_builder.php' );
+        require_once( $lib_dir . '/forms/zerobase_form_builder.php' );
+        require_once( $lib_dir . '/forms/zerobase_tax_form_builder.php' );
+        require_once( $lib_dir . '/forms/zerobase_widget_form_builder.php' );
         //Load the Metabox Builder
-        require_once( __DIR__ . '/metaboxes/zerobase_metabox.php' );
+        require_once( $lib_dir . '/metaboxes/zerobase_metabox.php' );
         //Load the post type interface and base class
-        require_once( __DIR__ . '/post-types/zerobase_post_type_interface.php' );
-        require_once( __DIR__ . '/post-types/zerobase_base_post_type.php' );
+        require_once( $lib_dir . '/post-types/zerobase_post_type_interface.php' );
+        require_once( $lib_dir . '/post-types/zerobase_base_post_type.php' );
         //Load the taxonomy extender class
-        require_once( __DIR__ . '/taxonomies/zerobase_taxonomy_extender.php' );
+        require_once( $lib_dir . '/taxonomies/zerobase_taxonomy_extender.php' );
         //Load the widget base class
-        require_once( __DIR__ . '/widgets/zerobase_base_widget.php' );
+        require_once( $lib_dir . '/widgets/zerobase_base_widget.php' );
         //Extend the database
-        require_once( __DIR__ . '/installation/zerobase_create_tables.php' );
+        require_once( $dir . '/installation/zerobase_create_tables.php' );
         global $wpdb;
         $type = 'zerobase_term';
         $table_name = $wpdb->prefix . $type . 'meta';
@@ -49,81 +48,169 @@ class zerobase_platform
         $wpdb->$variable_name = $table_name;
         zerobase_create_metadata_table( $table_name, $type );
         //Register the framework scripts and styles
-        add_action( 'admin_enqueue_scripts', array( &$this, 'registerAdminScripts' ) );
+        add_action( 'admin_enqueue_scripts', array( &$this, 'registerAdminScripts' ), 1 );
+        $this->platform_options = get_option( 'zerobase_platoform_options', array() );
+        if ( empty( $this->platform_options ) )
+        {
+            $this->setOption( 'version', '0.2' );
+        }
+        //echo '<p>Calling execute hooks</p>';
+        add_action( 'after_setup_theme', array( &$this, 'executeHooks' ), 1 );
+        add_action( 'after_setup_theme', array( &$this, 'loadModules' ), 2 );
+        add_action( 'init', array( &$this, 'configurePostTypes' ), 10 );
+        add_action( 'init', array( &$this, 'configureTaxonomies' ), 11 );
+        add_action( 'save_post', array( &$this, 'saveMetaboxesData' ), 10, 2 );
+    }
+
+    private function setOption( $key, $value )
+    {
+        $this->platform_options[ $key ] = $value;
+        add_option( 'zerobase_platform_options', $this->platform_options );
+    }
+
+    private function getOption( $key, $default = null )
+    {
+        if ( isset( $this->platform_options[ $key ] ) )
+        {
+            return $this->platform_options[ $key ];
+        }
+        else
+        {
+            return $default;
+        }
     }
 
     /**
-     * setPostTypePath Stores the path were the post type classes are stored
+     * addModule Adds a new module to the platform
      *
-     * @param $path string The path were the system should load the post types
+     * @param array $config defines de configuration parameters of the module being loaded
      *
      * @throws Exception
+     * @author Ramy Deeb
+     */
+    public function addModule( array $config )
+    {
+        if (!isset($config[ 'path' ]) || empty($config[ 'path' ]) || !is_dir( $config[ 'path' ] ))
+        {
+            throw new Exception('Every module must define a valid path');
+        }
+        $modules = $this->getOption( 'modules', array() );
+        if ( !isset( $config[ 'name' ] ) )
+        {
+            throw new Exception('Every module must define a name');
+        }
+        $modules[ $this->slugify( $config[ 'name' ] ) ] = $config;
+        $this->setOption( 'modules', $modules );
+        //echo '<p>Added module '.$config[ 'name' ].'</p>';
+    }
+
+    public function loadModules()
+    {
+        $modules = $this->getOption( 'modules', array() );
+        $classes = $this->getOption( 'classes', array() );
+        //echo '<p>Loading '.count( $modules ).' modules</p>';
+        if ( !empty($modules) )
+        {
+            foreach( $modules as $config )
+            {
+                $post_types_dir = $config[ 'path' ].'/post_types/';
+                if ( is_dir( $post_types_dir ) )
+                {
+                    //echo '<p>Dir '.$post_types_dir.' is valid</p>';
+                    $handle = opendir( $post_types_dir );
+                    while( false !== ( $file = readdir( $handle ) ) )
+                    {
+                        if ( strpos( $file, '_post_type.php' ) )
+                        {
+                            include_once( $post_types_dir.$file );
+                            $class_name = str_replace( '.php', '', $file );
+                            $classes[ $class_name ] = new $class_name();
+                            //echo '<p>Loaded file '.$file.'</p>';
+                        }
+                    }
+                }
+            }
+            $this->setOption( 'classes', $classes );
+        }
+    }
+
+    /**
+     * executeHooks
+     * A simple hooks launcher
+     *
      * @return void
      * @author Ramy Deeb
      */
-    public function setPostTypePath( $path )
+    public function executeHooks()
     {
-        if ( is_dir( $path ) )
-        {
-            $this->post_type_path = $path;
-        }
-        else
-        {
-            throw new Exception( "'$path' is not a valid directory" );
-        }
+        do_action( 'zerobase_load_modules', $this );
     }
 
     /**
-     * addPostType Loads a new post type class into the platform
+     * configurePostTypes
+     * Configure the registered post types
      *
-     * @param $class string The class name to add
-     *
-     * @throws Exception
      * @return void
      * @author Ramy Deeb
      */
-    public function addPostType( $class )
+    public function configurePostTypes()
     {
-        if ( !$this->post_type_path )
+        $classes = $this->getOption( 'classes', array() );
+        if ( !empty( $classes ) )
         {
-            throw new Exception( 'Before adding post types, you need first to add a path' );
+            foreach ( $classes as $class )
+            {
+                /** @var $class \zerobase_base_post_type */
+                $class->registerPostType();
+            }
         }
-        $tainted_file = $this->post_type_path . '/' . $class . '.php';
-        if ( !file_exists( $tainted_file ) )
-        {
-            throw new Exception( "A file named '$class.php' couldn't be found at '{$this->post_type_path}'" );
-        }
-        require_once( $tainted_file );
-        if ( !is_array( $this->post_types ) )
-        {
-            $this->post_types = array(
-                $class => new $class()
-            );
-        }
-        else
-        {
-            $this->post_types[$class] = new $class();
-        }
+
     }
 
     /**
-     * getPostType Returns the instance of a post type
+     * configureTaxonomies
+     * Configure the registered taxonomies
      *
-     * @param $class string The class name to return
-     *
-     * @return mixed
-     * @throws Exception
+     * @return void
      * @author Ramy Deeb
      */
-    public function getPostType( $class )
+    public function configureTaxonomies()
     {
-        if ( array_key_exists( $class, $this->post_types ) )
+        $classes = $this->getOption( 'classes', array() );
+        if ( !empty( $classes ) )
         {
-            return $this->post_types[$class];
+            foreach ( $classes as $class )
+            {
+                /** @var $class \zerobase_base_post_type */
+                $class->registerTaxonomy();
+            }
         }
-        else
+
+    }
+
+    /**
+     * saveMetaboxesData
+     * Saves the custom meta info for the post
+     *
+     * @param int $post_ID The Post ID
+     *
+     * @return void
+     * @author Ramy Deeb
+     **/
+    public function saveMetaboxesData( $post_ID, $object )
+    {
+        $classes = $this->getOption( 'classes', array() );
+        if ( !empty( $classes ) )
         {
-            throw new Exception( "The post type '$class' has not been loaded" );
+            foreach ( $classes as $class )
+            {
+                /** @var $class \zerobase_base_post_type */
+                foreach ($class->getMetaboxes() as $metabox)
+                {
+                    /** @var $metabox \zerobase_metabox */
+                    $metabox->save_meta_info( $post_ID, $object );
+                }
+            }
         }
     }
 
@@ -150,15 +237,20 @@ class zerobase_platform
             plugins_url( '/assets/css/colorpicker.css' , __FILE__ )
         );
         wp_register_script(
+            'zerobase_google_maps',
+            '//maps.googleapis.com/maps/api/js?key=AIzaSyCNDR8-dYvuAmUyFRImtpAHfYznAeTolH4&sensor=true'
+        );
+        wp_register_script(
             'zerobase_js_forms',
-            plugins_url( '/assets/js/forms.min.js' , __FILE__ ),
+            plugins_url( '/assets/js/forms.js' , __FILE__ ),
             array(
                 'jquery',
                 'jquery-ui-core',
                 'jquery-ui-widget',
                 'jquery-ui-datepicker',
                 'media-upload',
-                'thickbox'
+                'thickbox',
+                'zerobase_google_maps'
             ),
             NULL,
             true
@@ -173,10 +265,49 @@ class zerobase_platform
         ) );
         wp_register_style(
             'zerobase_css_forms',
-            plugins_url( '/assets/css/forms.css' , __FILE__ ),
+            plugins_url( '/assets/css/forms.min.css' , __FILE__ ),
             array(
                 'thickbox'
             )
         );
+        wp_enqueue_style( 'zerobase_css_forms' );
+        wp_enqueue_script( 'zerobase_js_forms' );
     }
+
+    /**
+     * slugify
+     * Creates a slug from a string
+     *
+     * @param $text Text to slugify
+     *
+     * @return string
+     * @author Ramy Deeb
+     */
+    private function slugify($text)
+    {
+        // replace non letter or digits by -
+        $text = preg_replace('~[^\\pL\d]+~u', '-', $text);
+
+        // trim
+        $text = trim($text, '-');
+
+        // transliterate
+        $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+
+        // lowercase
+        $text = strtolower($text);
+
+        // remove unwanted characters
+        $text = preg_replace('~[^-\w]+~', '', $text);
+
+        if (empty($text))
+        {
+            return 'n-a';
+        }
+
+        return $text;
+    }
+
 }
+
+$zb_platform = new zerobase_platform();

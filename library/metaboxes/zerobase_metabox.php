@@ -42,7 +42,6 @@ class zerobase_metabox
                     $this->options['context'],
                     $this->options['priority']
                 );
-                add_action( 'save_post', array( &$this, 'save_meta_info' ) );
             }
         }
     }
@@ -56,9 +55,10 @@ class zerobase_metabox
      * @return void
      * @author Ramy Deeb
      **/
-    public function save_meta_info( $post_id )
+    public function save_meta_info( $post_id, $object )
     {
-        if ( $_SERVER['REQUEST_METHOD'] === 'POST' )
+        $options = $this->options;
+        if ( in_array( $object->post_type, $options['post_type'] ) )
         {
             $form    = $this->get_form( $post_id );
             $values  = $form->getValues();
@@ -68,7 +68,6 @@ class zerobase_metabox
                 update_post_meta( $post_ID, $key, $value );
             }
         }
-
     }
 
     /**
