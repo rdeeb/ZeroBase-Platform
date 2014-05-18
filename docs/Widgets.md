@@ -1,14 +1,14 @@
 # Widget Class
 
 The Base widget class allows you to create a new widget with few implementations as possible.
-The class handles the widget form by relying on the form builder class.
+The class handles the widget options form by relying on the Zero Base Platfor Form Builder class.
 
-It automatically saves the data and makes it available for you in the view.
+It will automatically save the data defined in the form, and will make it available for you in the view.
 
 ## Usage
 
 Create a new class and extend `zerobase_base_widget`. After you do this the only thing left is
-to update the required functions for the widget to work. View the next example:
+to update the required functions for the widget to work. Lets take a closser look at the next example:
 
 ## Example
 
@@ -75,4 +75,4 @@ class ZeroExampleWidget extends zerobase_base_widget
 ```
 
 In here you can see that we have defined four functions, each of them are required in order
-that the widget class can function properly
+that the new widget class can function properly.
