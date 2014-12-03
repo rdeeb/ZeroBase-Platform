@@ -19,7 +19,7 @@ class zerobase_platform
      *
      * @author Ramy Deeb
      */
-    public function __construct()
+    protected function __construct()
     {
         // Define the plugin base directory
         $dir = plugin_dir_path( __FILE__ );
@@ -61,6 +61,26 @@ class zerobase_platform
         add_action( 'init', array( &$this, 'configureTaxonomies' ), 11 );
         add_action( 'save_post', array( &$this, 'saveMetaboxesData' ), 10, 2 );
     }
+
+    /**
+     * Returns the current instance of the Zerobase Platform
+     * @return zerobase_platform
+     */
+    static function getInstance()
+    {
+        static $instance = null;
+        if (null === $instance) {
+            $instance = new static();
+        }
+
+        return $instance;
+    }
+
+    /**
+     * This functions prevents the cloning of the instance
+     */
+    private function __clone() {}
+    private function __wakeup() {}
 
     private function setOption( $key, $value )
     {
@@ -310,4 +330,4 @@ class zerobase_platform
 
 }
 
-$zb_platform = new zerobase_platform();
+$zb_platform = zerobase_platform::getInstance();
