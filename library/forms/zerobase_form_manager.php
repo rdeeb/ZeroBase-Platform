@@ -2,7 +2,6 @@
 
 class zerobase_form_manager
 {
-    protected static $instance = null;
 
     private $widgets = array();
 
@@ -17,11 +16,12 @@ class zerobase_form_manager
      */
     static function getInstance()
     {
-        if (static::$instance === null)
+        static $instance = null;
+        if (null === $instance)
         {
-            static::$instance = new zerobase_form_manager();
+            $instance = new zerobase_settings();
         }
-        return static::$instance;
+        return $instance;
     }
 
     /**
