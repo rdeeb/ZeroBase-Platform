@@ -27,6 +27,7 @@ class zerobase_platform
         //Load the toolkit
         require_once( $lib_dir . '/toolkit/zerobase_html_toolkit.php' );
         //Load the Form Builder
+        require_once( $lib_dir . '/forms/zerobase_form_manager.php' );
         require_once( $lib_dir . '/forms/zerobase_form_builder.php' );
         require_once( $lib_dir . '/forms/zerobase_tax_form_builder.php' );
         require_once( $lib_dir . '/forms/zerobase_widget_form_builder.php' );

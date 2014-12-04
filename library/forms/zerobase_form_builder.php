@@ -1,17 +1,4 @@
 <?php
-require_once( __DIR__ . '/widgets/InputHiddenWidget.php' );
-require_once( __DIR__ . '/widgets/InputTextWidget.php' );
-require_once( __DIR__ . '/widgets/InputTextareaWidget.php' );
-require_once( __DIR__ . '/widgets/InputCheckboxWidget.php' );
-require_once( __DIR__ . '/widgets/InputCheckboxListWidget.php' );
-require_once( __DIR__ . '/widgets/InputRadioListWidget.php' );
-require_once( __DIR__ . '/widgets/InputSelectWidget.php' );
-require_once( __DIR__ . '/widgets/InputDateWidget.php' );
-require_once( __DIR__ . '/widgets/InputColorWidget.php' );
-require_once( __DIR__ . '/widgets/InputImageWidget.php' );
-require_once( __DIR__ . '/widgets/InputFileWidget.php' );
-require_once( __DIR__ . '/widgets/InputGalleryWidget.php' );
-require_once( __DIR__ . '/widgets/InputGoogleMapsWidget.php' );
 
 /**
  * zerobase_form_builder
@@ -44,7 +31,6 @@ class zerobase_form_builder
 
     public function addWidget( $name, $type, array $options = array(), $default = NULL )
     {
-        $widget = NULL;
         if ( !isset( $options['attr'] ) )
         {
             $options['attr'] = array();
@@ -55,51 +41,8 @@ class zerobase_form_builder
         {
             $options['label'] = ucfirst( str_replace( '_', ' ', $name ) );
         }
-        switch ( $type )
-        {
-            case 'text':
-                $widget = new InputTextWidget( $options );
-                break;
-            case 'textarea':
-                $widget = new InputTextareaWidget( $options );
-                break;
-            case 'hidden':
-                $widget = new InputHiddenWidget( $options );
-                break;
-            case 'checkbox':
-                $widget = new InputCheckboxWidget( $options );
-                break;
-            case 'checkbox_list':
-                $widget = new InputCheckboxListWidget( $options );
-                break;
-            case 'radio_list':
-                $widget = new InputRadioListWidget( $options );
-                break;
-            case 'select':
-                $widget = new InputSelectWidget( $options );
-                break;
-            case 'date':
-                $widget = new InputDateWidget( $options );
-                break;
-            case 'colorpicker':
-                $widget = new InputColorWidget( $options );
-                break;
-            case 'file':
-                $widget = new InputFileWidget( $options );
-                break;
-            case 'image':
-                $widget = new InputImageWidget( $options );
-                break;
-            case 'gallery':
-                $widget = new InputGalleryWidget( $options );
-                break;
-            case 'google_map':
-                $widget = new InputGoogleMapsWidget( $options );
-                break;
-            default:
-                throw new Exception( "The widget type $type is not defined" );
-                break;
-        }
+        $wm = zerobase_form_manager::getInstance();
+        $widget = $wm->createInstance($type, $options);
         if ( isset( $this->values[$name] ) )
         {
             $widget->setValue( $this->values[$name] );

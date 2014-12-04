@@ -17,12 +17,9 @@ abstract class BaseWidget implements WidgetInterface
     protected $params; //Any widgets params
 
     /**
-     * constructor
      * Creates the widget with the options defined for it
      *
      * @param $options array
-     *
-     * @return void
      * @author Ramy Deeb
      **/
     public function __construct( array $options = array() )
@@ -105,6 +102,7 @@ abstract class BaseWidget implements WidgetInterface
      *
      * @return bool
      * @author Ramy Deeb
+     * @throws Exception
      **/
     private function validateParams( array $params )
     {
@@ -120,6 +118,10 @@ abstract class BaseWidget implements WidgetInterface
         return true;
     }
 
+    /**
+     * Renders the widget
+     * @return string The widget HTML
+     */
     public function render()
     {
         $widget = $this->renderWidget();
