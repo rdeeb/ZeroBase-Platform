@@ -1,6 +1,6 @@
 <?php
 
-class zerobase_setting_bag implements Iterator, ArrayAccess
+class zerobase_settings_bag implements Iterator, ArrayAccess
 {
     protected $settingsBag = array();
     protected $bagIndexes = array();
@@ -49,6 +49,11 @@ class zerobase_setting_bag implements Iterator, ArrayAccess
         }
     }
 
+    public function isEmpty()
+    {
+        return empty($this->settingsBag);
+    }
+
     public function rewind()
     {
         $this->position = 0;
@@ -61,7 +66,7 @@ class zerobase_setting_bag implements Iterator, ArrayAccess
 
     public function key()
     {
-        return $this->position;
+        return $this->bagIndexes[$this->position];
     }
 
     public function next()
@@ -81,12 +86,9 @@ class zerobase_setting_bag implements Iterator, ArrayAccess
 
     public function offsetSet($offset, $value)
     {
-        if (is_null($offset))
-        {
+        if (is_null($offset)) {
             $this->settingsBag[] = $value;
-        }
-        else
-        {
+        } else {
             $this->settingsBag[$offset] = $value;
         }
     }

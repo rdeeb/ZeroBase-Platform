@@ -14,6 +14,7 @@
 
 class zerobase_platform
 {
+    CONST ZEROBASE_ADMIN_PAGE_PREFIX = 'zerobase_settings_page_';
     /**
      * __construct Initializes the platform
      *
@@ -40,6 +41,9 @@ class zerobase_platform
         require_once( $lib_dir . '/taxonomies/zerobase_taxonomy_extender.php' );
         //Load the widget base class
         require_once( $lib_dir . '/widgets/zerobase_base_widget.php' );
+        //Load the settings files
+        require_once( $lib_dir . '/settings/zerobase_settings.php' );
+        require_once( $lib_dir . '/settings/zerobase_settings_bag.php' );
         //Extend the database
         require_once( $dir . '/installation/zerobase_create_tables.php' );
         global $wpdb;
@@ -55,12 +59,21 @@ class zerobase_platform
         {
             $this->setOption( 'version', '0.2' );
         }
-        //echo '<p>Calling execute hooks</p>';
+        //Configure the basic settings bag
+        $this->configureOptions();
+        //Adding Actions;
         add_action( 'after_setup_theme', array( &$this, 'executeHooks' ), 1 );
         add_action( 'after_setup_theme', array( &$this, 'loadModules' ), 2 );
         add_action( 'init', array( &$this, 'configurePostTypes' ), 10 );
         add_action( 'init', array( &$this, 'configureTaxonomies' ), 11 );
         add_action( 'save_post', array( &$this, 'saveMetaboxesData' ), 10, 2 );
+        //Configuring the Admin panel
+        if (is_admin())
+        {
+            add_action( 'admin_menu', array( &$this, 'handleAdminMenu' ), 2 );
+        }
+        //Load the different locales
+        load_plugin_textdomain('zerobase', FALSE, dirname(plugin_basename(__FILE__)).'/locales/');
     }
 
     /**
@@ -156,7 +169,6 @@ class zerobase_platform
     }
 
     /**
-     * executeHooks
      * A simple hooks launcher
      *
      * @return void
@@ -168,7 +180,6 @@ class zerobase_platform
     }
 
     /**
-     * configurePostTypes
      * Configure the registered post types
      *
      * @return void
@@ -189,7 +200,6 @@ class zerobase_platform
     }
 
     /**
-     * configureTaxonomies
      * Configure the registered taxonomies
      *
      * @return void
@@ -210,7 +220,6 @@ class zerobase_platform
     }
 
     /**
-     * saveMetaboxesData
      * Saves the custom meta info for the post
      *
      * @param int $post_ID The Post ID
@@ -329,6 +338,48 @@ class zerobase_platform
         return $text;
     }
 
+    public function configureOptions()
+    {
+        $settings = zerobase_settings::getInstance();
+        $settings->createBag('platform');
+        $settings->createBag('layout');
+        $settings->createBag('post_types');
+    }
+
+    public function handleAdminMenu()
+    {
+        $zerobase_settings_page = add_menu_page(__('Zerobase Options', 'zerobase'), __('Zerobase Options','zerobase'), 'manage_options', 'zerobase-settings', array($this, self::ZEROBASE_ADMIN_PAGE_PREFIX.'platform'), null, 100);
+        $settings = zerobase_settings::getInstance();
+        foreach($settings as $key => $bag)
+        {
+            /** @var $bag zerobase_settings_bag */
+            if ($key != 'platform')
+            {
+                add_submenu_page( 'zerobase-settings', __($key, 'zerobase'), __($key, 'zerobase'), 'manage_options', 'zerobase-settings-'.$key, array($this, self::ZEROBASE_ADMIN_PAGE_PREFIX.$key) );
+            }
+        }
+    }
+
+    public function renderOptionPage($page_name)
+    {
+        $dir = plugin_dir_path( __FILE__ );
+        $lib_dir = $dir.'/library';
+        $page_name = __($page_name, 'zerobase');
+        include( $lib_dir . '/settings/template/base.php' );
+    }
+
+    public function __call($name, $arguments)
+    {
+        if (strpos($name, self::ZEROBASE_ADMIN_PAGE_PREFIX) !== false)
+        {
+            $page = str_replace(self::ZEROBASE_ADMIN_PAGE_PREFIX, '', $name);
+            $this->renderOptionPage($page);
+        }
+        else
+        {
+            throw new BadFunctionCallException("Function \"$name\" doesn't exists in the ZeroBase Platform");
+        }
+    }
 }
 
 $zb_platform = zerobase_platform::getInstance();

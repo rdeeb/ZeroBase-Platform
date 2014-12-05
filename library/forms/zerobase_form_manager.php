@@ -46,9 +46,9 @@ class zerobase_form_manager
 
     /**
      * Adds a widget to the manager
-     * @param $name The name of the widget
-     * @param $className The class name of the Widget
-     * @param $filePath The file path to be loaded
+     * @param $name string The name of the widget
+     * @param $className string The class name of the Widget
+     * @param $filePath string The file path to be loaded
      * @throws Exception If the class doesn't implements the WidgetInterface
      */
     public function addFormWidget($name, $className, $filePath)
