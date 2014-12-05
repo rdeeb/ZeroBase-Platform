@@ -19,7 +19,7 @@ class zerobase_form_manager
         static $instance = null;
         if (null === $instance)
         {
-            $instance = new zerobase_settings();
+            $instance = new zerobase_form_manager();
         }
         return $instance;
     }
