@@ -13,7 +13,7 @@ class zerobase_settings_bag implements Iterator, ArrayAccess
 
     public function addSetting($name, $widget, array $options = array(), $section = 'General')
     {
-        $name_re = '/^[a-z0-9_-]{3,25}$/';
+        $name_re = '/^[a-z0-9_-]{3,99}$/';
         if ($name && preg_match($name_re, $name))
         {
             $fm = zerobase_form_manager::getInstance();
@@ -33,7 +33,7 @@ class zerobase_settings_bag implements Iterator, ArrayAccess
         }
         else
         {
-            throw new Exception("The setting name must be a valid name between 3 and 25 characters in length");
+            throw new Exception("The setting name must be a valid name between 3 and 99 characters in length");
         }
     }
 
@@ -47,6 +47,25 @@ class zerobase_settings_bag implements Iterator, ArrayAccess
         {
             throw new Exception("The setting \"$name\" is not set");
         }
+    }
+
+    /**
+     * Returns the form builders for each sub settings page
+     * @param $form_name string
+     * @return array
+     */
+    public function getPages($form_name)
+    {
+        $pages = array();
+        foreach ($this->settingsBag as $widget_name => $options)
+        {
+            if (!isset($pages[$options['section']]))
+            {
+                $pages[$options['section']] = new zerobase_wp_options_form_builder($form_name.'-'.$options['section']);
+            }
+            $pages[$options['section']]->addWidget($widget_name, $options['widget'], $options['options']['widget_options'], get_option($widget_name, isset($options['options']['default']) ? $options['options']['default'] : null));
+        }
+        return $pages;
     }
 
     public function isEmpty()

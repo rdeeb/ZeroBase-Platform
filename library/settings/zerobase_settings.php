@@ -33,8 +33,7 @@ class zerobase_settings implements Iterator
     {
         if ($this->hasBag($name))
         {
-            $bag = &$this->bagStorage[$name];
-            return $bag;
+            return $this->bagStorage[$name];
         }
         else
         {

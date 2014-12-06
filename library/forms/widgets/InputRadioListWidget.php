@@ -47,7 +47,7 @@ class InputRadioListWidget extends BaseWidget
                 $attrs['checked'] = 'checked';
             }
 
-            $content .= zerobase_html_toolkit::buildTag( 'label', array( 'class' => 'inline-block' ), false, zerobase_html_toolkit::buildTag( 'input', $attrs, true ) . " $label" );
+            $content .= zerobase_html_toolkit::buildTag( 'p', array(), false, zerobase_html_toolkit::buildTag( 'label', array( 'class' => 'inline-block' ), false, zerobase_html_toolkit::buildTag( 'input', $attrs, true ) . " $label" ));
         }
 
         return $content;

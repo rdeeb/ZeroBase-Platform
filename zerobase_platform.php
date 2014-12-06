@@ -32,6 +32,7 @@ class zerobase_platform
         require_once( $lib_dir . '/forms/zerobase_form_builder.php' );
         require_once( $lib_dir . '/forms/zerobase_tax_form_builder.php' );
         require_once( $lib_dir . '/forms/zerobase_widget_form_builder.php' );
+        require_once( $lib_dir . '/forms/zerobase_wp_options_form_builder.php' );
         //Load the Metabox Builder
         require_once( $lib_dir . '/metaboxes/zerobase_metabox.php' );
         //Load the post type interface and base class
@@ -52,8 +53,6 @@ class zerobase_platform
         $variable_name = $type . 'meta';
         $wpdb->$variable_name = $table_name;
         zerobase_create_metadata_table( $table_name, $type );
-        //Register the framework scripts and styles
-        add_action( 'admin_enqueue_scripts', array( &$this, 'registerAdminScripts' ), 1 );
         $this->platform_options = get_option( 'zerobase_platoform_options', array() );
         if ( empty( $this->platform_options ) )
         {
@@ -71,6 +70,8 @@ class zerobase_platform
         if (is_admin())
         {
             add_action( 'admin_menu', array( &$this, 'handleAdminMenu' ), 2 );
+            //Register the framework scripts and styles
+            add_action( 'admin_enqueue_scripts', array( &$this, 'registerAdminScripts' ), 1 );
         }
         //Load the different locales
         load_plugin_textdomain('zerobase', FALSE, dirname(plugin_basename(__FILE__)).'/locales/');
@@ -194,6 +195,12 @@ class zerobase_platform
             {
                 /** @var $class \zerobase_base_post_type */
                 $class->registerPostType();
+                $settings = zerobase_settings::getInstance();
+                $pt = $settings->getBag('post_types');
+                foreach($class->getOptions() as $key => $options)
+                {
+                    $pt->addSetting($key, $options['widget'], $options, $class->getName());
+                }
             }
         }
 
@@ -266,9 +273,27 @@ class zerobase_platform
             'zerobase_css_colorpicker',
             plugins_url( '/assets/css/colorpicker.css' , __FILE__ )
         );
+        wp_register_style(
+            'zerobase_uikit',
+            plugins_url( '/assets/lib/uikit/css/uikit.min.css' , __FILE__ )
+        );
+        wp_register_style(
+            'zerobase_uikit_almost_flat',
+            plugins_url( '/assets/lib/uikit/css/uikit.almost-flat.min.css' , __FILE__ ),
+            array(
+                'zerobase_uikit'
+            )
+        );
         wp_register_script(
             'zerobase_google_maps',
             '//maps.googleapis.com/maps/api/js?key=AIzaSyCNDR8-dYvuAmUyFRImtpAHfYznAeTolH4&sensor=true'
+        );
+        wp_register_script(
+            'zerobase_uikit_js',
+            plugins_url( '/assets/lib/uikit/js/uikit.min.js' , __FILE__ ),
+            array(),
+            NULL,
+            true
         );
         wp_register_script(
             'zerobase_js_forms',
@@ -280,7 +305,8 @@ class zerobase_platform
                 'jquery-ui-datepicker',
                 'media-upload',
                 'thickbox',
-                'zerobase_google_maps'
+                'zerobase_google_maps',
+                'zerobase_uikit_js'
             ),
             NULL,
             true
@@ -295,9 +321,10 @@ class zerobase_platform
         ) );
         wp_register_style(
             'zerobase_css_forms',
-            plugins_url( '/assets/css/forms.min.css' , __FILE__ ),
+            plugins_url( '/assets/css/forms.css' , __FILE__ ),
             array(
-                'thickbox'
+                'thickbox',
+                'zerobase_uikit'
             )
         );
         wp_enqueue_style( 'zerobase_css_forms' );
@@ -344,6 +371,16 @@ class zerobase_platform
         $settings->createBag('platform');
         $settings->createBag('layout');
         $settings->createBag('post_types');
+        $platform = $settings->getBag('platform');
+        $platform->addSetting('platform_use_cdn', 'radio_list', array(
+            'widget_options' => array(
+                'choices' => array(
+                    'cdn' => __('CDN copies of the files (faster)', 'zerobase'),
+                    'local' =>  __('Local copies of the libraries')
+                )
+            ),
+            'default' => 'local'
+        ));
     }
 
     public function handleAdminMenu()
@@ -353,18 +390,21 @@ class zerobase_platform
         foreach($settings as $key => $bag)
         {
             /** @var $bag zerobase_settings_bag */
-            if ($key != 'platform')
+            if ($key != 'platform' && !$bag->isEmpty())
             {
                 add_submenu_page( 'zerobase-settings', __($key, 'zerobase'), __($key, 'zerobase'), 'manage_options', 'zerobase-settings-'.$key, array($this, self::ZEROBASE_ADMIN_PAGE_PREFIX.$key) );
             }
         }
     }
 
-    public function renderOptionPage($page_name)
+    public function renderOptionPage($page)
     {
         $dir = plugin_dir_path( __FILE__ );
         $lib_dir = $dir.'/library';
-        $page_name = __($page_name, 'zerobase');
+        $page_name = __($page, 'zerobase');
+        $settings = zerobase_settings::getInstance();
+        $bag = $settings->getBag($page);
+        $settings_pages = $bag->getPages($page);
         include( $lib_dir . '/settings/template/base.php' );
     }
 
