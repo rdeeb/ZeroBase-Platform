@@ -12,8 +12,9 @@
  * @package ZeroBase
  */
 
-class zerobase_platform
+class ZerobasePlatform
 {
+    private $dataStorage = array();
     CONST ZEROBASE_ADMIN_PAGE_PREFIX = 'zerobase_settings_page_';
     /**
      * __construct Initializes the platform
@@ -22,64 +23,109 @@ class zerobase_platform
      */
     protected function __construct()
     {
+        //Load the files
+        $this->loadPlatformRequiredFiles();
+        //Install platform terms tables
+        $this->installPlatformTermsTables();
+        //Configure Options and Settings
+        $this->configurePlatformOptions();
+        //Set the required Wordpress hooks
+        $this->addWordpressActionHooks();
+        //Load the different locales
+        load_plugin_textdomain('zerobase', FALSE, dirname(plugin_basename(__FILE__)).'/locales/');
+    }
+
+    /**
+     * Returns the platform library path
+     * @return string
+     */
+    private function getPlatformLibraryDir()
+    {
         // Define the plugin base directory
         $dir = plugin_dir_path( __FILE__ );
-        $lib_dir = $dir.'/library';
+        return $dir.'/library';
+    }
+
+    /**
+     * Loads the required files for the platform
+     */
+    private function loadPlatformRequiredFiles()
+    {
+        $libraryPath = $this->getPlatformLibraryDir();
         //Load the toolkit
-        require_once( $lib_dir . '/toolkit/zerobase_html_toolkit.php' );
+        require_once( $libraryPath . '/toolkit/zerobase_html_toolkit.php' );
         //Load the Form Builder
-        require_once( $lib_dir . '/forms/zerobase_form_manager.php' );
-        require_once( $lib_dir . '/forms/zerobase_form_builder.php' );
-        require_once( $lib_dir . '/forms/zerobase_tax_form_builder.php' );
-        require_once( $lib_dir . '/forms/zerobase_widget_form_builder.php' );
-        require_once( $lib_dir . '/forms/zerobase_wp_options_form_builder.php' );
+        require_once( $libraryPath . '/forms/zerobase_form_manager.php' );
+        require_once( $libraryPath . '/forms/zerobase_form_builder.php' );
+        require_once( $libraryPath . '/forms/zerobase_tax_form_builder.php' );
+        require_once( $libraryPath . '/forms/zerobase_widget_form_builder.php' );
+        require_once( $libraryPath . '/forms/zerobase_wp_options_form_builder.php' );
         //Load the Metabox Builder
-        require_once( $lib_dir . '/metaboxes/zerobase_metabox.php' );
+        require_once( $libraryPath . '/metaboxes/zerobase_metabox.php' );
         //Load the post type interface and base class
-        require_once( $lib_dir . '/post-types/zerobase_post_type_interface.php' );
-        require_once( $lib_dir . '/post-types/zerobase_base_post_type.php' );
+        require_once( $libraryPath . '/post-types/zerobase_post_type_interface.php' );
+        require_once( $libraryPath . '/post-types/zerobase_base_post_type.php' );
         //Load the taxonomy extender class
-        require_once( $lib_dir . '/taxonomies/zerobase_taxonomy_extender.php' );
+        require_once( $libraryPath . '/taxonomies/zerobase_taxonomy_extender.php' );
         //Load the widget base class
-        require_once( $lib_dir . '/widgets/zerobase_base_widget.php' );
+        require_once( $libraryPath . '/widgets/zerobase_base_widget.php' );
         //Load the settings files
-        require_once( $lib_dir . '/settings/zerobase_settings.php' );
-        require_once( $lib_dir . '/settings/zerobase_settings_bag.php' );
+        require_once( $libraryPath . '/settings/zerobase_settings.php' );
+        require_once( $libraryPath . '/settings/zerobase_settings_bag.php' );
+    }
+
+    /**
+     * Creates a terms table for the platform if it doesn't exists
+     */
+    private function installPlatformTermsTables()
+    {
         //Extend the database
-        require_once( $dir . '/installation/zerobase_create_tables.php' );
+        require_once( plugin_dir_path( __FILE__ ) . '/installation/zerobase_create_tables.php' );
         global $wpdb;
         $type = 'zerobase_term';
         $table_name = $wpdb->prefix . $type . 'meta';
         $variable_name = $type . 'meta';
         $wpdb->$variable_name = $table_name;
         zerobase_create_metadata_table( $table_name, $type );
-        $this->platform_options = get_option( 'zerobase_platoform_options', array() );
-        if ( empty( $this->platform_options ) )
+    }
+
+    /**
+     * Sets up the options and settings of the platform
+     */
+    private function configurePlatformOptions()
+    {
+        $this->dataStorage = get_option( 'zerobase_platform_data_storage', array() );
+        if ( empty( $this->dataStorage ) )
         {
-            $this->setOption( 'version', '0.2' );
+            $this->storeKeyValueData( 'version', '0.2' );
         }
         //Configure the basic settings bag
-        $this->configureOptions();
+        $this->initSettingsBag();
+    }
+
+    /**
+     * Adds the necesary wordpress action hooks
+     */
+    private function addWordpressActionHooks()
+    {
         //Adding Actions;
         add_action( 'after_setup_theme', array( &$this, 'executeHooks' ), 1 );
         add_action( 'after_setup_theme', array( &$this, 'loadModules' ), 2 );
-        add_action( 'init', array( &$this, 'configurePostTypes' ), 10 );
-        add_action( 'init', array( &$this, 'configureTaxonomies' ), 11 );
+        add_action( 'init', array( &$this, 'registerPostTypes'), 10 );
+        add_action( 'init', array( &$this, 'registerTaxonomies'), 11 );
         add_action( 'save_post', array( &$this, 'saveMetaboxesData' ), 10, 2 );
         //Configuring the Admin panel
         if (is_admin())
         {
-            add_action( 'admin_menu', array( &$this, 'handleAdminMenu' ), 2 );
+            add_action( 'admin_menu', array( &$this, 'addAdminSettingsPage'), 2 );
             //Register the framework scripts and styles
             add_action( 'admin_enqueue_scripts', array( &$this, 'registerAdminScripts' ), 1 );
         }
-        //Load the different locales
-        load_plugin_textdomain('zerobase', FALSE, dirname(plugin_basename(__FILE__)).'/locales/');
     }
 
     /**
      * Returns the current instance of the Zerobase Platform
-     * @return zerobase_platform
+     * @return ZerobasePlatform
      */
     static function getInstance()
     {
@@ -97,17 +143,28 @@ class zerobase_platform
     private function __clone() {}
     private function __wakeup() {}
 
-    private function setOption( $key, $value )
+    /**
+     * Stores a key value pair set of data
+     * @param $key
+     * @param $value
+     */
+    private function storeKeyValueData( $key, $value )
     {
-        $this->platform_options[ $key ] = $value;
-        add_option( 'zerobase_platform_options', $this->platform_options );
+        $this->dataStorage[ $key ] = $value;
+        add_option( 'zerobase_platform_data_storage', $this->dataStorage );
     }
 
-    private function getOption( $key, $default = null )
+    /**
+     * Retreive the value of a key
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
+    private function retreiveKeyValueData( $key, $default = null )
     {
-        if ( isset( $this->platform_options[ $key ] ) )
+        if ( isset( $this->dataStorage[ $key ] ) )
         {
-            return $this->platform_options[ $key ];
+            return $this->dataStorage[ $key ];
         }
         else
         {
@@ -117,63 +174,83 @@ class zerobase_platform
 
     /**
      * addModule Adds a new module to the platform
-     *
      * @param array $config defines de configuration parameters of the module being loaded
-     *
      * @throws Exception
-     * @author Ramy Deeb
      */
     public function addModule( array $config )
+    {
+        try
+        {
+            $this->validateModuleConfiguration($config);
+            $modules = $this->retreiveKeyValueData( 'modules', array() );
+            $modules[ $this->slugify( $config[ 'name' ] ) ] = $config;
+            $this->storeKeyValueData( 'modules', $modules );
+        }
+        catch(Exception $e)
+        {
+            //TODO: Show a message to the user telling him that the module wasn't loaded
+        }
+    }
+
+    /**
+     * Validates if the mandatory parameters are present in the configurations
+     * @param array $config
+     * @return bool
+     * @throws Exception
+     */
+    private function validateModuleConfiguration( array $config )
     {
         if (!isset($config[ 'path' ]) || empty($config[ 'path' ]) || !is_dir( $config[ 'path' ] ))
         {
             throw new Exception('Every module must define a valid path');
         }
-        $modules = $this->getOption( 'modules', array() );
         if ( !isset( $config[ 'name' ] ) )
         {
             throw new Exception('Every module must define a name');
         }
-        $modules[ $this->slugify( $config[ 'name' ] ) ] = $config;
-        $this->setOption( 'modules', $modules );
-        //echo '<p>Added module '.$config[ 'name' ].'</p>';
+        return true;
     }
 
-    public function loadModules()
+    private function loadModules()
     {
-        $modules = $this->getOption( 'modules', array() );
-        $classes = $this->getOption( 'classes', array() );
-        //echo '<p>Loading '.count( $modules ).' modules</p>';
+        $modules = $this->retreiveKeyValueData( 'modules', array() );
+
         if ( !empty($modules) )
         {
             foreach( $modules as $config )
             {
-                $post_types_dir = $config[ 'path' ].'/post_types/';
-                if ( is_dir( $post_types_dir ) )
-                {
-                    //echo '<p>Dir '.$post_types_dir.' is valid</p>';
-                    $handle = opendir( $post_types_dir );
-                    while( false !== ( $file = readdir( $handle ) ) )
-                    {
-                        if ( strpos( $file, '_post_type.php' ) )
-                        {
-                            include_once( $post_types_dir.$file );
-                            $class_name = str_replace( '.php', '', $file );
-                            $classes[ $class_name ] = new $class_name();
-                            //echo '<p>Loaded file '.$file.'</p>';
-                        }
-                    }
-                }
+                $this->loadPostType( $config );
             }
-            $this->setOption( 'classes', $classes );
+
         }
     }
 
     /**
+     * Loads an specific post type to the platform
+     * @param array $config
+     */
+    private function loadPostType( array $config )
+    {
+        $classes = $this->retreiveKeyValueData( 'classes', array() );
+        $post_types_dir = $config[ 'path' ].'/post_types/';
+        if ( is_dir( $post_types_dir ) )
+        {
+            $handle = opendir( $post_types_dir );
+            while( false !== ( $file = readdir( $handle ) ) )
+            {
+                if ( strpos( $file, '_post_type.php' ) )
+                {
+                    include_once( $post_types_dir.$file );
+                    $class_name = str_replace( '.php', '', $file );
+                    $classes[ $class_name ] = new $class_name();
+                }
+            }
+        }
+        $this->storeKeyValueData( 'classes', $classes );
+    }
+
+    /**
      * A simple hooks launcher
-     *
-     * @return void
-     * @author Ramy Deeb
      */
     public function executeHooks()
     {
@@ -182,39 +259,39 @@ class zerobase_platform
 
     /**
      * Configure the registered post types
-     *
-     * @return void
-     * @author Ramy Deeb
      */
-    public function configurePostTypes()
+    private function registerPostTypes()
     {
-        $classes = $this->getOption( 'classes', array() );
+        $classes = $this->retreiveKeyValueData( 'classes', array() );
         if ( !empty( $classes ) )
         {
             foreach ( $classes as $class )
             {
                 /** @var $class \zerobase_base_post_type */
                 $class->registerPostType();
-                $settings = zerobase_settings::getInstance();
-                $pt = $settings->getBag('post_types');
-                foreach($class->getOptions() as $key => $options)
-                {
-                    $pt->addSetting($key, $options['widget'], $options, $class->getName());
-                }
+                $this->registerPostTypesSettings( $class );
             }
         }
-
     }
 
     /**
-     * Configure the registered taxonomies
-     *
-     * @return void
-     * @author Ramy Deeb
+     * Register the settings of an specific post type
      */
-    public function configureTaxonomies()
+    private function registerPostTypesSettings(zerobase_post_type_interface $class)
     {
-        $classes = $this->getOption( 'classes', array() );
+        $settings = zerobase_settings::getInstance();
+        $postTypeBag = $settings->getBag('post_types');
+        foreach($class->getOptions() as $key => $options)
+        {
+            $postTypeBag->addSetting($key, $options['widget'], $options, $class->getName());
+        }
+    }
+    /**
+     * Register the post type taxonomies
+     */
+    public function registerTaxonomies()
+    {
+        $classes = $this->retreiveKeyValueData( 'classes', array() );
         if ( !empty( $classes ) )
         {
             foreach ( $classes as $class )
@@ -236,7 +313,7 @@ class zerobase_platform
      **/
     public function saveMetaboxesData( $post_ID, $object )
     {
-        $classes = $this->getOption( 'classes', array() );
+        $classes = $this->retreiveKeyValueData( 'classes', array() );
         if ( !empty( $classes ) )
         {
             foreach ( $classes as $class )
@@ -365,7 +442,11 @@ class zerobase_platform
         return $text;
     }
 
-    public function configureOptions()
+    /**
+     * Initializes the settings bags
+     * @throws Exception
+     */
+    public function initSettingsBag()
     {
         $settings = zerobase_settings::getInstance();
         $settings->createBag('platform');
@@ -383,7 +464,10 @@ class zerobase_platform
         ));
     }
 
-    public function handleAdminMenu()
+    /**
+     * Adds the admin pages to the admin page in Wordpress
+     */
+    public function addAdminSettingsPage()
     {
         $zerobase_settings_page = add_menu_page(__('Zerobase Options', 'zerobase'), __('Zerobase Options','zerobase'), 'manage_options', 'zerobase-settings', array($this, self::ZEROBASE_ADMIN_PAGE_PREFIX.'platform'), null, 100);
         $settings = zerobase_settings::getInstance();
@@ -397,17 +481,26 @@ class zerobase_platform
         }
     }
 
-    public function renderOptionPage($page)
+    /**
+     * Renders an Option page from its bag name
+     * @param string $bagName
+     */
+    public function renderOptionPage($bagName)
     {
         $dir = plugin_dir_path( __FILE__ );
         $lib_dir = $dir.'/library';
-        $page_name = __($page, 'zerobase');
+        $page_name = __($bagName, 'zerobase');
         $settings = zerobase_settings::getInstance();
-        $bag = $settings->getBag($page);
-        $settings_pages = $bag->getPages($page);
+        $bag = $settings->getBag($bagName);
+        $settings_pages = $bag->getPages($bagName);
         include( $lib_dir . '/settings/template/base.php' );
     }
 
+    /**
+     * We use this function to handle the calls to create option pages
+     * @param string $name
+     * @param array $arguments
+     */
     public function __call($name, $arguments)
     {
         if (strpos($name, self::ZEROBASE_ADMIN_PAGE_PREFIX) !== false)
@@ -421,5 +514,5 @@ class zerobase_platform
         }
     }
 }
-
-$zb_platform = zerobase_platform::getInstance();
+//Instanciate the platform
+$zb_platform = ZerobasePlatform::getInstance();
