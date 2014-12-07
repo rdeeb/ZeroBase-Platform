@@ -1,17 +1,17 @@
 <?php
 /**
- * zerobase_taxonomy_extender
+ * ZB_TaxonomyExtender
  * Allows you to add new fields to a taxonomy
  *
  * @author  Ramy Deeb <me@ramydeeb.com>
  * @package ZeroBase
  * @license Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. http://creativecommons.org/licenses/by-nc-nd/3.0/.
  */
-class zerobase_taxonomy_extender
+class ZB_TaxonomyExtender
 {
     //Variables
-    private $tax_name;
-    private $tax_fields;
+    private $taxonomyName;
+    private $taxonomyFields;
 
     /**
      * __construct
@@ -24,8 +24,8 @@ class zerobase_taxonomy_extender
      **/
     public function __construct( $taxonomy, $fields = NULL )
     {
-        $this->tax_name   = $taxonomy;
-        $this->tax_fields = array();
+        $this->taxonomyName   = $taxonomy;
+        $this->taxonomyFields = array();
         if ( is_array( $fields ) && !empty( $fields ) )
         {
             foreach ( $fields as $name => $options )
@@ -52,7 +52,7 @@ class zerobase_taxonomy_extender
             'options' => array(),
             'single' => true
         ), $options );
-        $this->tax_fields[$name] = $options;
+        $this->taxonomyFields[$name] = $options;
     }
 
     /**
@@ -67,7 +67,7 @@ class zerobase_taxonomy_extender
         $term_meta = array();
         if ( is_object( $term ) )
         {
-            foreach ( $this->tax_fields as $name => $options )
+            foreach ( $this->taxonomyFields as $name => $options )
             {
                 $term_meta[$name] = get_metadata( 'zerobase_term', $term->term_id, $name, $options['single'] );
             }
@@ -88,7 +88,7 @@ class zerobase_taxonomy_extender
         $term_meta = array();
         if ( is_object( $term ) )
         {
-            foreach ( $this->tax_fields as $name => $options )
+            foreach ( $this->taxonomyFields as $name => $options )
             {
                 $term_meta[$name] = get_metadata( 'zerobase_term', $term->term_id, $name, $options['single'] );
             }
@@ -117,15 +117,15 @@ class zerobase_taxonomy_extender
      * getForm
      * Creates the form to be used in the custom taxonomies fields
      *
-     * @return zerobase_tax_form_builder
+     * @return ZB_TaxonomyForm
      * @author Ramy Deeb
      **/
     private function getForm( $term = array() )
     {
-        $object = new zerobase_tax_form_builder( $this->tax_name );
-        foreach ( $this->tax_fields as $name => $options )
+        $object = new ZB_TaxonomyForm( $this->taxonomyName );
+        foreach ( $this->taxonomyFields as $name => $options )
         {
-            $object->addWidget( $name, $options['type'], $options['options'], isset( $term[$this->tax_name] ) ? $term[$this->tax_name] : '' );
+            $object->addWidget( $name, $options['type'], $options['options'], isset( $term[$this->taxonomyName] ) ? $term[$this->taxonomyName] : '' );
         }
 
         return $object;
@@ -141,9 +141,9 @@ class zerobase_taxonomy_extender
     public function register()
     {
         //Hook the custom fields for the taxonomy fields
-        add_action( $this->tax_name . '_add_form_fields', array( &$this, 'showFields' ), 10, 2 );
-        add_action( $this->tax_name . '_edit_form_fields', array( &$this, 'editFields' ), 10, 2 );
-        add_action( 'created_' . $this->tax_name, array( &$this, 'fieldSave' ), 10, 2 );
-        add_action( 'edited_' . $this->tax_name, array( &$this, 'fieldSave' ), 10, 2 );
+        add_action( $this->taxonomyName . '_add_form_fields', array( &$this, 'showFields' ), 10, 2 );
+        add_action( $this->taxonomyName . '_edit_form_fields', array( &$this, 'editFields' ), 10, 2 );
+        add_action( 'created_' . $this->taxonomyName, array( &$this, 'fieldSave' ), 10, 2 );
+        add_action( 'edited_' . $this->taxonomyName, array( &$this, 'fieldSave' ), 10, 2 );
     }
 } // END class zerobase_taconomy_extender

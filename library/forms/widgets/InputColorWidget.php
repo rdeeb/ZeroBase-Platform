@@ -40,6 +40,6 @@ class InputColorWidget extends BaseWidget
         $this->attr['type']  = 'text';
         $this->attr['class'] .= ' colorselector';
 
-        return zerobase_html_toolkit::buildTag( 'input', $this->attr, true );
+        return ZB_HtmlToolkit::buildTag( 'input', $this->attr, true );
     }
 } // END class InputColorWidget

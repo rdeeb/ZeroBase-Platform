@@ -1,13 +1,13 @@
 <?php
 /**
- * zerobase_base_post_type
+ * ZB_BasePostType
  *
  * @author  Ramy Deeb <me@ramydeeb.com>
  * @package ZeroBase
  * @license Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. http://creativecommons.org/licenses/by-nc-nd/3.0/.
  */
 
-abstract class zerobase_base_post_type implements zerobase_post_type_interface
+abstract class ZB_BasePostType implements ZB_PostTypeInterface
 {
     private $metaboxes = array();
 

@@ -37,19 +37,19 @@ class InputSelectWidget extends BaseWidget
         {
             if ( $this->getValue() == $key )
             {
-                $content .= zerobase_html_toolkit::buildTag( 'option', array(
+                $content .= ZB_HtmlToolkit::buildTag( 'option', array(
                     'value'    => $key,
                     'selected' => 'selected'
                 ), false, $name );
             }
             else
             {
-                $content .= zerobase_html_toolkit::buildTag( 'option', array(
+                $content .= ZB_HtmlToolkit::buildTag( 'option', array(
                     'value' => $key
                 ), false, $name );
             }
         }
 
-        return zerobase_html_toolkit::buildTag( 'select', $this->attr, false, $content );
+        return ZB_HtmlToolkit::buildTag( 'select', $this->attr, false, $content );
     }
 } // END class InputSelectWidget

@@ -1,6 +1,6 @@
 <?php
 
-class zerobase_settings_bag implements Iterator, ArrayAccess
+class ZB_SettingsBag implements Iterator, ArrayAccess
 {
     protected $settingsBag = array();
     protected $bagIndexes = array();
@@ -16,7 +16,7 @@ class zerobase_settings_bag implements Iterator, ArrayAccess
         $name_re = '/^[a-z0-9_-]{3,99}$/';
         if ($name && preg_match($name_re, $name))
         {
-            $fm = zerobase_form_manager::getInstance();
+            $fm = ZB_FormManager::getInstance();
             if (!$fm->widgetExists($widget))
             {
                 throw new Exception("The widget \"$widget\" is not a supported widget type");
@@ -61,7 +61,7 @@ class zerobase_settings_bag implements Iterator, ArrayAccess
         {
             if (!isset($pages[$options['section']]))
             {
-                $pages[$options['section']] = new zerobase_wp_options_form_builder($form_name.'-'.$options['section']);
+                $pages[$options['section']] = new ZB_WpOptionsForm($form_name.'-'.$options['section']);
             }
             $pages[$options['section']]->addWidget($widget_name, $options['widget'], $options['options']['widget_options'], get_option($widget_name, isset($options['options']['default']) ? $options['options']['default'] : null));
         }

@@ -1,6 +1,6 @@
 <?php
 /**
- * zerobase_html_toolkit
+ * ZB_HtmlToolkit
  * This file helps in building html tags
  *
  * @author  Ramy Deeb <me@ramydeeb.com>
@@ -8,21 +8,16 @@
  * @license Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. http://creativecommons.org/licenses/by-nc-nd/3.0/.
  */
 
-class zerobase_html_toolkit
+class ZB_HtmlToolkit
 {
 
     /**
-     * buildTag
      * Builds an html tag using the passed parameters
-     *
+     * @param string $tag       the tag to generate i.e.: div
+     * @param array $attr       the list of attributes for the tags
+     * @param bool $single      is the a single tag? i.e.: <br />
+     * @param string $content   the content to render inside the tags
      * @return string
-     *
-     * @param $tag     string the tag to generate i.e.: div
-     * @param $attr    array the list of attributes for the tags
-     * @param $single  bool is the a single tag? i.e.: <br />
-     * @param $content string the content to render inside the tags
-     *
-     * @author Ramy Deeb
      **/
     public static function buildTag( $tag, array $attr = array(), $single = true, $content = NULL )
     {
@@ -43,15 +38,10 @@ class zerobase_html_toolkit
     }
 
     /**
-     * buildDiv
      * Builds a div tag
-     *
+     * @param string $content   the content to render inside the tags
+     * @param array $attr       the list of attributes for the tags
      * @return string
-     *
-     * @param $content string the content to render inside the tags
-     * @param $attr    array the list of attributes for the tags
-     *
-     * @author Ramy Deeb
      **/
     public static function buildDiv( $content, $attr = array() )
     {
@@ -59,18 +49,24 @@ class zerobase_html_toolkit
     }
 
     /**
-     * buildInput
      * Builds an input tag
-     *
+     * @param string $content   the content to render inside the tags
+     * @param array $attr       the list of attributes for the tags
      * @return string
-     *
-     * @param $content string the content to render inside the tags
-     * @param $attr    array the list of attributes for the tags
-     *
-     * @author Ramy Deeb
      **/
     public static function buildInput( $content, $attr = array() )
     {
         return self::buildTag( 'input', $attr, true, $content );
+    }
+
+    /**
+     * Builds a label tag
+     * @param string $content   the content to render inside the tags
+     * @param array $attr       the list of attributes for the tags
+     * @return string
+     **/
+    public static function buildLabel( $content, $attr = array() )
+    {
+        return self::buildTag( 'label', $attr, false, $content );
     }
 }

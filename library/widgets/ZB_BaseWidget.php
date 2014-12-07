@@ -1,6 +1,6 @@
 <?php
 /**
- * zerobase_base_widget
+ * ZB_BaseWidget
  * Defines a base way to generate widgets
  *
  * @author  Ramy Deeb <me@ramydeeb.com>
@@ -8,13 +8,10 @@
  * @license Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. http://creativecommons.org/licenses/by-nc-nd/3.0/.
  */
 
-abstract class zerobase_base_widget extends WP_Widget
+abstract class ZB_BaseWidget extends WP_Widget
 {
     /**
-     * __construct Builds the widget base info
-     *
-     * @return void
-     * @author Ramy Deeb <me@ramydeeb.com>
+     * Builds the widget base info
      **/
     public function __construct()
     {
@@ -129,13 +126,13 @@ abstract class zerobase_base_widget extends WP_Widget
     /**
      * buildForm Builds the form based on the configuration
      *
-     * @return zerobase_widget_form_builder
+     * @return ZB_WidgetForm
      * @author Ramy Deeb <me@ramydeeb.com>
      **/
     private function buildForm()
     {
         $fields = $this->widgetFields();
-        $form   = new zerobase_widget_form_builder( get_class( $this ) );
+        $form   = new ZB_WidgetForm( get_class( $this ) );
         foreach ( $fields as $name => $options )
         {
             $args = array(

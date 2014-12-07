@@ -48,7 +48,7 @@ class InputCheckboxListWidget extends BaseWidget
                 $options['attr']['checked'] = 'checked';
             }
             $widget = new InputCheckboxWidget( $options );
-            $contents .= zerobase_html_toolkit::buildTag( 'label', array(), false, $widget->render() . ' ' . $label );
+            $contents .= ZB_HtmlToolkit::buildTag( 'label', array(), false, $widget->render() . ' ' . $label );
         }
 
         return $contents;

@@ -49,6 +49,6 @@ class InputTextareaWidget extends BaseWidget
             $this->attr['required'] = 'required';
         }
 
-        return zerobase_html_toolkit::buildTag( 'textarea', $this->attr, false, $this->getValue() );
+        return ZB_HtmlToolkit::buildTag( 'textarea', $this->attr, false, $this->getValue() );
     }
 } // END class InputTextareaWidget

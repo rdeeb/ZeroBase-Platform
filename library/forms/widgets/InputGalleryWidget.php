@@ -50,17 +50,17 @@ class InputGalleryWidget extends BaseWidget
         }
         $this->attr['value'] = $this->getValue();
         $this->attr['type']  = 'hidden';
-        $base_widget         = zerobase_html_toolkit::buildTag( 'input', $this->attr, true ) . zerobase_html_toolkit::buildTag( 'button', array( 'type' => 'button', 'class' => 'button action gallery' ), false, __( 'Select a gallery', 'zerobase' ) );
+        $base_widget         = ZB_HtmlToolkit::buildTag( 'input', $this->attr, true ) . ZB_HtmlToolkit::buildTag( 'button', array( 'type' => 'button', 'class' => 'button action gallery' ), false, __( 'Select a gallery', 'zerobase' ) );
         $contents            = '';
         if ( $this->getValue() )
         {
-            $remove_link = zerobase_html_toolkit::buildTag( 'a', array( 'href' => '#', 'class' => 'delete' ), false, __( 'Delete' ) );
+            $remove_link = ZB_HtmlToolkit::buildTag( 'a', array( 'href' => '#', 'class' => 'delete' ), false, __( 'Delete' ) );
             foreach ( explode( ',', $this->getValue() ) as $id )
             {
-                $contents .= zerobase_html_toolkit::buildTag( 'li', array( 'class' => 'image', 'data-attachment_id' => $id ), false, wp_get_attachment_image( $id, array( 60, 60 ), false, array() ) . $remove_link );
+                $contents .= ZB_HtmlToolkit::buildTag( 'li', array( 'class' => 'image', 'data-attachment_id' => $id ), false, wp_get_attachment_image( $id, array( 60, 60 ), false, array() ) . $remove_link );
             }
         }
 
-        return zerobase_html_toolkit::buildTag( 'ul', array( 'class' => 'gallery-preview' ), false, $contents ) . $base_widget;
+        return ZB_HtmlToolkit::buildTag( 'ul', array( 'class' => 'gallery-preview' ), false, $contents ) . $base_widget;
     }
 } // END class InputFileWidget

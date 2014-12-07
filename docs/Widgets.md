@@ -7,7 +7,7 @@ It will automatically save the data defined in the form, and will make it availa
 
 ## Usage
 
-Create a new class and extend `zerobase_base_widget`. After you do this the only thing left is
+Create a new class and extend `ZB_BaseWidget`. After you do this the only thing left is
 to update the required functions for the widget to work. Lets take a closser look at the next example:
 
 ## Example
@@ -15,7 +15,7 @@ to update the required functions for the widget to work. Lets take a closser loo
 ```php
 <?php
 
-class ZeroExampleWidget extends zerobase_base_widget
+class ZeroExampleWidget extends ZB_BaseWidget
 {
     /**
      * getName Returns this widget name

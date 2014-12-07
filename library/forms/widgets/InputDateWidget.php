@@ -41,6 +41,6 @@ class InputDateWidget extends BaseWidget
         $this->attr['data-dateFormat'] = get_option( 'date_format' );
         $this->attr['class'] .= ' datepicker';
 
-        return zerobase_html_toolkit::buildTag( 'input', $this->attr, true );
+        return ZB_HtmlToolkit::buildTag( 'input', $this->attr, true );
     }
 } // END class InputDateWidget

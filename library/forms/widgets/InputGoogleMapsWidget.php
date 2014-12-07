@@ -40,12 +40,12 @@ class InputGoogleMapsWidget extends BaseWidget
         $this->attr['type']  = $this->getType();
         $this->attr['class'] = isset( $this->attr['class'] ) ? $this->attr['class'].' gmap-latlong' : 'gmap-latlong';
 
-        $contents = zerobase_html_toolkit::buildDiv( '', array(
+        $contents = ZB_HtmlToolkit::buildDiv( '', array(
             'class' => 'map-canvas'
         ) );
-        $contents .= zerobase_html_toolkit::buildTag( 'input', $this->attr, true );
+        $contents .= ZB_HtmlToolkit::buildTag( 'input', $this->attr, true );
 
-        return zerobase_html_toolkit::buildDiv( $contents ,array(
+        return ZB_HtmlToolkit::buildDiv( $contents ,array(
             'class' => 'map-selector'
         ));
     }

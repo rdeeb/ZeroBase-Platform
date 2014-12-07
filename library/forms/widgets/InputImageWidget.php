@@ -38,10 +38,10 @@ class InputImageWidget extends BaseWidget
         }
         $this->attr['value'] = $this->getValue();
         $this->attr['type']  = 'hidden';
-        $base_widget         = zerobase_html_toolkit::buildTag( 'input', $this->attr, true ) . zerobase_html_toolkit::buildTag( 'button', array( 'type' => 'button', 'class' => 'button action image_selector' ), false, __( 'Select File', 'zerobase' ) );
+        $base_widget         = ZB_HtmlToolkit::buildTag( 'input', $this->attr, true ) . ZB_HtmlToolkit::buildTag( 'button', array( 'type' => 'button', 'class' => 'button action image_selector' ), false, __( 'Select File', 'zerobase' ) );
         if ( $this->getValue() )
         {
-            return wp_get_attachment_image( $this->getValue(), array( 60, 60 ), false, array( 'class' => 'img preview' ) ) . $base_widget . zerobase_html_toolkit::buildTag( 'button', array( 'type' => 'button', 'class' => 'button delete' ), false, __( 'Remove File', 'zerobase' ) );
+            return wp_get_attachment_image( $this->getValue(), array( 60, 60 ), false, array( 'class' => 'img preview' ) ) . $base_widget . ZB_HtmlToolkit::buildTag( 'button', array( 'type' => 'button', 'class' => 'button delete' ), false, __( 'Remove File', 'zerobase' ) );
         }
 
         return $base_widget;

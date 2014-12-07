@@ -43,6 +43,6 @@ class InputCheckboxWidget extends BaseWidget
         }
         $this->attr['type'] = $this->getType();
 
-        return zerobase_html_toolkit::buildTag( 'input', $this->attr, true );
+        return ZB_HtmlToolkit::buildTag( 'input', $this->attr, true );
     }
 } // END class InputCheckboxWidget

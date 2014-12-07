@@ -1,14 +1,14 @@
 <?php
 
 /**
- * zerobase_form_builder
+ * ZB_Form
  * A class that builds options forms for Wordpress
  *
  * @package ZeroBase
  * @author  Ramy Deeb <me@ramydeeb.com>
  * @license Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. http://creativecommons.org/licenses/by-nc-nd/3.0/.
  **/
-class zerobase_form_builder
+class ZB_Form
 {
     //To store the form groups
     protected $widgets;
@@ -41,7 +41,7 @@ class zerobase_form_builder
         {
             $options['label'] = ucfirst( str_replace( '_', ' ', $name ) );
         }
-        $wm = zerobase_form_manager::getInstance();
+        $wm = ZB_FormManager::getInstance();
         $widget = $wm->createInstance($type, $options);
         if ( isset( $this->values[$name] ) )
         {
@@ -73,7 +73,7 @@ class zerobase_form_builder
             $str .= $this->renderRow( $name ) . "\n";
         }
 
-        return zerobase_html_toolkit::buildTag( 'div', array(
+        return ZB_HtmlToolkit::buildTag( 'div', array(
             'id'    => "form_container_{$this->form_name}",
             'class' => 'form_container'
         ), false, $str );
@@ -85,7 +85,7 @@ class zerobase_form_builder
         $widget = $this->renderWidget( $name );
         if ( isset( $params['desc'] ) && $params['desc'] )
         {
-            $widget .= zerobase_html_toolkit::buildTag( 'p', array(
+            $widget .= ZB_HtmlToolkit::buildTag( 'p', array(
                 'class' => 'description'
             ), false, $params['desc'] );
         }
@@ -99,11 +99,11 @@ class zerobase_form_builder
             $input_class .= ' append';
         }
 
-        return zerobase_html_toolkit::buildTag( 'div', array(
+        return ZB_HtmlToolkit::buildTag( 'div', array(
             'class' => 'form_row'
-        ), false, $content = zerobase_html_toolkit::buildTag( 'div', array(
+        ), false, $content = ZB_HtmlToolkit::buildTag( 'div', array(
                 'class' => 'label'
-            ), false, $this->renderLabel( $name ) ) . "\n" . zerobase_html_toolkit::buildTag( 'div', array(
+            ), false, $this->renderLabel( $name ) ) . "\n" . ZB_HtmlToolkit::buildTag( 'div', array(
                 'class' => $input_class
             ), false, $widget ) );
     }
@@ -112,7 +112,7 @@ class zerobase_form_builder
     {
         $params = $this->widgets[$name]->getParams();
 
-        return zerobase_html_toolkit::buildTag( 'label', array(
+        return ZB_HtmlToolkit::buildTag( 'label', array(
             'for' => "{$this->form_name}[$name]"
         ), false, $params['label'] );
     }

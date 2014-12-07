@@ -1,6 +1,6 @@
 <?php
 
-class zerobase_form_manager
+class ZB_FormManager
 {
 
     private $widgets = array();
@@ -12,14 +12,14 @@ class zerobase_form_manager
 
     /**
      * Returns the instance of this singleton
-     * @return zerobase_form_manager
+     * @return ZB_FormManager
      */
     static function getInstance()
     {
         static $instance = null;
         if (null === $instance)
         {
-            $instance = new zerobase_form_manager();
+            $instance = new ZB_FormManager();
         }
         return $instance;
     }

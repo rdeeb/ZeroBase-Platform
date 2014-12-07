@@ -1,22 +1,17 @@
 <?php
 
 /**
- * zerobase_metabox
+ * ZB_Metabox
  * Generates custom metaboxes for your post, pages and custom post types
  *
  * @package ZeroBase
  * @author  Ramy Deeb <me@ramydeeb.com>
  * @license Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. http://creativecommons.org/licenses/by-nc-nd/3.0/.
  **/
-class zerobase_metabox
+class ZB_Metabox
 {
     /**
-     * __construct
-     *
      * @param array $options The options for building the custom meta box
-     *
-     * @return void
-     * @author Ramy Deeb
      **/
     public function __construct( array $options )
     {
@@ -47,13 +42,9 @@ class zerobase_metabox
     }
 
     /**
-     * save_meta_info
      * Saves the custom meta info for the post
-     *
-     * @param int $_post_id The Post ID
-     *
+     * @param int $post_id The Post ID
      * @return void
-     * @author Ramy Deeb
      **/
     public function save_meta_info( $post_id, $object )
     {
@@ -71,16 +62,14 @@ class zerobase_metabox
     }
 
     /**
-     * render_meta_box
      * Renders the custom meta box
-     *
      * @return void
      * @author Ramy Deeb
      **/
     public function render_meta_box( $post )
     {
         $form  = $this->get_form( $post->ID );
-        $nonce = wp_nonce_field( $this->options['id'], 'zerobase_metabox' );
+        $nonce = wp_nonce_field( $this->options['id'], 'ZB_Metabox' );
         switch ( $this->options['template'] )
         {
             case 'default':
@@ -92,15 +81,12 @@ class zerobase_metabox
     }
 
     /**
-     * get_form
-     * Returns the zerobase_form_builder object
-     *
-     * @return zerobase_form_builder
-     * @author Ramy Deeb
+     * Returns the ZB_Form object
+     * @return ZB_Form
      **/
     private function get_form( $post_id )
     {
-        $form     = new zerobase_form_builder( $this->options['id'] );
+        $form     = new ZB_Form( $this->options['id'] );
         $defaults = array(
             'type'    => 'text',
             'default' => NULL
@@ -123,9 +109,7 @@ class zerobase_metabox
     }
 
     /**
-     * get_current_post_type
      * gets the current post type in the WordPress Admin
-     *
      * @return mixed
      * @author http://themergency.com/wordpress-tip-get-post-type-in-admin/, Ramy Deeb
      */

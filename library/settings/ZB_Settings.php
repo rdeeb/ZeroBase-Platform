@@ -1,6 +1,6 @@
 <?php
 
-class zerobase_settings implements Iterator
+class ZB_Settings implements Iterator
 {
     protected $bagStorage = array();
     protected $bagIndexes = array();
@@ -13,7 +13,7 @@ class zerobase_settings implements Iterator
         static $instance = null;
         if (null === $instance)
         {
-            $instance = new zerobase_settings();
+            $instance = new ZB_Settings();
         }
         return $instance;
     }
@@ -27,7 +27,7 @@ class zerobase_settings implements Iterator
     /**
      * Returns a bag
      * @param $name string The name of the bag to retrieve
-     * @return zerobase_settings_bag
+     * @return ZB_SettingsBag
      */
     public function getBag($name)
     {
@@ -51,7 +51,7 @@ class zerobase_settings implements Iterator
         {
             $this->bagIndexes[] = $name;
         }
-        $this->bagStorage[$name] = new zerobase_settings_bag();
+        $this->bagStorage[$name] = new ZB_SettingsBag();
     }
 
     /**

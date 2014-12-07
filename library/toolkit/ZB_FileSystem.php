@@ -1,6 +1,6 @@
 <?php
 
-class zerobase_file_system
+class ZB_FileSystem
 {
     public static function fileLoad( $class_name, $filepath )
     {

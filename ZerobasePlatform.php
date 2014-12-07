@@ -53,25 +53,25 @@ class ZerobasePlatform
     {
         $libraryPath = $this->getPlatformLibraryDir();
         //Load the toolkit
-        require_once( $libraryPath . '/toolkit/zerobase_html_toolkit.php' );
+        require_once( $libraryPath . '/toolkit/ZB_HtmlToolkit.php' );
         //Load the Form Builder
-        require_once( $libraryPath . '/forms/zerobase_form_manager.php' );
-        require_once( $libraryPath . '/forms/zerobase_form_builder.php' );
-        require_once( $libraryPath . '/forms/zerobase_tax_form_builder.php' );
-        require_once( $libraryPath . '/forms/zerobase_widget_form_builder.php' );
-        require_once( $libraryPath . '/forms/zerobase_wp_options_form_builder.php' );
+        require_once( $libraryPath . '/forms/ZB_FormManager.php' );
+        require_once( $libraryPath . '/forms/ZB_Form.php' );
+        require_once( $libraryPath . '/forms/ZB_TaxonomyForm.php' );
+        require_once( $libraryPath . '/forms/ZB_WidgetForm.php' );
+        require_once( $libraryPath . '/forms/ZB_WpOptionsForm.php' );
         //Load the Metabox Builder
-        require_once( $libraryPath . '/metaboxes/zerobase_metabox.php' );
+        require_once( $libraryPath . '/metaboxes/ZB_Metabox.php' );
         //Load the post type interface and base class
-        require_once( $libraryPath . '/post-types/zerobase_post_type_interface.php' );
-        require_once( $libraryPath . '/post-types/zerobase_base_post_type.php' );
+        require_once( $libraryPath . '/post-types/ZB_PostTypeInterface.php' );
+        require_once( $libraryPath . '/post-types/ZB_BasePostType.php' );
         //Load the taxonomy extender class
-        require_once( $libraryPath . '/taxonomies/zerobase_taxonomy_extender.php' );
+        require_once( $libraryPath . '/taxonomies/ZB_TaxonomyExtender.php' );
         //Load the widget base class
-        require_once( $libraryPath . '/widgets/zerobase_base_widget.php' );
+        require_once( $libraryPath . '/widgets/ZB_BaseWidget.php' );
         //Load the settings files
-        require_once( $libraryPath . '/settings/zerobase_settings.php' );
-        require_once( $libraryPath . '/settings/zerobase_settings_bag.php' );
+        require_once( $libraryPath . '/settings/ZB_Settings.php' );
+        require_once( $libraryPath . '/settings/ZB_SettingsBag.php' );
     }
 
     /**
@@ -211,7 +211,7 @@ class ZerobasePlatform
         return true;
     }
 
-    private function loadModules()
+    public function loadModules()
     {
         $modules = $this->retreiveKeyValueData( 'modules', array() );
 
@@ -260,14 +260,14 @@ class ZerobasePlatform
     /**
      * Configure the registered post types
      */
-    private function registerPostTypes()
+    public function registerPostTypes()
     {
         $classes = $this->retreiveKeyValueData( 'classes', array() );
         if ( !empty( $classes ) )
         {
             foreach ( $classes as $class )
             {
-                /** @var $class \zerobase_base_post_type */
+                /** @var $class \ZB_BasePostType */
                 $class->registerPostType();
                 $this->registerPostTypesSettings( $class );
             }
@@ -277,9 +277,9 @@ class ZerobasePlatform
     /**
      * Register the settings of an specific post type
      */
-    private function registerPostTypesSettings(zerobase_post_type_interface $class)
+    private function registerPostTypesSettings(ZB_PostTypeInterface $class)
     {
-        $settings = zerobase_settings::getInstance();
+        $settings = ZB_Settings::getInstance();
         $postTypeBag = $settings->getBag('post_types');
         foreach($class->getOptions() as $key => $options)
         {
@@ -296,7 +296,7 @@ class ZerobasePlatform
         {
             foreach ( $classes as $class )
             {
-                /** @var $class \zerobase_base_post_type */
+                /** @var $class \ZB_BasePostType */
                 $class->registerTaxonomy();
             }
         }
@@ -318,10 +318,10 @@ class ZerobasePlatform
         {
             foreach ( $classes as $class )
             {
-                /** @var $class \zerobase_base_post_type */
+                /** @var $class \ZB_BasePostType */
                 foreach ($class->getMetaboxes() as $metabox)
                 {
-                    /** @var $metabox \zerobase_metabox */
+                    /** @var $metabox \ZB_Metabox */
                     $metabox->save_meta_info( $post_ID, $object );
                 }
             }
@@ -448,7 +448,7 @@ class ZerobasePlatform
      */
     public function initSettingsBag()
     {
-        $settings = zerobase_settings::getInstance();
+        $settings = ZB_Settings::getInstance();
         $settings->createBag('platform');
         $settings->createBag('layout');
         $settings->createBag('post_types');
@@ -470,10 +470,10 @@ class ZerobasePlatform
     public function addAdminSettingsPage()
     {
         $zerobase_settings_page = add_menu_page(__('Zerobase Options', 'zerobase'), __('Zerobase Options','zerobase'), 'manage_options', 'zerobase-settings', array($this, self::ZEROBASE_ADMIN_PAGE_PREFIX.'platform'), null, 100);
-        $settings = zerobase_settings::getInstance();
+        $settings = ZB_Settings::getInstance();
         foreach($settings as $key => $bag)
         {
-            /** @var $bag zerobase_settings_bag */
+            /** @var $bag ZB_SettingsBag */
             if ($key != 'platform' && !$bag->isEmpty())
             {
                 add_submenu_page( 'zerobase-settings', __($key, 'zerobase'), __($key, 'zerobase'), 'manage_options', 'zerobase-settings-'.$key, array($this, self::ZEROBASE_ADMIN_PAGE_PREFIX.$key) );
@@ -490,7 +490,7 @@ class ZerobasePlatform
         $dir = plugin_dir_path( __FILE__ );
         $lib_dir = $dir.'/library';
         $page_name = __($bagName, 'zerobase');
-        $settings = zerobase_settings::getInstance();
+        $settings = ZB_Settings::getInstance();
         $bag = $settings->getBag($bagName);
         $settings_pages = $bag->getPages($bagName);
         include( $lib_dir . '/settings/template/base.php' );
