@@ -1,27 +1,13 @@
 <?php
 
-class ZB_FormManager
+class ZB_FormManager extends ZB_Singleton
 {
 
     private $widgets = array();
 
-    private function __construct()
+    protected function __construct()
     {
         $this->loadDefaultWidgets();
-    }
-
-    /**
-     * Returns the instance of this singleton
-     * @return ZB_FormManager
-     */
-    static function getInstance()
-    {
-        static $instance = null;
-        if (null === $instance)
-        {
-            $instance = new ZB_FormManager();
-        }
-        return $instance;
     }
 
     /**

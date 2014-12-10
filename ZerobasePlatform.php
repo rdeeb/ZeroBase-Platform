@@ -11,8 +11,9 @@
  * @author  Ramy Deeb <me@ramydeeb.com>
  * @package ZeroBase
  */
+require_once( __DIR__.'/library/toolkit/ZB_Singleton.php' );
 
-class ZerobasePlatform
+class ZerobasePlatform extends ZB_Singleton
 {
     private $dataStorage = array();
     CONST ZEROBASE_ADMIN_PAGE_PREFIX = 'zerobase_settings_page_';
@@ -109,7 +110,8 @@ class ZerobasePlatform
     private function addWordpressActionHooks()
     {
         //Adding Actions;
-        add_action( 'after_setup_theme', array( &$this, 'executeHooks' ), 1 );
+        add_action( 'plugins_loaded', array( &$this, 'executeAfterPluginsSetupHooks'), 1 );
+        add_action( 'after_setup_theme', array( &$this, 'executeAfterThemeSetupHooks'), 1 );
         add_action( 'after_setup_theme', array( &$this, 'loadModules' ), 2 );
         add_action( 'init', array( &$this, 'registerPostTypes'), 10 );
         add_action( 'init', array( &$this, 'registerTaxonomies'), 11 );
@@ -122,26 +124,6 @@ class ZerobasePlatform
             add_action( 'admin_enqueue_scripts', array( &$this, 'registerAdminScripts' ), 1 );
         }
     }
-
-    /**
-     * Returns the current instance of the Zerobase Platform
-     * @return ZerobasePlatform
-     */
-    static function getInstance()
-    {
-        static $instance = null;
-        if (null === $instance) {
-            $instance = new static();
-        }
-
-        return $instance;
-    }
-
-    /**
-     * This functions prevents the cloning of the instance
-     */
-    private function __clone() {}
-    private function __wakeup() {}
 
     /**
      * Stores a key value pair set of data
@@ -183,7 +165,7 @@ class ZerobasePlatform
         {
             $this->validateModuleConfiguration($config);
             $modules = $this->retreiveKeyValueData( 'modules', array() );
-            $modules[ $this->slugify( $config[ 'name' ] ) ] = $config;
+            $modules[ self::slugify( $config[ 'name' ] ) ] = $config;
             $this->storeKeyValueData( 'modules', $modules );
         }
         catch(Exception $e)
@@ -249,17 +231,16 @@ class ZerobasePlatform
         $this->storeKeyValueData( 'classes', $classes );
     }
 
-    /**
-     * A simple hooks launcher
-     */
-    public function executeHooks()
+    public function executeAfterThemeSetupHooks()
     {
         do_action( 'zerobase_load_modules', $this );
     }
 
-    /**
-     * Configure the registered post types
-     */
+    public function executeAfterPluginsSetupHooks()
+    {
+        do_action( 'zerobase_load_plugins', $this );
+    }
+
     public function registerPostTypes()
     {
         $classes = $this->retreiveKeyValueData( 'classes', array() );
@@ -417,7 +398,7 @@ class ZerobasePlatform
      * @return string
      * @author Ramy Deeb
      */
-    private function slugify($text)
+    static function slugify($text)
     {
         // replace non letter or digits by -
         $text = preg_replace('~[^\\pL\d]+~u', '-', $text);
@@ -493,6 +474,7 @@ class ZerobasePlatform
         $settings = ZB_Settings::getInstance();
         $bag = $settings->getBag($bagName);
         $settings_pages = $bag->getPages($bagName);
+        wp_enqueue_media();
         include( $lib_dir . '/settings/template/base.php' );
     }
 

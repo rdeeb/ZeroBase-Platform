@@ -1,28 +1,10 @@
 <?php
 
-class ZB_Settings implements Iterator
+class ZB_Settings extends ZB_Singleton implements Iterator
 {
     protected $bagStorage = array();
     protected $bagIndexes = array();
     protected $position = 0;
-
-    static function __contruct() {}
-
-    static function getInstance()
-    {
-        static $instance = null;
-        if (null === $instance)
-        {
-            $instance = new ZB_Settings();
-        }
-        return $instance;
-    }
-
-    /**
-     * This functions prevents the cloning of the instance
-     */
-    private function __clone() {}
-    private function __wakeup() {}
 
     /**
      * Returns a bag

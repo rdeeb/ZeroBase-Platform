@@ -64,11 +64,11 @@
             custom_uploader.on('select', function () {
                 attachment = custom_uploader.state().get('selection').first().toJSON();
                 $(item).siblings('input[type="hidden"]').val(attachment.id);
-                if ($(item).parent('.form-field, .form_row').find('.preview').length == 0) {
+                if ($(item).parent().find('.preview').length == 0) {
                     if ($(item).hasClass('image_selector')) {
-                        $(item).parent('.form-field, .form_row').find('label').after($('<img src="' + attachment.url + '" width="60" class="img preview" />'));
+                        $(item).parent().append($('<img src="' + attachment.url + '" width="60" class="img preview" />'));
                     } else {
-                        $(item).parent('.form-field, .form_row').find('label').after($('<div class="doc preview" />'));
+                        $(item).parent().append($('<div class="doc preview" />'));
                     }
                 } else {
                     if ($(item).hasClass('image_selector')) {
@@ -76,8 +76,8 @@
                     }
                 }
 
-                if ($(item).parent('.form-field, .form_row').find('.delete').length == 0) {
-                    $(item).parent('.form-field, .form_row').append($(' <button class="button delete">Remove File</button>'));
+                if ($(item).parent().find('.delete').length == 0) {
+                    $(item).parent().append($(' <button class="button delete submitdelete">Remove File</button>'));
                 }
             });
 
