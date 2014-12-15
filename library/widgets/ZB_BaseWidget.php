@@ -32,7 +32,6 @@ abstract class ZB_BaseWidget extends WP_Widget
      * @param $instance array The data of this instance
      *
      * @return void
-     * @author Ramy Deeb <me@ramydeeb.com>
      **/
     public function widget( $args, $instance )
     {
@@ -52,7 +51,6 @@ abstract class ZB_BaseWidget extends WP_Widget
      * @param $old_instance array Old values
      *
      * @return array
-     * @author Ramy Deeb <me@ramydeeb.com>
      **/
     public function update( $new_instance, $old_instance )
     {
@@ -71,11 +69,10 @@ abstract class ZB_BaseWidget extends WP_Widget
      * @param $instance array Instance values
      *
      * @return void
-     * @author Ramy Deeb <me@ramydeeb.com>
      **/
     public function form( $instance )
     {
-        $form = $this->buildForm();
+        $form = $this->buildForm( $instance );
         echo $form->render();
     }
 
@@ -83,7 +80,6 @@ abstract class ZB_BaseWidget extends WP_Widget
      * widgetFields Get the widget fields based on the configuration
      *
      * @return array
-     * @author Ramy Deeb <me@ramydeeb.com>
      **/
     private function widgetFields()
     {
@@ -107,7 +103,6 @@ abstract class ZB_BaseWidget extends WP_Widget
      * @param $value mixed Old values
      *
      * @return mixed
-     * @author Ramy Deeb <me@ramydeeb.com>
      **/
     private function sanitizeField( $field, $value )
     {
@@ -121,15 +116,15 @@ abstract class ZB_BaseWidget extends WP_Widget
                 $value = strip_tags( $value );
                 break;
         }
+        return $value;
     }
 
     /**
      * buildForm Builds the form based on the configuration
      *
      * @return ZB_WidgetForm
-     * @author Ramy Deeb <me@ramydeeb.com>
      **/
-    private function buildForm()
+    private function buildForm( $instance )
     {
         $fields = $this->widgetFields();
         $form   = new ZB_WidgetForm( get_class( $this ) );
@@ -139,7 +134,7 @@ abstract class ZB_BaseWidget extends WP_Widget
                 'id'   => $this->get_field_id( $name ),
                 'name' => $this->get_field_name( $name )
             );
-            $form->addWidget( $name, $options['type'], $args, $options['default'] );
+            $form->addWidget( $name, $options['type'], $args, isset($instance[$name]) ? $instance[$name] : null );
         }
 
         return $form;
