@@ -139,10 +139,6 @@ abstract class ZB_BaseWidget extends WP_Widget
                 'id'   => $this->get_field_id( $name ),
                 'name' => $this->get_field_name( $name )
             );
-            if ( $args['label'] )
-            {
-                $args['label'] = __( 'Show logo?', 'zerobase' );
-            }
             $form->addWidget( $name, $options['type'], $args, $options['default'] );
         }
 

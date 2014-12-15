@@ -41,7 +41,7 @@ class ZB_Form
         {
             $options['label'] = ucfirst( str_replace( '_', ' ', $name ) );
         }
-        $wm = ZB_FormManager::getInstance();
+        $wm = ZB_WidgetFactory::getInstance();
         $widget = $wm->createInstance($type, $options);
         if ( isset( $this->values[$name] ) )
         {

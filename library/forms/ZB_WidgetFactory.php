@@ -1,6 +1,6 @@
 <?php
 
-class ZB_FormManager extends ZB_Singleton
+class ZB_WidgetFactory extends ZB_Singleton
 {
 
     private $widgets = array();

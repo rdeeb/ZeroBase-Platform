@@ -16,7 +16,7 @@ class ZB_SettingsBag implements Iterator, ArrayAccess
         $name_re = '/^[a-z0-9_-]{3,99}$/';
         if ($name && preg_match($name_re, $name))
         {
-            $fm = ZB_FormManager::getInstance();
+            $fm = ZB_WidgetFactory::getInstance();
             if (!$fm->widgetExists($widget))
             {
                 throw new Exception("The widget \"$widget\" is not a supported widget type");
