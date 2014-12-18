@@ -115,7 +115,6 @@ class ZerobasePlatform extends ZB_Singleton
         add_action( 'after_setup_theme', array( &$this, 'loadModules' ), 2 );
         add_action( 'init', array( &$this, 'registerPostTypes'), 10 );
         add_action( 'init', array( &$this, 'registerTaxonomies'), 11 );
-        add_action( 'save_post', array( &$this, 'saveMetaboxesData' ), 10, 2 );
         //Configuring the Admin panel
         if (is_admin())
         {
@@ -250,6 +249,7 @@ class ZerobasePlatform extends ZB_Singleton
             {
                 /** @var $class \ZB_BasePostType */
                 $class->registerPostType();
+                $class->registerMetaboxes();
                 $this->registerPostTypesSettings( $class );
             }
         }
@@ -282,31 +282,6 @@ class ZerobasePlatform extends ZB_Singleton
             }
         }
 
-    }
-
-    /**
-     * Saves the custom meta info for the post
-     *
-     * @param int $post_ID The Post ID
-     *
-     * @return void
-     * @author Ramy Deeb
-     **/
-    public function saveMetaboxesData( $post_ID, $object )
-    {
-        $classes = $this->retreiveKeyValueData( 'classes', array() );
-        if ( !empty( $classes ) )
-        {
-            foreach ( $classes as $class )
-            {
-                /** @var $class \ZB_BasePostType */
-                foreach ($class->getMetaboxes() as $metabox)
-                {
-                    /** @var $metabox \ZB_Metabox */
-                    $metabox->save_meta_info( $post_ID, $object );
-                }
-            }
-        }
     }
 
     /**

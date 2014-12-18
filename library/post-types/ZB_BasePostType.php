@@ -9,12 +9,11 @@
 
 abstract class ZB_BasePostType implements ZB_PostTypeInterface
 {
-    private $metaboxes = array();
+    protected $metaboxes = array();
 
     public function __construct()
     {
         //Registers the hooks for the metaboxes, widgets and scripts (if any)
-        add_action( 'add_meta_boxes', array( &$this, 'registerMetaboxes' ) );
         add_action( 'widgets_init', array( &$this, 'registerWidgets' ) );
         add_action( 'wp_register_scripts', array( &$this, 'registerScripts' ) );
     }
@@ -24,7 +23,6 @@ abstract class ZB_BasePostType implements ZB_PostTypeInterface
      * Makes the post type available in Wordpress
      *
      * @return void
-     * @author Ramy Deeb <me@ramydeeb.com>
      **/
     public function configure()
     {
@@ -39,7 +37,6 @@ abstract class ZB_BasePostType implements ZB_PostTypeInterface
      *
      * @throws Exception
      * @return string
-     * @author Ramy Deeb
      */
     public function getName()
     {
@@ -51,7 +48,6 @@ abstract class ZB_BasePostType implements ZB_PostTypeInterface
      * Returns the description of the post type
      *
      * @return string
-     * @author Ramy Deeb
      **/
     public function getDescription()
     {
@@ -63,7 +59,6 @@ abstract class ZB_BasePostType implements ZB_PostTypeInterface
      * Returns the post type options
      *
      * @return array
-     * @author Ramy Deeb
      **/
     public function getOptions()
     {
@@ -74,7 +69,6 @@ abstract class ZB_BasePostType implements ZB_PostTypeInterface
      * registerPostType Registers the post type itself
      *
      * @return void
-     * @author Ramy Deeb
      **/
     public function registerPostType()
     {
@@ -85,7 +79,6 @@ abstract class ZB_BasePostType implements ZB_PostTypeInterface
      * registerTaxonomy Register the custom taxonomies
      *
      * @return void
-     * @author Ramy Deeb
      **/
     public function registerTaxonomy()
     {
@@ -96,7 +89,6 @@ abstract class ZB_BasePostType implements ZB_PostTypeInterface
      * registerMetaboxes Registers the custom metaboxes
      *
      * @return array
-     * @author Ramy Deeb
      **/
     public function registerMetaboxes()
     {
@@ -107,7 +99,6 @@ abstract class ZB_BasePostType implements ZB_PostTypeInterface
      * registerWidgets Register the post type widgets
      *
      * @return void
-     * @author Ramy Deeb
      */
     public function registerWidgets()
     {
@@ -118,7 +109,6 @@ abstract class ZB_BasePostType implements ZB_PostTypeInterface
      * registerScripts Registers the required scripts & styles for this post type
      *
      * @return void
-     * @author Ramy Deeb
      */
     public function registerScripts()
     {
@@ -129,10 +119,14 @@ abstract class ZB_BasePostType implements ZB_PostTypeInterface
      * Returns the configured metaboxes
      *
      * @return array
-     * @author Ramy Deeb
      */
     public function getMetaboxes()
     {
         return $this->metaboxes;
+    }
+
+    protected function addMetabox( array $config )
+    {
+        $this->metaboxes[] = new ZB_Metabox( $config );
     }
 } 

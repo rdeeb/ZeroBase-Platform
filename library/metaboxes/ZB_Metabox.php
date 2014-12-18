@@ -15,7 +15,15 @@ class ZB_Metabox
      **/
     public function __construct( array $options )
     {
-        $defaults      = array(
+        $defaults = $this->getPostTypeDefaults();
+        $this->options = array_merge( $defaults, $options );
+        add_action( 'add_meta_boxes', array( &$this, 'registerMetaboxes' ) );
+        add_action( 'save_post', array( &$this, 'save_meta_info' ), 10, 2 );
+    }
+
+    private function getPostTypeDefaults()
+    {
+        return array(
             'id'        => 'zb_metabox',
             'title'     => __( 'Zerobase Metabox', 'zerobase' ),
             'post_type' => array( 'post' ),
@@ -24,8 +32,11 @@ class ZB_Metabox
             'fields'    => array(),
             'template'  => 'default'
         );
-        $this->options = array_merge( $defaults, $options );
-        foreach ( $options['post_type'] as $post_type )
+    }
+
+    public function registerMetaboxes()
+    {
+        foreach ( $this->options['post_type'] as $post_type )
         {
             if ( $post_type == $this->get_current_post_type() )
             {
@@ -44,11 +55,21 @@ class ZB_Metabox
     /**
      * Saves the custom meta info for the post
      * @param int $post_id The Post ID
-     * @return void
+     * @return mixed
      **/
     public function save_meta_info( $post_id, $object )
     {
         $options = $this->options;
+
+        if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+            return $post_id;
+        }
+
+        if ( !current_user_can( 'edit_post' ) )
+        {
+            return $post_id;
+        }
+
         if ( in_array( $object->post_type, $options['post_type'] ) )
         {
             $form    = $this->get_form( $post_id );
@@ -64,7 +85,6 @@ class ZB_Metabox
     /**
      * Renders the custom meta box
      * @return void
-     * @author Ramy Deeb
      **/
     public function render_meta_box( $post )
     {
