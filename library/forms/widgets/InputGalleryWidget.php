@@ -63,4 +63,4 @@ class InputGalleryWidget extends BaseWidget
 
         return ZB_HtmlToolkit::buildTag( 'ul', array( 'class' => 'gallery-preview' ), false, $contents ) . $base_widget;
     }
-} // END class InputFileWidget
+}

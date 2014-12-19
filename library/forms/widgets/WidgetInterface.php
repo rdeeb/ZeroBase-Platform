@@ -11,10 +11,12 @@ interface WidgetInterface
 {
     public function getType();
 
-    public function render();
+    public function renderWidget();
+
+    public function renderLabel();
 
     public function getValue();
 
     public function setValue( $v );
 
-} // END interface WidgetInerface
+}

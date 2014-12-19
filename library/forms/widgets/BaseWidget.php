@@ -121,6 +121,7 @@ abstract class BaseWidget implements WidgetInterface
     /**
      * Renders the widget
      * @return string The widget HTML
+     * @deprecated
      */
     public function render()
     {
@@ -136,4 +137,14 @@ abstract class BaseWidget implements WidgetInterface
 
         return $widget;
     }
-} // END class BaseWidget
+
+    public function renderLabel()
+    {
+        return ZB_HtmlToolkit::buildLabel(
+            $this->params['label'],
+            array(
+                'for' => $this->params['name']
+            )
+        );
+    }
+}

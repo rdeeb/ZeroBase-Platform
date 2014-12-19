@@ -53,4 +53,4 @@ class InputTextWidget extends BaseWidget
 
         return ZB_HtmlToolkit::buildTag( 'input', $this->attr, true );
     }
-} // END class InputTextWidget
+}

@@ -52,4 +52,4 @@ class InputSelectWidget extends BaseWidget
 
         return ZB_HtmlToolkit::buildTag( 'select', $this->attr, false, $content );
     }
-} // END class InputSelectWidget
+}

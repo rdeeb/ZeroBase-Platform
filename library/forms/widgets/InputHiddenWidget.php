@@ -41,4 +41,4 @@ class InputHiddenWidget extends BaseWidget
 
         return ZB_HtmlToolkit::buildTag( 'input', $this->attr, true );
     }
-} // END class InputHiddenWidget
+}

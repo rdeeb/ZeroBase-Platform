@@ -52,4 +52,4 @@ class InputRadioListWidget extends BaseWidget
 
         return $content;
     }
-} // END class InputRadioListWidget
+}

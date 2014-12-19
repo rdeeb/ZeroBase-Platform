@@ -51,4 +51,4 @@ class InputTextareaWidget extends BaseWidget
 
         return ZB_HtmlToolkit::buildTag( 'textarea', $this->attr, false, $this->getValue() );
     }
-} // END class InputTextareaWidget
+}

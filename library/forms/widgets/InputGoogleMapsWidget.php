@@ -49,4 +49,4 @@ class InputGoogleMapsWidget extends BaseWidget
             'class' => 'map-selector'
         ));
     }
-} // END class InputHiddenWidget
+}

@@ -53,4 +53,4 @@ class InputCheckboxListWidget extends BaseWidget
 
         return $contents;
     }
-} // END class InputCheckboxListWidget
+}

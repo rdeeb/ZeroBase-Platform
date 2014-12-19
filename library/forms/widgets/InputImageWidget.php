@@ -46,4 +46,4 @@ class InputImageWidget extends BaseWidget
 
         return $base_widget;
     }
-} // END class InputImageWidget
+}
