@@ -53,24 +53,22 @@ class ZerobasePlatform extends ZB_Singleton
     private function loadPlatformRequiredFiles()
     {
         $libraryPath = $this->getPlatformLibraryDir();
-        //Load the toolkit
+        //Toolkit
         require_once( $libraryPath . '/toolkit/ZB_HtmlToolkit.php' );
-        //Load the Form Builder
-        require_once( $libraryPath . '/forms/ZB_WidgetFactory.php' );
+        //Forms
+        require_once( $libraryPath . '/forms/widgets/ZB_WidgetFactory.php' );
         require_once( $libraryPath . '/forms/ZB_Form.php' );
-        require_once( $libraryPath . '/forms/ZB_TaxonomyForm.php' );
-        require_once( $libraryPath . '/forms/ZB_WidgetForm.php' );
-        require_once( $libraryPath . '/forms/ZB_WpOptionsForm.php' );
-        //Load the Metabox Builder
+        require_once( $libraryPath . '/forms/ZB_FormFactory.php' );
+        //Metaboxes
         require_once( $libraryPath . '/metaboxes/ZB_Metabox.php' );
-        //Load the post type interface and base class
+        //Post Types
         require_once( $libraryPath . '/post-types/ZB_PostTypeInterface.php' );
         require_once( $libraryPath . '/post-types/ZB_BasePostType.php' );
-        //Load the taxonomy extender class
+        //Taxonomiy extender
         require_once( $libraryPath . '/taxonomies/ZB_TaxonomyExtender.php' );
-        //Load the widget base class
+        //Widgets
         require_once( $libraryPath . '/widgets/ZB_BaseWidget.php' );
-        //Load the settings files
+        //Settings
         require_once( $libraryPath . '/settings/ZB_Settings.php' );
         require_once( $libraryPath . '/settings/ZB_SettingsBag.php' );
     }
@@ -101,7 +99,10 @@ class ZerobasePlatform extends ZB_Singleton
             $this->storeKeyValueData( 'version', '0.2' );
         }
         //Configure the basic settings bag
-        $this->initSettingsBag();
+        if (is_admin())
+        {
+            $this->initSettingsBag();
+        }
     }
 
     /**
@@ -250,7 +251,10 @@ class ZerobasePlatform extends ZB_Singleton
                 /** @var $class \ZB_BasePostType */
                 $class->registerPostType();
                 $class->registerMetaboxes();
-                $this->registerPostTypesSettings( $class );
+                if (is_admin())
+                {
+                    $this->registerPostTypesSettings( $class );
+                }
             }
         }
     }

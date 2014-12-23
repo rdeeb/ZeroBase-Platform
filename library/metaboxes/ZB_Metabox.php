@@ -106,7 +106,7 @@ class ZB_Metabox
      **/
     private function get_form( $post_id )
     {
-        $form     = new ZB_Form( $this->options['id'] );
+        $form     = ZB_FormFactory::createForm( $this->options['id'] );
         $defaults = array(
             'type'    => 'text',
             'default' => NULL

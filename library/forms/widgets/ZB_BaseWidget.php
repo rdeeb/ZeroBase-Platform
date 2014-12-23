@@ -15,6 +15,7 @@ abstract class ZB_BaseWidget implements WidgetInterface
     protected $value; //The value stored by the widget
     protected $attr; //The HTML attributes
     protected $params; //Any widgets params
+    protected $errors;
 
     /**
      * Creates the widget with the options defined for it
@@ -35,25 +36,26 @@ abstract class ZB_BaseWidget implements WidgetInterface
     }
 
     /**
-     * getParams
-     * Returns the parameters list
-     *
      * @return array
-     * @author Ramy Deeb
      **/
     public function getParams()
     {
         return $this->params;
     }
 
+    public function setAttr($name, $value)
+    {
+        $this->attr[$name] = $value;
+    }
+
+    public function getAttr($name)
+    {
+        return $this->attr[$name];
+    }
+
     /**
-     * setValue
-     * Sets the value for the widget
-     *
-     * @param $v mixed the value to set on the widget
-     *
+     * @param mixed $v
      * @return void
-     * @author Ramy Deeb
      **/
     public function setValue( $v )
     {
@@ -61,24 +63,13 @@ abstract class ZB_BaseWidget implements WidgetInterface
     }
 
     /**
-     * getValue
-     * Returns the value of the widget
-     *
      * @return mixed
-     * @author Ramy Deeb
      **/
     public function getValue()
     {
         return $this->value;
     }
 
-    /**
-     * supportedParams
-     * Returns the supported parameters by this widget
-     *
-     * @return array
-     * @author Ramy Deeb
-     **/
     private function supportedParams()
     {
         return array(
@@ -95,15 +86,10 @@ abstract class ZB_BaseWidget implements WidgetInterface
     }
 
     /**
-     * validateParams
-     * Validates if the params sent are supported by this widget
-     *
-     * @param $params array This are the params sent by the user
-     *
+     * @param array $params
      * @return bool
-     * @author Ramy Deeb
      * @throws Exception
-     **/
+     */
     private function validateParams( array $params )
     {
         $supported = $this->supportedParams();
@@ -118,10 +104,23 @@ abstract class ZB_BaseWidget implements WidgetInterface
         return true;
     }
 
+    public function setErrors($v)
+    {
+        $this->errors = $v;
+    }
+
+    public function hasErrors()
+    {
+        return !empty($this->errors);
+    }
+
+    public function getErrors()
+    {
+        return $this->errors;
+    }
+
     /**
-     * Renders the widget
-     * @return string The widget HTML
-     * @deprecated
+     * @return string
      */
     public function render()
     {
@@ -138,6 +137,9 @@ abstract class ZB_BaseWidget implements WidgetInterface
         return $widget;
     }
 
+    /**
+     * @return string
+     */
     public function renderLabel()
     {
         return ZB_HtmlToolkit::buildLabel(
@@ -146,5 +148,20 @@ abstract class ZB_BaseWidget implements WidgetInterface
                 'for' => $this->params['name']
             )
         );
+    }
+
+    /**
+     * @return string
+     */
+    public function renderErrors()
+    {
+        $liTags = '';
+        foreach ($this->errors as $error)
+        {
+            $liTags .= ZB_HtmlToolkit::buildTag('li', array(), false, $error)."\n";
+        }
+        return ZB_HtmlToolkit::buildTag('ul', array(
+            'class' => 'errors'
+        ), false, $liTags);
     }
 }

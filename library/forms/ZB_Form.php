@@ -10,120 +10,154 @@
  **/
 class ZB_Form
 {
-    //To store the form groups
-    protected $widgets;
+    protected $formName;
+    protected $widgets = array();
+    protected $renderer;
+    protected $values;
+    protected $taintedValues;
+    protected $validations = array();
 
-    public function __construct( $form_name )
+    public function __construct( $form_name, ZB_RendererInterface $renderer )
     {
-        $this->form_name = $form_name;
-        $this->widgets   = array();
-        //Load any default values
-        if ( isset( $_REQUEST[$form_name] ) )
+        $this->formName = $form_name;
+        $this->renderer = $renderer;
+        $this->loadDataFromRequest();
+    }
+
+    private function loadDataFromRequest()
+    {
+        if ( isset( $_REQUEST[$this->formName] ) )
         {
-            $this->values = $_REQUEST[$form_name];
+            $this->taintedValues = $_REQUEST[$this->formName];
         }
         else
         {
             $this->values = array();
         }
-
     }
 
-    public function addWidget( $name, $type, array $options = array(), $default = NULL )
+    public function addWidget( $name, $type, array $options = array(), $value = NULL )
+    {
+        $options = $this->sanitizeWidgetOptions($name, $options);
+        $wm = ZB_WidgetFactory::getInstance();
+        if (isset($options['validations']))
+        {
+            $this->setWidgetValidators($name, $options['validations']);
+            unset($options['validations']);
+        }
+        $this->widgets[$name] = $wm->createWidget($type, $options);
+        $this->setWidgetValue($name, $value);
+        $this->renderer->addWidget($name, $this->widgets[$name]);
+    }
+
+    /**
+     * @param string $name
+     * @param array $options
+     * @return array
+     */
+    private function sanitizeWidgetOptions($name, array $options)
     {
         if ( !isset( $options['attr'] ) )
         {
             $options['attr'] = array();
         }
-        $options['attr']['id']   = isset( $options['id'] ) ? $options['id'] : "{$this->form_name}_$name";
-        $options['attr']['name'] = isset( $options['name'] ) ? $options['name'] : "{$this->form_name}[$name]";
+        $options['attr']['id']   = isset( $options['id'] ) ? $options['id'] : "{$this->formName}_$name";
+        $options['attr']['name'] = isset( $options['name'] ) ? $options['name'] : "{$this->formName}[$name]";
         if ( !isset( $options['label'] ) )
         {
             $options['label'] = ucfirst( str_replace( '_', ' ', $name ) );
         }
-        $wm = ZB_WidgetFactory::getInstance();
-        $widget = $wm->createInstance($type, $options);
-        if ( isset( $this->values[$name] ) )
+        return $options;
+    }
+
+    private function setWidgetValue($name, $default)
+    {
+        /** @var WidgetInterface $widget */
+        $widget = $this->widgets[$name];
+        if ( isset( $this->taintedValues[$name] ) )
         {
-            $widget->setValue( $this->values[$name] );
+            $widget->setValue( $this->taintedValues[$name] );
         }
         else
         {
-            if ( $default != NULL && !( isset( $_POST[$this->form_name] ) && $type == 'checkbox' ) )
+            if ( $default != NULL && !( isset( $_REQUEST[$this->formName] ) && $widget->getType() == 'checkbox' ) )
             {
                 $widget->setValue( $default );
                 $this->values[$name] = $default;
             }
             else
             {
-                if ( isset( $_POST[$this->form_name] ) && $type == 'checkbox' )
+                if ( isset( $_REQUEST[$this->formName] ) && $widget->getType() == 'checkbox' )
                 {
                     $this->values[$name] = false;
                 }
             }
         }
-        $this->widgets[$name] = $widget;
     }
 
-    public function render()
+    private function setWidgetValidators($name, $validators)
     {
-        $str = '';
-        foreach ( $this->widgets as $name => $widget )
+        if (!is_array($validators))
         {
-            $str .= $this->renderRow( $name ) . "\n";
+            throw new Exception("The validators must be defined as an array of validator options");
         }
-
-        return ZB_HtmlToolkit::buildTag( 'div', array(
-            'id'    => "form_container_{$this->form_name}",
-            'class' => 'form_container'
-        ), false, $str );
+        foreach ($validators as $key => $options)
+        {
+            $validators[$key] = $this->sanitizeValidatorOptions($options);
+        }
+        $this->validations[$name] = $validators;
     }
 
-    public function renderRow( $name )
+    private function sanitizeValidatorOptions($options)
     {
-        $params = $this->widgets[$name]->getParams();
-        $widget = $this->renderWidget( $name );
-        if ( isset( $params['desc'] ) && $params['desc'] )
-        {
-            $widget .= ZB_HtmlToolkit::buildTag( 'p', array(
-                'class' => 'description'
-            ), false, $params['desc'] );
-        }
-        $input_class = 'input';
-        if ( isset( $params['prepend'] ) )
-        {
-            $input_class .= ' prepend';
-        }
-        if ( isset( $params['append'] ) )
-        {
-            $input_class .= ' append';
-        }
-
-        return ZB_HtmlToolkit::buildTag( 'div', array(
-            'class' => 'form_row'
-        ), false, $content = ZB_HtmlToolkit::buildTag( 'div', array(
-                'class' => 'label'
-            ), false, $this->renderLabel( $name ) ) . "\n" . ZB_HtmlToolkit::buildTag( 'div', array(
-                'class' => $input_class
-            ), false, $widget ) );
-    }
-
-    public function renderLabel( $name )
-    {
-        $params = $this->widgets[$name]->getParams();
-
-        return ZB_HtmlToolkit::buildTag( 'label', array(
-            'for' => "{$this->form_name}[$name]"
-        ), false, $params['label'] );
-    }
-
-    public function renderWidget( $name )
-    {
-        return $this->widgets[$name]->render();
+        return array_merge(array(
+            'options' => array(),
+            'messages' => array()
+        ), $options);
     }
 
     public function getValues()
     {
         return $this->values;
     }
-} // END class FormBuilder
+
+    public function getTaintedValues()
+    {
+        return $this->taintedValues;
+    }
+
+    /**
+     * @return bool
+     * @throws Exception
+     */
+    public function isValid()
+    {
+        $isValid = true;
+        $validatorFactory = ZB_ValidatorFactory::getInstance();
+        foreach($this->validations as $name => $validators)
+        {
+            foreach($validators as $key => $options)
+            {
+                $validator = $validatorFactory->createValidator($key, $options);
+                $validator->setValue($this->taintedValues[$name]);
+                if (!$validator->assert())
+                {
+                    $currentClasses = $this->widgets[$name]->getAttr('class');
+                    $currentClasses .= empty($currentClasses) ? 'error' : ' error';
+                    $this->widgets[$name]->setAttr('class', $currentClasses);
+                    $isValid = false;
+                }
+            }
+        }
+        return $isValid;
+    }
+
+    /**
+     * @return ZB_RendererInterface
+     */
+    public function getRenderer()
+    {
+        $this->renderer->addWidgets($this->widgets);
+        return $this->renderer;
+    }
+}

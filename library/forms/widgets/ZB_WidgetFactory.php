@@ -10,28 +10,25 @@ class ZB_WidgetFactory extends ZB_Singleton
         $this->loadDefaultWidgets();
     }
 
-    /**
-     * Loads the default widgets
-     */
     private function loadDefaultWidgets()
     {
-        $this->addFormWidget('hidden', 'InputHiddenWidget', __DIR__ . '/widgets/InputHiddenWidget.php' );
-        $this->addFormWidget('text', 'InputTextWidget', __DIR__ . '/widgets/InputTextWidget.php' );
-        $this->addFormWidget('textarea', 'InputTextareaWidget', __DIR__ . '/widgets/InputTextareaWidget.php' );
-        $this->addFormWidget('checkbox', 'InputCheckboxWidget', __DIR__ . '/widgets/InputCheckboxWidget.php' );
-        $this->addFormWidget('checkbox_list', 'InputCheckboxListWidget', __DIR__ . '/widgets/InputCheckboxListWidget.php' );
-        $this->addFormWidget('radio_list', 'InputRadioListWidget', __DIR__ . '/widgets/InputRadioListWidget.php' );
-        $this->addFormWidget('select', 'InputSelectWidget', __DIR__ . '/widgets/InputSelectWidget.php' );
-        $this->addFormWidget('date', 'InputDateWidget', __DIR__ . '/widgets/InputDateWidget.php' );
-        $this->addFormWidget('colorpicker', 'InputColorWidget', __DIR__ . '/widgets/InputColorWidget.php' );
-        $this->addFormWidget('image', 'InputImageWidget', __DIR__ . '/widgets/InputImageWidget.php' );
-        $this->addFormWidget('file', 'InputFileWidget', __DIR__ . '/widgets/InputFileWidget.php' );
-        $this->addFormWidget('gallery', 'InputGalleryWidget', __DIR__ . '/widgets/InputGalleryWidget.php' );
-        $this->addFormWidget('google_map', 'InputGoogleMapsWidget', __DIR__ . '/widgets/InputGoogleMapsWidget.php' );
+        $this->addFormWidget('hidden', 'InputHiddenWidget', __DIR__ . '/InputHiddenWidget.php' );
+        $this->addFormWidget('text', 'InputTextWidget', __DIR__ . '/InputTextWidget.php' );
+        $this->addFormWidget('textarea', 'InputTextareaWidget', __DIR__ . '/InputTextareaWidget.php' );
+        $this->addFormWidget('checkbox', 'InputCheckboxWidget', __DIR__ . '/InputCheckboxWidget.php' );
+        $this->addFormWidget('checkbox_list', 'InputCheckboxListWidget', __DIR__ . '/InputCheckboxListWidget.php' );
+        $this->addFormWidget('radio_list', 'InputRadioListWidget', __DIR__ . '/InputRadioListWidget.php' );
+        $this->addFormWidget('select', 'InputSelectWidget', __DIR__ . '/InputSelectWidget.php' );
+        $this->addFormWidget('date', 'InputDateWidget', __DIR__ . '/InputDateWidget.php' );
+        $this->addFormWidget('colorpicker', 'InputColorWidget', __DIR__ . '/InputColorWidget.php' );
+        $this->addFormWidget('image', 'InputImageWidget', __DIR__ . '/InputImageWidget.php' );
+        $this->addFormWidget('file', 'InputFileWidget', __DIR__ . '/InputFileWidget.php' );
+        $this->addFormWidget('gallery', 'InputGalleryWidget', __DIR__ . '/InputGalleryWidget.php' );
+        $this->addFormWidget('google_map', 'InputGoogleMapsWidget', __DIR__ . '/InputGoogleMapsWidget.php' );
     }
 
     /**
-     * Adds a widget to the manager
+     * Adds a widget to the Factory
      * @param $name string The name of the widget
      * @param $className string The class name of the Widget
      * @param $filePath string The file path to be loaded
