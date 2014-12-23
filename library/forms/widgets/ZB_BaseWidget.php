@@ -2,14 +2,14 @@
 require_once( __DIR__ . '/WidgetInterface.php' );
 
 /**
- * BaseWidget
+ * ZB_BaseWidget
  * An abstract class that handles the base functionalities of a widget
  *
  * @package ZeroBase
  * @author  Ramy Deeb <me@ramydeeb.com>
  * @license Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. http://creativecommons.org/licenses/by-nc-nd/3.0/.
  **/
-abstract class BaseWidget implements WidgetInterface
+abstract class ZB_BaseWidget implements WidgetInterface
 {
     //Internal variables
     protected $value; //The value stored by the widget

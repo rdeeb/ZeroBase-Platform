@@ -1,5 +1,5 @@
 <?php
-require_once( __DIR__ . '/BaseWidget.php' );
+require_once(__DIR__ . '/ZB_BaseWidget.php');
 
 /**
  * InputFileWidget
@@ -9,7 +9,7 @@ require_once( __DIR__ . '/BaseWidget.php' );
  * @author  Ramy Deeb <me@ramydeeb.com>
  * @license Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. http://creativecommons.org/licenses/by-nc-nd/3.0/.
  **/
-class InputFileWidget extends BaseWidget
+class InputFileWidget extends ZB_BaseWidget
 {
     /**
      * getType
