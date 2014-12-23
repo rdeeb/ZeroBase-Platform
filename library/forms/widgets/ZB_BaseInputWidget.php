@@ -2,14 +2,14 @@
 require_once( __DIR__ . '/WidgetInterface.php' );
 
 /**
- * ZB_BaseWidget
+ * ZB_BaseInputWidget
  * An abstract class that handles the base functionalities of a widget
  *
  * @package ZeroBase
  * @author  Ramy Deeb <me@ramydeeb.com>
  * @license Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. http://creativecommons.org/licenses/by-nc-nd/3.0/.
  **/
-abstract class ZB_BaseWidget implements WidgetInterface
+abstract class ZB_BaseInputWidget implements WidgetInterface
 {
     //Internal variables
     protected $value; //The value stored by the widget
@@ -145,7 +145,7 @@ abstract class ZB_BaseWidget implements WidgetInterface
         return ZB_HtmlToolkit::buildLabel(
             $this->params['label'],
             array(
-                'for' => $this->params['name']
+                'for' => @$this->params['name']
             )
         );
     }

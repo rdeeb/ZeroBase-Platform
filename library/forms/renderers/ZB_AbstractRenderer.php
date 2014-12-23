@@ -36,6 +36,7 @@ abstract class ZB_AbstractRender implements ZB_RendererInterface
         {
             $returnString .= $this->renderRow( $name )."\n";
         }
+        return $returnString;
     }
 
     public function renderRow($widgetName)

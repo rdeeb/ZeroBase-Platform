@@ -65,7 +65,7 @@ class ZB_WidgetFactory extends ZB_Singleton
      * @param $name string The name of the widget
      * @param $options array The options for the widget
      * @throws Exception If the widget doesn't exists
-     * @return ZB_BaseWidget Returns a widget extending the ZB_BaseWidget class
+     * @return ZB_BaseWidget Returns a widget extending the ZB_BaseInputWidget class
      */
     public function createWidget($name, $options)
     {

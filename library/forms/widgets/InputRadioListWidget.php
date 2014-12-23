@@ -1,5 +1,5 @@
 <?php
-require_once(__DIR__ . '/ZB_BaseWidget.php');
+require_once(__DIR__ . '/ZB_BaseInputWidget.php');
 
 /**
  * InputRadioListWidget
@@ -9,7 +9,7 @@ require_once(__DIR__ . '/ZB_BaseWidget.php');
  * @author  Ramy Deeb <me@ramydeeb.com>
  * @license Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. http://creativecommons.org/licenses/by-nc-nd/3.0/.
  **/
-class InputRadioListWidget extends ZB_BaseWidget
+class InputRadioListWidget extends ZB_BaseInputWidget
 {
     /**
      * getType

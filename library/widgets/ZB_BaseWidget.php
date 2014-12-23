@@ -73,7 +73,8 @@ abstract class ZB_BaseWidget extends WP_Widget
     public function form( $instance )
     {
         $form = $this->buildForm( $instance );
-        echo $form->render();
+        $renderer = $form->getRenderer();
+        echo $renderer->render();
     }
 
     /**
@@ -122,7 +123,7 @@ abstract class ZB_BaseWidget extends WP_Widget
     /**
      * buildForm Builds the form based on the configuration
      *
-     * @return ZB_WidgetForm
+     * @return ZB_Form
      **/
     private function buildForm( $instance )
     {

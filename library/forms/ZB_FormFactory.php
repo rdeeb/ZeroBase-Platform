@@ -50,7 +50,7 @@ class ZB_FormFactory
         }
     }
 
-    private function getClassName($string)
+    private static function getClassName($string)
     {
         return 'ZB_'.ucwords($string).'Renderer';
     }

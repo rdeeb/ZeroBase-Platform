@@ -9,10 +9,10 @@
             <?php endforeach; ?>
         </ul>
         <ul id="zb-settings-content" class="uk-switcher">
-            <?php $i=0;foreach($settings_pages as $key => $builder): ?>
+            <?php $i=0;foreach($settings_pages as $key => $form): $renderer = $form->getRenderer(); ?>
                 <li <?php if ($i==0): ?>class="uk-active"<?php endif; ?>>
                     <table class="form-table zb-form-table">
-                        <?php echo $builder->renderTr(); $i++; ?>
+                        <?php echo $renderer->render(); $i++; ?>
                     </table>
                 </li>
             <?php endforeach; ?>
