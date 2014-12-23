@@ -14,13 +14,7 @@ class ZB_TaxonomyExtender
     private $taxonomyFields;
 
     /**
-     * __construct
-     * Creates the taxonomy extender object
-     *
-     * @param $taxonomy string The taxonomy name to extend
-     *
-     * @return void
-     * @author Ramy Deeb
+     * @param string $taxonomy
      **/
     public function __construct( $taxonomy, $fields = NULL )
     {
@@ -36,14 +30,9 @@ class ZB_TaxonomyExtender
     }
 
     /**
-     * addField
-     * Adds a new field to the taxonomy
-     *
-     * @param
-     *
-     * @return void
-     * @author Ramy Deeb
-     **/
+     * @param string $name
+     * @param array $options
+     */
     public function addField( $name, $options )
     {
         $options = array_merge( array(
@@ -56,12 +45,8 @@ class ZB_TaxonomyExtender
     }
 
     /**
-     * showFields
-     * Add new custom fields to the taxonomy
-     *
-     * @return void
-     * @author Ramy Deeb
-     **/
+     * @param string $term
+     */
     public function showFields( $term )
     {
         $term_meta = array();
@@ -122,7 +107,7 @@ class ZB_TaxonomyExtender
      **/
     private function getForm( $term = array() )
     {
-        $object = new ZB_TaxonomyForm( $this->taxonomyName );
+        $object = ZB_FormFactory::createForm($this->taxonomyName, 'taxonomy');
         foreach ( $this->taxonomyFields as $name => $options )
         {
             $object->addWidget( $name, $options['type'], $options['options'], isset( $term[$this->taxonomyName] ) ? $term[$this->taxonomyName] : '' );

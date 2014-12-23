@@ -127,7 +127,7 @@ abstract class ZB_BaseWidget extends WP_Widget
     private function buildForm( $instance )
     {
         $fields = $this->widgetFields();
-        $form   = new ZB_WidgetForm( get_class( $this ) );
+        $form   = ZB_FormFactory::createForm(get_class( $this ), 'widget');
         foreach ( $fields as $name => $options )
         {
             $args = array(
