@@ -1,7 +1,7 @@
 <?php
 require_once(__DIR__.'/ZB_ValidatorInterface.php');
 
-abstract class ZB_BaseValidator implements ZB_ValidatorInterface
+abstract class ZB_AbstractValidator implements ZB_ValidatorInterface
 {
     protected $value;
     protected $errorMessages = array();

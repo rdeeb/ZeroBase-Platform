@@ -1,7 +1,7 @@
 <?php
-require_once(__DIR__.'/ZB_BaseValidator.php');
+require_once(__DIR__.'/ZB_AbstractValidator.php');
 
-class ZB_TrueValidator extends ZB_BaseValidator
+class ZB_TrueValidator extends ZB_AbstractValidator
 {
     protected function getDefaultMessages()
     {
