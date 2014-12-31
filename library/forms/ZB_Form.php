@@ -59,7 +59,7 @@ class ZB_Form
         foreach($this->widgets as $name => $widget)
         {
             $proposedModel[$name] = array(
-                'default' => $this->values[$name]
+                'default' => isset($this->values[$name]) ? $this->values[$name] : null
             );
         }
         return $proposedModel;

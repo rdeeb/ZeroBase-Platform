@@ -456,6 +456,16 @@ class ZerobasePlatform extends ZB_Singleton
         $settings = ZB_Settings::getInstance();
         $bag = $settings->getBag($bagName);
         $settings_pages = $bag->getPages($bagName);
+        if ($_SERVER['REQUEST_METHOD'] === 'POST')
+        {
+            foreach($settings_pages as $key => $form)
+            {
+                if ($form->isValid())
+                {
+                    $form->save();
+                }
+            }
+        }
         wp_enqueue_media();
         include( $lib_dir . '/settings/template/base.php' );
     }

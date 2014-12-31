@@ -61,7 +61,7 @@ class ZB_SettingsBag implements Iterator, ArrayAccess
         {
             if (!isset($pages[$options['section']]))
             {
-                $pages[$options['section']] = ZB_FormFactory::createForm($form_name.'-'.$options['section'], 'options');
+                $pages[$options['section']] = ZB_FormFactory::createForm($form_name.'-'.$options['section'], 'options', 'option');
             }
             $pages[$options['section']]->addWidget($widget_name, $options['widget'], $options['options']['widget_options'], get_option($widget_name, isset($options['options']['default']) ? $options['options']['default'] : null));
         }
