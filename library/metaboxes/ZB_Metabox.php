@@ -73,12 +73,16 @@ class ZB_Metabox
         if ( in_array( $object->post_type, $options['post_type'] ) )
         {
             $form    = $this->get_form( $post_id );
-            $values  = $form->getValues();
+            if ($form->isValid())
+            {
+                $form->save();
+            }
+            /*$values  = $form->getValues();
             $post_ID = isset( $_POST['post_ID'] ) ? $_POST['post_ID'] : $post_id;
             foreach ( $values as $key => $value )
             {
                 update_post_meta( $post_ID, $key, $value );
-            }
+            }*/
         }
     }
 
@@ -95,6 +99,7 @@ class ZB_Metabox
             case 'default':
             default:
                 extract( $this->options );
+                $renderer = $form->getRenderer();
                 require( __DIR__ . '/templates/zerobase_metabox_default.php' );
                 break;
         }
@@ -106,7 +111,7 @@ class ZB_Metabox
      **/
     private function get_form( $post_id )
     {
-        $form     = ZB_FormFactory::createForm( $this->options['id'] );
+        $form     = ZB_FormFactory::createForm( $this->options['id'], 'default', 'metadata' );
         $defaults = array(
             'type'    => 'text',
             'default' => NULL
@@ -119,8 +124,8 @@ class ZB_Metabox
             $value   = get_post_meta( $post_id, $name, true );
             $value   = $value ? $value : $default;
             unset(
-            $options['type'],
-            $options['default']
+                $options['type'],
+                $options['default']
             );
             $form->addWidget( $name, $type, $options, $value );
         }

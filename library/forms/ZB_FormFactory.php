@@ -7,14 +7,17 @@ class ZB_FormFactory
      * @param string $renderer
      * @return ZB_Form
      */
-    public static function createForm($formName, $renderer = null)
+    public static function createForm($formName, $renderer = 'default', $model = 'memory')
     {
-        if (!$renderer)
-        {
-            $renderer = 'default';
-        }
-        $class = self::getRenderer($renderer);
-        return new ZB_Form($formName, $class);
+        $rendererClass = self::getRenderer($renderer);
+        $modelClass = self::getModel($model);
+        return new ZB_Form($formName, $rendererClass, $modelClass);
+    }
+
+    private static function getModel($model)
+    {
+        $modelFactory = ZB_ModelFactory::getInstance();
+        return $modelFactory->createModel($model);
     }
 
     private static function getRenderer($renderer)

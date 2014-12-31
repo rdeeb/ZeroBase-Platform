@@ -11,16 +11,18 @@
 class ZB_Form
 {
     protected $formName;
+    protected $model;
     protected $widgets = array();
     protected $renderer;
     protected $values;
     protected $taintedValues;
     protected $validations = array();
 
-    public function __construct( $form_name, ZB_RendererInterface $renderer )
+    public function __construct( $form_name, ZB_RendererInterface $renderer, ZB_ModelInterface $model )
     {
         $this->formName = $form_name;
         $this->renderer = $renderer;
+        $this->model = $model;
         $this->loadDataFromRequest();
     }
 
@@ -48,6 +50,19 @@ class ZB_Form
         $this->widgets[$name] = $wm->createWidget($type, $options);
         $this->setWidgetValue($name, $value);
         $this->renderer->addWidget($name, $this->widgets[$name]);
+        $this->model->setModel($this->getProposedModel());
+    }
+
+    protected function getProposedModel()
+    {
+        $proposedModel = array();
+        foreach($this->widgets as $name => $widget)
+        {
+            $proposedModel[$name] = array(
+                'default' => $this->values[$name]
+            );
+        }
+        return $proposedModel;
     }
 
     /**
@@ -150,6 +165,18 @@ class ZB_Form
             }
         }
         return $isValid;
+    }
+
+    public function save()
+    {
+        if ($this->isValid())
+        {
+            foreach($this->taintedValues as $name => $value)
+            {
+                $this->model->setValue($name, $value);
+            }
+            $this->model->save();
+        }
     }
 
     /**

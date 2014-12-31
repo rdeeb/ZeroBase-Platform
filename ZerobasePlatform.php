@@ -57,8 +57,11 @@ class ZerobasePlatform extends ZB_Singleton
         require_once( $libraryPath . '/toolkit/ZB_HtmlToolkit.php' );
         //Forms
         require_once( $libraryPath . '/forms/widgets/ZB_WidgetFactory.php' );
+        require_once( $libraryPath . '/forms/validators/ZB_ValidatorFactory.php' );
+        require_once( $libraryPath . '/forms/models/ZB_ModelFactory.php' );
         require_once( $libraryPath . '/forms/ZB_Form.php' );
         require_once( $libraryPath . '/forms/ZB_FormFactory.php' );
+
         //Metaboxes
         require_once( $libraryPath . '/metaboxes/ZB_Metabox.php' );
         //Post Types

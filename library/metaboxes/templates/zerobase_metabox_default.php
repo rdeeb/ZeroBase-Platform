@@ -1,1 +1,1 @@
-<?php echo $form->render() ?>
+<?php echo $renderer->render() ?>
