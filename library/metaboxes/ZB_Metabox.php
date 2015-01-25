@@ -55,6 +55,7 @@ class ZB_Metabox
     /**
      * Saves the custom meta info for the post
      * @param int $post_id The Post ID
+     * @param WP_Post $post The Post Object
      * @return mixed
      **/
     public function saveMetaInfo( $post_id, $post )

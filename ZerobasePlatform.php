@@ -171,7 +171,6 @@ class ZerobasePlatform extends ZB_Singleton
             $modules[ self::slugify( $config[ 'name' ] ) ] = $config;
             $this->storeKeyValueData( 'modules', $modules );
         } catch ( Exception $e ) {
-            //TODO: Show a message to the user telling him that the module wasn't loaded
         }
     }
 
@@ -421,7 +420,7 @@ class ZerobasePlatform extends ZB_Singleton
      */
     public function addAdminSettingsPage()
     {
-        $zerobase_settings_page = add_menu_page( __( 'Zerobase Options', 'zerobase' ), __( 'Zerobase Options', 'zerobase' ), 'manage_options', 'zerobase-settings', array( $this, self::ZEROBASE_ADMIN_PAGE_PREFIX . 'platform' ), null, 100 );
+        add_menu_page( __( 'Zerobase Options', 'zerobase' ), __( 'Zerobase Options', 'zerobase' ), 'manage_options', 'zerobase-settings', array( $this, self::ZEROBASE_ADMIN_PAGE_PREFIX . 'platform' ), null, 100 );
         $settings = ZB_Settings::getInstance();
         foreach ( $settings as $key => $bag ) {
             /** @var $bag ZB_SettingsBag */

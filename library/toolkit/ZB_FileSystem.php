@@ -18,14 +18,4 @@ class ZB_FileSystem
             return false;
         }
     }
-
-    public function loadDir( $path, $pattern )
-    {
-        if ( !is_dir( $path ) )
-        {
-            return false;
-        }
-
-        $files = readdir( $path );
-    }
 }

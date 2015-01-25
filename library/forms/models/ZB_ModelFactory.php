@@ -43,7 +43,7 @@ class ZB_ModelFactory extends ZB_Singleton
      * @param string $name
      * @return bool
      */
-    public function ModelExists($name)
+    public function modelExists($name)
     {
         return array_key_exists($name, $this->models);
     }
@@ -56,7 +56,7 @@ class ZB_ModelFactory extends ZB_Singleton
      */
     public function createModel($name)
     {
-        if ($this->ModelExists($name))
+        if ($this->modelExists($name))
         {
             $className = $this->models[$name];
             return new $className();
