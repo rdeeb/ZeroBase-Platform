@@ -15,4 +15,4 @@ interface ZerobaseModuleInterface
     public function saveOptions();
 
     public function getSlug();
-} 
+}

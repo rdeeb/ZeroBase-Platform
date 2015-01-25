@@ -129,4 +129,4 @@ abstract class ZB_BasePostType implements ZB_PostTypeInterface
     {
         $this->metaboxes[] = new ZB_Metabox( $config );
     }
-} 
+}

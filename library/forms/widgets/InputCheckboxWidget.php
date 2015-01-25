@@ -37,7 +37,7 @@ class InputCheckboxWidget extends ZB_BaseInputWidget
             $this->attr['required'] = 'required';
         }
         $this->attr['value'] = 1;
-        if ( $this->getValue() == true || $this->getValue() == 1 )
+        if ( $this->getValue() === true || $this->getValue() == 1 )
         {
             $this->attr['checked'] = 'checked';
         }

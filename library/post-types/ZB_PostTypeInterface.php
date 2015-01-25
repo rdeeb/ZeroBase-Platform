@@ -15,4 +15,4 @@ interface ZB_PostTypeInterface
     public function getDescription();
 
     public function getOptions();
-} // END interface ZB_PostTypeInterface
+}

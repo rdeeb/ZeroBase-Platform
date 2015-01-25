@@ -131,4 +131,4 @@ class ZB_TaxonomyExtender
         add_action( 'created_' . $this->taxonomyName, array( &$this, 'fieldSave' ), 10, 2 );
         add_action( 'edited_' . $this->taxonomyName, array( &$this, 'fieldSave' ), 10, 2 );
     }
-} // END class zerobase_taconomy_extender
+}

@@ -70,4 +70,4 @@ class ZB_Settings extends ZB_Singleton implements Iterator
     {
         return isset($this->bagIndexes[$this->position]);
     }
-} 
+}

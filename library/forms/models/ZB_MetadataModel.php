@@ -19,10 +19,6 @@ class ZB_MetadataModel extends ZB_AbstractModel
         {
             return $_POST['post_ID'];
         }
-        else
-        {
-            throw new Exception("Can't retreive the post id");
-        }
     }
 
     protected function storeData($name, $value)

@@ -145,7 +145,7 @@ abstract class ZB_BaseInputWidget implements WidgetInterface
         return ZB_HtmlToolkit::buildLabel(
             $this->params['label'],
             array(
-                'for' => @$this->params['name']
+                'for' => isset($this->params['name']) ? $this->params['name'] : ''
             )
         );
     }

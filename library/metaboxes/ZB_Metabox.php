@@ -18,7 +18,7 @@ class ZB_Metabox
         $defaults = $this->getPostTypeDefaults();
         $this->options = array_merge( $defaults, $options );
         add_action( 'add_meta_boxes', array( &$this, 'registerMetaboxes' ) );
-        add_action( 'save_post', array( &$this, 'save_meta_info' ), 10, 2 );
+        add_action( 'save_post', array( &$this, 'saveMetaInfo' ), 10, 2 );
     }
 
     private function getPostTypeDefaults()
@@ -38,12 +38,12 @@ class ZB_Metabox
     {
         foreach ( $this->options['post_type'] as $post_type )
         {
-            if ( $post_type == $this->get_current_post_type() )
+            if ( $post_type == $this->getCurrentPostType() )
             {
                 add_meta_box(
                     $this->options['id'],
                     $this->options['title'],
-                    array( &$this, 'render_meta_box' ),
+                    array( &$this, 'renderMetaBox' ),
                     $post_type,
                     $this->options['context'],
                     $this->options['priority']
@@ -57,7 +57,7 @@ class ZB_Metabox
      * @param int $post_id The Post ID
      * @return mixed
      **/
-    public function save_meta_info( $post_id, $object )
+    public function saveMetaInfo( $post_id, $post )
     {
         $options = $this->options;
 
@@ -70,19 +70,13 @@ class ZB_Metabox
             return $post_id;
         }
 
-        if ( in_array( $object->post_type, $options['post_type'] ) )
+        if ( in_array( $post->post_type, $options['post_type'] ) )
         {
-            $form    = $this->get_form( $post_id );
+            $form    = $this->getForm( $post_id );
             if ($form->isValid())
             {
                 $form->save();
             }
-            /*$values  = $form->getValues();
-            $post_ID = isset( $_POST['post_ID'] ) ? $_POST['post_ID'] : $post_id;
-            foreach ( $values as $key => $value )
-            {
-                update_post_meta( $post_ID, $key, $value );
-            }*/
         }
     }
 
@@ -90,9 +84,9 @@ class ZB_Metabox
      * Renders the custom meta box
      * @return void
      **/
-    public function render_meta_box( $post )
+    public function renderMetaBox( $post )
     {
-        $form  = $this->get_form( $post->ID );
+        $form  = $this->getForm( $post->ID );
         $nonce = wp_nonce_field( $this->options['id'], 'ZB_Metabox' );
         switch ( $this->options['template'] )
         {
@@ -109,7 +103,7 @@ class ZB_Metabox
      * Returns the ZB_Form object
      * @return ZB_Form
      **/
-    private function get_form( $post_id )
+    private function getForm( $post_id )
     {
         $form     = ZB_FormFactory::createForm( $this->options['id'], 'default', 'metadata' );
         $defaults = array(
@@ -138,7 +132,7 @@ class ZB_Metabox
      * @return mixed
      * @author http://themergency.com/wordpress-tip-get-post-type-in-admin/, Ramy Deeb
      */
-    private function get_current_post_type()
+    private function getCurrentPostType()
     {
         global $post, $typenow, $current_screen;
 

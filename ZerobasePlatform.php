@@ -11,12 +11,13 @@
  * @author  Ramy Deeb <me@ramydeeb.com>
  * @package ZeroBase
  */
-require_once( __DIR__.'/library/toolkit/ZB_Singleton.php' );
+require_once( __DIR__ . '/library/toolkit/ZB_Singleton.php' );
 
 class ZerobasePlatform extends ZB_Singleton
 {
     private $dataStorage = array();
     CONST ZEROBASE_ADMIN_PAGE_PREFIX = 'zerobase_settings_page_';
+
     /**
      * __construct Initializes the platform
      *
@@ -33,7 +34,7 @@ class ZerobasePlatform extends ZB_Singleton
         //Set the required Wordpress hooks
         $this->addWordpressActionHooks();
         //Load the different locales
-        load_plugin_textdomain('zerobase', FALSE, dirname(plugin_basename(__FILE__)).'/locales/');
+        load_plugin_textdomain( 'zerobase', false, dirname( plugin_basename( __FILE__ ) ) . '/locales/' );
     }
 
     /**
@@ -44,7 +45,8 @@ class ZerobasePlatform extends ZB_Singleton
     {
         // Define the plugin base directory
         $dir = plugin_dir_path( __FILE__ );
-        return $dir.'/library';
+
+        return $dir . '/library';
     }
 
     /**
@@ -97,13 +99,11 @@ class ZerobasePlatform extends ZB_Singleton
     private function configurePlatformOptions()
     {
         $this->dataStorage = get_option( 'zerobase_platform_data_storage', array() );
-        if ( empty( $this->dataStorage ) )
-        {
+        if ( empty( $this->dataStorage ) ) {
             $this->storeKeyValueData( 'version', '0.2' );
         }
         //Configure the basic settings bag
-        if (is_admin())
-        {
+        if ( is_admin() ) {
             $this->initSettingsBag();
         }
     }
@@ -114,15 +114,14 @@ class ZerobasePlatform extends ZB_Singleton
     private function addWordpressActionHooks()
     {
         //Adding Actions;
-        add_action( 'plugins_loaded', array( &$this, 'executeAfterPluginsSetupHooks'), 1 );
-        add_action( 'after_setup_theme', array( &$this, 'executeAfterThemeSetupHooks'), 1 );
+        add_action( 'plugins_loaded', array( &$this, 'executeAfterPluginsSetupHooks' ), 1 );
+        add_action( 'after_setup_theme', array( &$this, 'executeAfterThemeSetupHooks' ), 1 );
         add_action( 'after_setup_theme', array( &$this, 'loadModules' ), 2 );
-        add_action( 'init', array( &$this, 'registerPostTypes'), 10 );
-        add_action( 'init', array( &$this, 'registerTaxonomies'), 11 );
+        add_action( 'init', array( &$this, 'registerPostTypes' ), 10 );
+        add_action( 'init', array( &$this, 'registerTaxonomies' ), 11 );
         //Configuring the Admin panel
-        if (is_admin())
-        {
-            add_action( 'admin_menu', array( &$this, 'addAdminSettingsPage'), 2 );
+        if ( is_admin() ) {
+            add_action( 'admin_menu', array( &$this, 'addAdminSettingsPage' ), 2 );
             //Register the framework scripts and styles
             add_action( 'admin_enqueue_scripts', array( &$this, 'registerAdminScripts' ), 1 );
         }
@@ -130,6 +129,7 @@ class ZerobasePlatform extends ZB_Singleton
 
     /**
      * Stores a key value pair set of data
+     *
      * @param $key
      * @param $value
      */
@@ -141,58 +141,57 @@ class ZerobasePlatform extends ZB_Singleton
 
     /**
      * Retreive the value of a key
+     *
      * @param string $key
-     * @param mixed $default
+     * @param mixed  $default
+     *
      * @return mixed
      */
     private function retreiveKeyValueData( $key, $default = null )
     {
-        if ( isset( $this->dataStorage[ $key ] ) )
-        {
+        if ( isset( $this->dataStorage[ $key ] ) ) {
             return $this->dataStorage[ $key ];
-        }
-        else
-        {
+        } else {
             return $default;
         }
     }
 
     /**
      * addModule Adds a new module to the platform
+     *
      * @param array $config defines de configuration parameters of the module being loaded
+     *
      * @throws Exception
      */
     public function addModule( array $config )
     {
-        try
-        {
-            $this->validateModuleConfiguration($config);
+        try {
+            $this->validateModuleConfiguration( $config );
             $modules = $this->retreiveKeyValueData( 'modules', array() );
             $modules[ self::slugify( $config[ 'name' ] ) ] = $config;
             $this->storeKeyValueData( 'modules', $modules );
-        }
-        catch(Exception $e)
-        {
+        } catch ( Exception $e ) {
             //TODO: Show a message to the user telling him that the module wasn't loaded
         }
     }
 
     /**
      * Validates if the mandatory parameters are present in the configurations
+     *
      * @param array $config
+     *
      * @return bool
      * @throws Exception
      */
     private function validateModuleConfiguration( array $config )
     {
-        if (!isset($config[ 'path' ]) || empty($config[ 'path' ]) || !is_dir( $config[ 'path' ] ))
-        {
-            throw new Exception('Every module must define a valid path');
+        if ( !isset( $config[ 'path' ] ) || empty( $config[ 'path' ] ) || !is_dir( $config[ 'path' ] ) ) {
+            throw new Exception( 'Every module must define a valid path' );
         }
-        if ( !isset( $config[ 'name' ] ) )
-        {
-            throw new Exception('Every module must define a name');
+        if ( !isset( $config[ 'name' ] ) ) {
+            throw new Exception( 'Every module must define a name' );
         }
+
         return true;
     }
 
@@ -200,10 +199,8 @@ class ZerobasePlatform extends ZB_Singleton
     {
         $modules = $this->retreiveKeyValueData( 'modules', array() );
 
-        if ( !empty($modules) )
-        {
-            foreach( $modules as $config )
-            {
+        if ( !empty( $modules ) ) {
+            foreach ( $modules as $config ) {
                 $this->loadPostType( $config );
             }
 
@@ -212,20 +209,18 @@ class ZerobasePlatform extends ZB_Singleton
 
     /**
      * Loads an specific post type to the platform
+     *
      * @param array $config
      */
     private function loadPostType( array $config )
     {
         $classes = $this->retreiveKeyValueData( 'classes', array() );
-        $post_types_dir = $config[ 'path' ].'/post_types/';
-        if ( is_dir( $post_types_dir ) )
-        {
+        $post_types_dir = $config[ 'path' ] . '/post_types/';
+        if ( is_dir( $post_types_dir ) ) {
             $handle = opendir( $post_types_dir );
-            while( false !== ( $file = readdir( $handle ) ) )
-            {
-                if ( strpos( $file, '_post_type.php' ) )
-                {
-                    include_once( $post_types_dir.$file );
+            while ( false !== ( $file = readdir( $handle ) ) ) {
+                if ( strpos( $file, '_post_type.php' ) ) {
+                    include_once( $post_types_dir . $file );
                     $class_name = str_replace( '.php', '', $file );
                     $classes[ $class_name ] = new $class_name();
                 }
@@ -247,15 +242,12 @@ class ZerobasePlatform extends ZB_Singleton
     public function registerPostTypes()
     {
         $classes = $this->retreiveKeyValueData( 'classes', array() );
-        if ( !empty( $classes ) )
-        {
-            foreach ( $classes as $class )
-            {
+        if ( !empty( $classes ) ) {
+            foreach ( $classes as $class ) {
                 /** @var $class \ZB_BasePostType */
                 $class->registerPostType();
                 $class->registerMetaboxes();
-                if (is_admin())
-                {
+                if ( is_admin() ) {
                     $this->registerPostTypesSettings( $class );
                 }
             }
@@ -265,25 +257,23 @@ class ZerobasePlatform extends ZB_Singleton
     /**
      * Register the settings of an specific post type
      */
-    private function registerPostTypesSettings(ZB_PostTypeInterface $class)
+    private function registerPostTypesSettings( ZB_PostTypeInterface $class )
     {
         $settings = ZB_Settings::getInstance();
-        $postTypeBag = $settings->getBag('post_types');
-        foreach($class->getOptions() as $key => $options)
-        {
-            $postTypeBag->addSetting($key, $options['widget'], $options, $class->getName());
+        $postTypeBag = $settings->getBag( 'post_types' );
+        foreach ( $class->getOptions() as $key => $options ) {
+            $postTypeBag->addSetting( $key, $options[ 'widget' ], $options, $class->getName() );
         }
     }
+
     /**
      * Register the post type taxonomies
      */
     public function registerTaxonomies()
     {
         $classes = $this->retreiveKeyValueData( 'classes', array() );
-        if ( !empty( $classes ) )
-        {
-            foreach ( $classes as $class )
-            {
+        if ( !empty( $classes ) ) {
+            foreach ( $classes as $class ) {
                 /** @var $class \ZB_BasePostType */
                 $class->registerTaxonomy();
             }
@@ -302,24 +292,24 @@ class ZerobasePlatform extends ZB_Singleton
         //Register the color picker script & styles
         wp_register_script(
             'zerobase_js_colorpicker',
-            plugins_url( '/assets/js/colorpicker.min.js' , __FILE__ ),
+            plugins_url( '/assets/js/colorpicker.min.js', __FILE__ ),
             array(
                 'jquery'
             ),
-            NULL,
+            null,
             true
         );
         wp_register_style(
             'zerobase_css_colorpicker',
-            plugins_url( '/assets/css/colorpicker.css' , __FILE__ )
+            plugins_url( '/assets/css/colorpicker.css', __FILE__ )
         );
         wp_register_style(
             'zerobase_uikit',
-            plugins_url( '/assets/lib/uikit/css/uikit.min.css' , __FILE__ )
+            plugins_url( '/assets/lib/uikit/css/uikit.min.css', __FILE__ )
         );
         wp_register_style(
             'zerobase_uikit_almost_flat',
-            plugins_url( '/assets/lib/uikit/css/uikit.almost-flat.min.css' , __FILE__ ),
+            plugins_url( '/assets/lib/uikit/css/uikit.almost-flat.min.css', __FILE__ ),
             array(
                 'zerobase_uikit'
             )
@@ -330,14 +320,14 @@ class ZerobasePlatform extends ZB_Singleton
         );
         wp_register_script(
             'zerobase_uikit_js',
-            plugins_url( '/assets/lib/uikit/js/uikit.min.js' , __FILE__ ),
+            plugins_url( '/assets/lib/uikit/js/uikit.min.js', __FILE__ ),
             array(),
-            NULL,
+            null,
             true
         );
         wp_register_script(
             'zerobase_js_forms',
-            plugins_url( '/assets/js/forms.js' , __FILE__ ),
+            plugins_url( '/assets/js/forms.js', __FILE__ ),
             array(
                 'jquery',
                 'jquery-ui-core',
@@ -348,7 +338,7 @@ class ZerobasePlatform extends ZB_Singleton
                 'zerobase_google_maps',
                 'zerobase_uikit_js'
             ),
-            NULL,
+            null,
             true
         );
         wp_localize_script( 'zerobase_js_forms', 'forms_trans', array(
@@ -361,7 +351,7 @@ class ZerobasePlatform extends ZB_Singleton
         ) );
         wp_register_style(
             'zerobase_css_forms',
-            plugins_url( '/assets/css/forms.css' , __FILE__ ),
+            plugins_url( '/assets/css/forms.css', __FILE__ ),
             array(
                 'thickbox',
                 'zerobase_uikit'
@@ -380,25 +370,24 @@ class ZerobasePlatform extends ZB_Singleton
      * @return string
      * @author Ramy Deeb
      */
-    static function slugify($text)
+    static function slugify( $text )
     {
         // replace non letter or digits by -
-        $text = preg_replace('~[^\\pL\d]+~u', '-', $text);
+        $text = preg_replace( '~[^\\pL\d]+~u', '-', $text );
 
         // trim
-        $text = trim($text, '-');
+        $text = trim( $text, '-' );
 
         // transliterate
-        $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+        $text = iconv( 'utf-8', 'us-ascii//TRANSLIT', $text );
 
         // lowercase
-        $text = strtolower($text);
+        $text = strtolower( $text );
 
         // remove unwanted characters
-        $text = preg_replace('~[^-\w]+~', '', $text);
+        $text = preg_replace( '~[^-\w]+~', '', $text );
 
-        if (empty($text))
-        {
+        if ( empty( $text ) ) {
             return 'n-a';
         }
 
@@ -412,19 +401,19 @@ class ZerobasePlatform extends ZB_Singleton
     public function initSettingsBag()
     {
         $settings = ZB_Settings::getInstance();
-        $settings->createBag('platform');
-        $settings->createBag('layout');
-        $settings->createBag('post_types');
-        $platform = $settings->getBag('platform');
-        $platform->addSetting('platform_use_cdn', 'radio_list', array(
+        $settings->createBag( 'platform' );
+        $settings->createBag( 'layout' );
+        $settings->createBag( 'post_types' );
+        $platform = $settings->getBag( 'platform' );
+        $platform->addSetting( 'platform_use_cdn', 'radio_list', array(
             'widget_options' => array(
                 'choices' => array(
-                    'cdn' => __('CDN copies of the files (faster)', 'zerobase'),
-                    'local' =>  __('Local copies of the libraries')
+                    'cdn'   => __( 'CDN copies of the files (faster)', 'zerobase' ),
+                    'local' => __( 'Local copies of the libraries' )
                 )
             ),
-            'default' => 'local'
-        ));
+            'default'        => 'local'
+        ) );
     }
 
     /**
@@ -432,36 +421,32 @@ class ZerobasePlatform extends ZB_Singleton
      */
     public function addAdminSettingsPage()
     {
-        $zerobase_settings_page = add_menu_page(__('Zerobase Options', 'zerobase'), __('Zerobase Options','zerobase'), 'manage_options', 'zerobase-settings', array($this, self::ZEROBASE_ADMIN_PAGE_PREFIX.'platform'), null, 100);
+        $zerobase_settings_page = add_menu_page( __( 'Zerobase Options', 'zerobase' ), __( 'Zerobase Options', 'zerobase' ), 'manage_options', 'zerobase-settings', array( $this, self::ZEROBASE_ADMIN_PAGE_PREFIX . 'platform' ), null, 100 );
         $settings = ZB_Settings::getInstance();
-        foreach($settings as $key => $bag)
-        {
+        foreach ( $settings as $key => $bag ) {
             /** @var $bag ZB_SettingsBag */
-            if ($key != 'platform' && !$bag->isEmpty())
-            {
-                add_submenu_page( 'zerobase-settings', __($key, 'zerobase'), __($key, 'zerobase'), 'manage_options', 'zerobase-settings-'.$key, array($this, self::ZEROBASE_ADMIN_PAGE_PREFIX.$key) );
+            if ( $key != 'platform' && !$bag->isEmpty() ) {
+                add_submenu_page( 'zerobase-settings', __( $key, 'zerobase' ), __( $key, 'zerobase' ), 'manage_options', 'zerobase-settings-' . $key, array( $this, self::ZEROBASE_ADMIN_PAGE_PREFIX . $key ) );
             }
         }
     }
 
     /**
      * Renders an Option page from its bag name
+     *
      * @param string $bagName
      */
-    public function renderOptionPage($bagName)
+    public function renderOptionPage( $bagName )
     {
         $dir = plugin_dir_path( __FILE__ );
-        $lib_dir = $dir.'/library';
-        $page_name = __($bagName, 'zerobase');
+        $lib_dir = $dir . '/library';
+        $page_name = __( $bagName, 'zerobase' );
         $settings = ZB_Settings::getInstance();
-        $bag = $settings->getBag($bagName);
-        $settings_pages = $bag->getPages($bagName);
-        if ($_SERVER['REQUEST_METHOD'] === 'POST')
-        {
-            foreach($settings_pages as $key => $form)
-            {
-                if ($form->isValid())
-                {
+        $bag = $settings->getBag( $bagName );
+        $settings_pages = $bag->getPages( $bagName );
+        if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
+            foreach ( $settings_pages as $key => $form ) {
+                if ( $form->isValid() ) {
                     $form->save();
                 }
             }
@@ -472,21 +457,20 @@ class ZerobasePlatform extends ZB_Singleton
 
     /**
      * We use this function to handle the calls to create option pages
+     *
      * @param string $name
-     * @param array $arguments
+     * @param array  $arguments
      */
-    public function __call($name, $arguments)
+    public function __call( $name, $arguments )
     {
-        if (strpos($name, self::ZEROBASE_ADMIN_PAGE_PREFIX) !== false)
-        {
-            $page = str_replace(self::ZEROBASE_ADMIN_PAGE_PREFIX, '', $name);
-            $this->renderOptionPage($page);
-        }
-        else
-        {
-            throw new BadFunctionCallException("Function \"$name\" doesn't exists in the ZeroBase Platform");
+        if ( strpos( $name, self::ZEROBASE_ADMIN_PAGE_PREFIX ) !== false ) {
+            $page = str_replace( self::ZEROBASE_ADMIN_PAGE_PREFIX, '', $name );
+            $this->renderOptionPage( $page );
+        } else {
+            throw new BadFunctionCallException( "Function \"$name\" doesn't exists in the ZeroBase Platform" );
         }
     }
 }
+
 //Instanciate the platform
 $zb_platform = ZerobasePlatform::getInstance();
