@@ -84,13 +84,13 @@ class ZerobasePlatform extends ZB_Singleton
     private function installPlatformTermsTables()
     {
         //Extend the database
-        require_once( plugin_dir_path( __FILE__ ) . '/installation/zerobase_create_tables.php' );
+        require_once( plugin_dir_path( __FILE__ ) . '/installation/ZB_Installer.php' );
         global $wpdb;
         $type = 'zerobase_term';
         $table_name = $wpdb->prefix . $type . 'meta';
         $variable_name = $type . 'meta';
         $wpdb->$variable_name = $table_name;
-        zerobase_create_metadata_table( $table_name, $type );
+        ZB_Installer::createMetadataTable( $table_name, $type );
     }
 
     /**

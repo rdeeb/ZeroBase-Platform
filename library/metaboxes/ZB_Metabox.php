@@ -58,7 +58,7 @@ class ZB_Metabox
      * @param WP_Post $post The Post Object
      * @return mixed
      **/
-    public function saveMetaInfo( $post_id, $post )
+    public function saveMetaInfo( $post_id, WP_Post $post )
     {
         $options = $this->options;
 
@@ -85,7 +85,7 @@ class ZB_Metabox
      * Renders the custom meta box
      * @return void
      **/
-    public function renderMetaBox( $post )
+    public function renderMetaBox( WP_Post $post )
     {
         $form  = $this->getForm( $post->ID );
         $nonce = wp_nonce_field( $this->options['id'], 'ZB_Metabox' );
