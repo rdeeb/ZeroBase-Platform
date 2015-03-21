@@ -215,7 +215,7 @@
         }
         if ($(item).find('.gmap-latlong').val() != "")
         {
-            mapOptions.center = $(item).find('.gmap-latlong').val();
+            mapOptions.center = getLatLngFromString($(item).find('.gmap-latlong').val());
         }
 
         var canvas = $(item).find('.map-canvas');
@@ -227,12 +227,12 @@
             title: 'Click to zoom'
         });
 
-        google.maps.event.addListener(map, 'center_changed', function() {
+        google.maps.event.addListener(map, 'click', function(e) {
             // 3 seconds after the center of the map has changed, pan back to the
             // marker.
             window.setTimeout(function() {
-                marker.setPosition(map.getCenter())
-                $(item).find('.gmap-latlong').val(map.getCenter());
+                marker.setPosition(e.latLng)
+                $(item).find('.gmap-latlong').val(e.latLng);
             }, 100);
         });
 
@@ -244,9 +244,15 @@
             window.setTimeout(function() {
                 $('.map-selector').css('width', '100%');
                 google.maps.event.trigger(map, 'resize');
+                map.center(getLatLngFromString($(item).find('.gmap-latlong').val()));
             }, 50);
             console.log('Map Visibility Change');
         });
+
+        function getLatLngFromString(ll) {
+            var latlng = ll.split(',')
+            return new google.maps.LatLng(parseFloat(latlng[0]), parseFloat(latlng[1]));
+        }
     });
 
 })(jQuery);

@@ -36,7 +36,7 @@ class InputGoogleMapsWidget extends ZB_BaseInputWidget
         {
             $this->attr['required'] = 'required';
         }
-        $this->attr['value'] = $this->getValue();
+        $this->attr['value'] = trim($this->getValue(), '()');
         $this->attr['type']  = $this->getType();
         $this->attr['class'] = isset( $this->attr['class'] ) ? $this->attr['class'].' gmap-latlong' : 'gmap-latlong';
 

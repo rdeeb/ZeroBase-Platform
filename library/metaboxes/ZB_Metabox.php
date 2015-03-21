@@ -131,7 +131,7 @@ class ZB_Metabox
                     $field_ops = array_merge( $defaults, $field_ops );
                     $type    = $field_ops['type'];
                     $default = $field_ops['default'];
-                    $value   = get_post_meta( $post_id, $name, true );
+                    $value   = get_post_meta( $post_id, $field, true );
                     $value   = $value ? $value : $default;
                     unset(
                         $field_ops['type'],
