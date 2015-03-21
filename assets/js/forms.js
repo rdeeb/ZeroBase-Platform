@@ -233,7 +233,19 @@
             window.setTimeout(function() {
                 marker.setPosition(map.getCenter())
                 $(item).find('.gmap-latlong').val(map.getCenter());
-            }, 500);
+            }, 100);
+        });
+
+        $(document).on('uk.tab.change', function(event, item){
+            window.setTimeout(function() {
+                $('.map-selector').css('width', '99%');
+                google.maps.event.trigger(map, 'resize');
+            }, 10);
+            window.setTimeout(function() {
+                $('.map-selector').css('width', '100%');
+                google.maps.event.trigger(map, 'resize');
+            }, 50);
+            console.log('Map Visibility Change');
         });
     });
 

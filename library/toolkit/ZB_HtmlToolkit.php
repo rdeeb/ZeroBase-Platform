@@ -67,6 +67,9 @@ class ZB_HtmlToolkit
      **/
     public static function buildLabel( $content, $attr = array() )
     {
+        $attr = array_merge(array(
+            'class' => 'uk-form-label'
+        ), $attr);
         return self::buildTag( 'label', $attr, false, $content );
     }
 }

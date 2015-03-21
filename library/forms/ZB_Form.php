@@ -169,7 +169,7 @@ class ZB_Form
 
     public function save()
     {
-        if ($this->isValid())
+        if ($this->isValid() && !empty($this->taintedValues))
         {
             foreach($this->taintedValues as $name => $value)
             {

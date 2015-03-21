@@ -42,9 +42,14 @@ abstract class ZB_AbstractRender implements ZB_RendererInterface
     public function renderRow($widgetName)
     {
         return ZB_HtmlToolkit::buildDiv(
-            $this->renderLabel( $widgetName ).$this->renderWidget( $widgetName ),
+            $this->renderLabel( $widgetName ).ZB_HtmlToolkit::buildDiv(
+                $this->renderWidget( $widgetName ),
+                array(
+                    'class' => 'uk-form-controls'
+                )
+            ),
             array(
-                'class' => 'form-group'
+                'class' => 'uk-form-row'
             )
         );
     }

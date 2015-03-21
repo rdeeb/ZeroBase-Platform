@@ -66,7 +66,7 @@ class ZB_Metabox
             return $post_id;
         }
 
-        if ( !current_user_can( 'edit_post' ) )
+        if ( !current_user_can( 'edit_posts' ) )
         {
             return $post_id;
         }
@@ -91,6 +91,12 @@ class ZB_Metabox
         $nonce = wp_nonce_field( $this->options['id'], 'ZB_Metabox' );
         switch ( $this->options['template'] )
         {
+            case 'tabbed':
+                extract( $this->options );
+                $renderer = $form->getRenderer();
+                $tabs = $this->getTabs();
+                require( __DIR__ . '/templates/zerobase_metabox_tabbed.php' );
+                break;
             case 'default':
             default:
                 extract( $this->options );
@@ -115,17 +121,61 @@ class ZB_Metabox
         {
             $options = array_merge( $defaults, $options );
             $type    = $options['type'];
-            $default = $options['default'];
-            $value   = get_post_meta( $post_id, $name, true );
-            $value   = $value ? $value : $default;
-            unset(
-                $options['type'],
-                $options['default']
-            );
-            $form->addWidget( $name, $type, $options, $value );
+            if ( $type == 'tabs' )
+            {
+                if (!isset($options['label']) || !$options['label']) {
+                    throw new Exception('Every tab must implement a Label');
+                }
+                foreach ( $options['fields'] as $field => $field_ops )
+                {
+                    $field_ops = array_merge( $defaults, $field_ops );
+                    $type    = $field_ops['type'];
+                    $default = $field_ops['default'];
+                    $value   = get_post_meta( $post_id, $name, true );
+                    $value   = $value ? $value : $default;
+                    unset(
+                        $field_ops['type'],
+                        $field_ops['default']
+                    );
+                    $form->addWidget( $field, $type, $field_ops, $value );
+                }
+            }
+            else
+            {
+                $default = $options['default'];
+                $value   = get_post_meta( $post_id, $name, true );
+                $value   = $value ? $value : $default;
+                unset(
+                    $options['type'],
+                    $options['default']
+                );
+                $form->addWidget( $name, $type, $options, $value );
+            }
         }
 
         return $form;
+    }
+
+    private function getTabs()
+    {
+        $tabs_array = array();
+        foreach ( $this->options['fields'] as $name => $options )
+        {
+            $type = $options['type'];
+            if ( $type == 'tabs' )
+            {
+                $tabs_array[$name] = array(
+                    'label' => $options['label'],
+                    'icon' => isset($options['icon']) ? $options['icon'] : NULL,
+                    'fields' => array()
+                );
+                foreach ( $options['fields'] as $field => $field_ops )
+                {
+                    $tabs_array[$name]['fields'][] = $field;
+                }
+            }
+        }
+        return $tabs_array;
     }
 
     /**
