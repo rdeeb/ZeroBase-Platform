@@ -7,126 +7,43 @@
  * @license Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. http://creativecommons.org/licenses/by-nc-nd/3.0/.
  */
 
-abstract class ZB_BasePostType implements ZB_PostTypeInterface
+class ZB_BasePostType
 {
-    protected $metaboxes = array();
+    protected $name;
+    protected $config;
 
-    public function __construct()
-    {
-        //Registers the hooks for the metaboxes, widgets and scripts (if any)
-        add_action( 'widgets_init', array( &$this, 'registerWidgets' ) );
-        add_action( 'wp_register_scripts', array( &$this, 'registerScripts' ) );
+    public function __construct( $name, array $config ) {
+        $this->name = $name;
+        $this->config = $this->sanitizeConfig( $config );
     }
 
-    /**
-     * Configure
-     * Makes the post type available in Wordpress
-     *
-     * @return void
-     **/
-    public function configure()
-    {
-        //Register the Post Type, taxonomies, and metaboxes (if any)
-        $this->registerPostType();
-        $this->registerTaxonomy();
+    private function sanitizeConfig( array $config ) {
+        $default = array (
+          'labels' =>
+            array (
+              'add_new' => 'Add New',
+              'add_new_item' => 'Add New Item',
+              'edit_item' => 'Edit Item',
+              'new_item' => 'New Item',
+              'all_items' => 'All Items',
+              'view_item' => 'View Item',
+              'search_items' => 'Search Items',
+              'not_found' => 'No items where found',
+              'not_found_in_trash' => 'No items where foind in the trash bin',
+              'parent_item_colon' => ':',
+            ),
+          'arguments' =>
+            array (
+              'public' => true,
+              'menu_position' => 5,
+            )
+        );
+        return array_merge( $default, $config );
     }
 
-    /**
-     * getName
-     * Returns the name of the post type
-     *
-     * @throws Exception
-     * @return string
-     */
-    public function getName()
-    {
-        throw new Exception( 'This function needs to be implemented' );
-    }
-
-    /**
-     * getDescription
-     * Returns the description of the post type
-     *
-     * @return string
-     **/
-    public function getDescription()
-    {
-        throw new Exception( 'This function needs to be implemented' );
-    }
-
-    /**
-     * getOptions
-     * Returns the post type options
-     *
-     * @return array
-     **/
-    public function getOptions()
-    {
-        throw new Exception( 'This function needs to be implemented' );
-    }
-
-    /**
-     * registerPostType Registers the post type itself
-     *
-     * @return void
-     **/
-    public function registerPostType()
-    {
-        return;
-    }
-
-    /**
-     * registerTaxonomy Register the custom taxonomies
-     *
-     * @return void
-     **/
-    public function registerTaxonomy()
-    {
-        return;
-    }
-
-    /**
-     * registerMetaboxes Registers the custom metaboxes
-     *
-     * @return array
-     **/
-    public function registerMetaboxes()
-    {
-        return;
-    }
-
-    /**
-     * registerWidgets Register the post type widgets
-     *
-     * @return void
-     */
-    public function registerWidgets()
-    {
-        return;
-    }
-
-    /**
-     * registerScripts Registers the required scripts & styles for this post type
-     *
-     * @return void
-     */
-    public function registerScripts()
-    {
-        return;
-    }
-
-    /**
-     * Returns the configured metaboxes
-     *
-     * @return array
-     */
-    public function getMetaboxes()
-    {
-        return $this->metaboxes;
-    }
-
-    protected function addMetabox( array $config )
-    {
-        $this->metaboxes[] = new ZB_Metabox( $config );
+    public function register() {
+        $arguments = $this->config['arguments'];
+        $arguments['labels'] = $this->config['labels'];
+        register_post_type($this->name, $arguments);
     }
 }

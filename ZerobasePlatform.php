@@ -63,12 +63,11 @@ class ZerobasePlatform extends ZB_Singleton
         require_once( $libraryPath . '/forms/models/ZB_ModelFactory.php' );
         require_once( $libraryPath . '/forms/ZB_Form.php' );
         require_once( $libraryPath . '/forms/ZB_FormFactory.php' );
-
         //Metaboxes
         require_once( $libraryPath . '/metaboxes/ZB_Metabox.php' );
         //Post Types
-        require_once( $libraryPath . '/post-types/ZB_PostTypeInterface.php' );
         require_once( $libraryPath . '/post-types/ZB_BasePostType.php' );
+        require_once( $libraryPath . '/post-types/ZB_PostTypeLoader.php' );
         //Taxonomiy extender
         require_once( $libraryPath . '/taxonomies/ZB_TaxonomyExtender.php' );
         //Widgets
@@ -76,6 +75,8 @@ class ZerobasePlatform extends ZB_Singleton
         //Settings
         require_once( $libraryPath . '/settings/ZB_Settings.php' );
         require_once( $libraryPath . '/settings/ZB_SettingsBag.php' );
+        //Vendor files
+        require_once( $libraryPath . '/../vendor/vendor_autoloader.php' );
     }
 
     /**
@@ -116,7 +117,6 @@ class ZerobasePlatform extends ZB_Singleton
         //Adding Actions;
         add_action( 'plugins_loaded', array( &$this, 'executeAfterPluginsSetupHooks' ), 1 );
         add_action( 'after_setup_theme', array( &$this, 'executeAfterThemeSetupHooks' ), 1 );
-        add_action( 'after_setup_theme', array( &$this, 'loadModules' ), 2 );
         add_action( 'init', array( &$this, 'registerPostTypes' ), 10 );
         add_action( 'init', array( &$this, 'registerTaxonomies' ), 11 );
         //Configuring the Admin panel
@@ -194,18 +194,6 @@ class ZerobasePlatform extends ZB_Singleton
         return true;
     }
 
-    public function loadModules()
-    {
-        $modules = $this->retreiveKeyValueData( 'modules', array() );
-
-        if ( !empty( $modules ) ) {
-            foreach ( $modules as $config ) {
-                $this->loadPostType( $config );
-            }
-
-        }
-    }
-
     /**
      * Loads an specific post type to the platform
      *
@@ -215,7 +203,9 @@ class ZerobasePlatform extends ZB_Singleton
     {
         $classes = $this->retreiveKeyValueData( 'classes', array() );
         $post_types_dir = $config[ 'path' ] . '/post_types/';
-        if ( is_dir( $post_types_dir ) ) {
+        $loader = new ZB_PostTypeLoader( $post_types_dir );
+        $loader->load();
+        /*if ( is_dir( $post_types_dir ) ) {
             $handle = opendir( $post_types_dir );
             while ( false !== ( $file = readdir( $handle ) ) ) {
                 if ( strpos( $file, '_post_type.php' ) ) {
@@ -224,7 +214,7 @@ class ZerobasePlatform extends ZB_Singleton
                     $classes[ $class_name ] = new $class_name();
                 }
             }
-        }
+        }*/
         $this->storeKeyValueData( 'classes', $classes );
     }
 
@@ -240,28 +230,12 @@ class ZerobasePlatform extends ZB_Singleton
 
     public function registerPostTypes()
     {
-        $classes = $this->retreiveKeyValueData( 'classes', array() );
-        if ( !empty( $classes ) ) {
-            foreach ( $classes as $class ) {
-                /** @var $class \ZB_BasePostType */
-                $class->registerPostType();
-                $class->registerMetaboxes();
-                if ( is_admin() ) {
-                    $this->registerPostTypesSettings( $class );
-                }
-            }
-        }
-    }
+        $modules = $this->retreiveKeyValueData( 'modules', array() );
 
-    /**
-     * Register the settings of an specific post type
-     */
-    private function registerPostTypesSettings( ZB_PostTypeInterface $class )
-    {
-        $settings = ZB_Settings::getInstance();
-        $postTypeBag = $settings->getBag( 'post_types' );
-        foreach ( $class->getOptions() as $key => $options ) {
-            $postTypeBag->addSetting( $key, $options[ 'widget' ], $options, $class->getName() );
+        if ( !empty( $modules ) ) {
+            foreach ( $modules as $config ) {
+                $this->loadPostType( $config );
+            }
         }
     }
 
