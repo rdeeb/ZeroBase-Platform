@@ -67,8 +67,9 @@ class ZerobasePlatform extends ZB_Singleton
         require_once( $libraryPath . '/metaboxes/ZB_Metabox.php' );
         //Post Types
         require_once( $libraryPath . '/post-types/ZB_BasePostType.php' );
-        require_once( $libraryPath . '/post-types/ZB_PostTypeLoader.php' );
-        //Taxonomiy extender
+        //Module handling
+        require_once( $libraryPath . '/modules/ZB_ModuleLoader.php' );
+        //Taxonomy extender
         require_once( $libraryPath . '/taxonomies/ZB_TaxonomyExtender.php' );
         //Widgets
         require_once( $libraryPath . '/widgets/ZB_BaseWidget.php' );
@@ -101,7 +102,7 @@ class ZerobasePlatform extends ZB_Singleton
     {
         $this->dataStorage = get_option( 'zerobase_platform_data_storage', array() );
         if ( empty( $this->dataStorage ) ) {
-            $this->storeKeyValueData( 'version', '0.2' );
+            $this->storeKeyValueData( 'version', '0.5' );
         }
         //Configure the basic settings bag
         if ( is_admin() ) {
@@ -117,8 +118,9 @@ class ZerobasePlatform extends ZB_Singleton
         //Adding Actions;
         add_action( 'plugins_loaded', array( &$this, 'executeAfterPluginsSetupHooks' ), 1 );
         add_action( 'after_setup_theme', array( &$this, 'executeAfterThemeSetupHooks' ), 1 );
-        add_action( 'init', array( &$this, 'registerPostTypes' ), 10 );
-        add_action( 'init', array( &$this, 'registerTaxonomies' ), 11 );
+        add_action( 'init', array( &$this, 'registerModules' ), 10 );
+        add_action( 'wp_enqueue_scripts', array( &$this, 'registerScripts' ), 10 );
+        add_action( 'wp_enqueue_scripts', array( &$this, 'enqueueScripts' ), 90 );
         //Configuring the Admin panel
         if ( is_admin() ) {
             add_action( 'admin_menu', array( &$this, 'addAdminSettingsPage' ), 2 );
@@ -165,13 +167,19 @@ class ZerobasePlatform extends ZB_Singleton
      */
     public function addModule( array $config )
     {
-        try {
+        try
+        {
             $this->validateModuleConfiguration( $config );
-            $modules = $this->retreiveKeyValueData( 'modules', array() );
-            $modules[ self::slugify( $config[ 'name' ] ) ] = $config;
-            $this->storeKeyValueData( 'modules', $modules );
-        } catch ( Exception $e ) {
+            $module_loader = ZB_ModuleLoader::getInstance();
+            $module_loader->addModule( self::slugify( $config[ 'name' ] ), $config );
         }
+        catch ( Exception $e ) {}
+    }
+
+    public function enqueueScripts()
+    {
+        $module_loader = ZB_ModuleLoader::getInstance();
+        $module_loader->enqueue();
     }
 
     /**
@@ -194,30 +202,6 @@ class ZerobasePlatform extends ZB_Singleton
         return true;
     }
 
-    /**
-     * Loads an specific post type to the platform
-     *
-     * @param array $config
-     */
-    private function loadPostType( array $config )
-    {
-        $classes = $this->retreiveKeyValueData( 'classes', array() );
-        $post_types_dir = $config[ 'path' ] . '/post_types/';
-        $loader = new ZB_PostTypeLoader( $post_types_dir );
-        $loader->load();
-        /*if ( is_dir( $post_types_dir ) ) {
-            $handle = opendir( $post_types_dir );
-            while ( false !== ( $file = readdir( $handle ) ) ) {
-                if ( strpos( $file, '_post_type.php' ) ) {
-                    include_once( $post_types_dir . $file );
-                    $class_name = str_replace( '.php', '', $file );
-                    $classes[ $class_name ] = new $class_name();
-                }
-            }
-        }*/
-        $this->storeKeyValueData( 'classes', $classes );
-    }
-
     public function executeAfterThemeSetupHooks()
     {
         do_action( 'zerobase_load_modules', $this );
@@ -228,30 +212,10 @@ class ZerobasePlatform extends ZB_Singleton
         do_action( 'zerobase_load_plugins', $this );
     }
 
-    public function registerPostTypes()
+    public function registerModules()
     {
-        $modules = $this->retreiveKeyValueData( 'modules', array() );
-
-        if ( !empty( $modules ) ) {
-            foreach ( $modules as $config ) {
-                $this->loadPostType( $config );
-            }
-        }
-    }
-
-    /**
-     * Register the post type taxonomies
-     */
-    public function registerTaxonomies()
-    {
-        $classes = $this->retreiveKeyValueData( 'classes', array() );
-        if ( !empty( $classes ) ) {
-            foreach ( $classes as $class ) {
-                /** @var $class \ZB_BasePostType */
-                $class->registerTaxonomy();
-            }
-        }
-
+        $module_loader = ZB_ModuleLoader::getInstance();
+        $module_loader->load();
     }
 
     /**
