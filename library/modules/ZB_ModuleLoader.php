@@ -15,6 +15,7 @@ class ZB_ModuleLoader extends ZB_Singleton {
         foreach( $this->modules as $index => $config ) {
             $this->loadPostTypes( $config );
             $this->loadScripts( $config );
+            $this->loadMetaBoxes( $config );
             $this->modules[$index] = $config;
         }
     }
@@ -40,6 +41,21 @@ class ZB_ModuleLoader extends ZB_Singleton {
         }
     }
 
+    private function loadMetaBoxes( array &$config ) {
+        foreach ( $this->getYamlFromDir( $config['path'], '.metabox.yml' ) as $file ) {
+            $file_contents = file_get_contents( $file );
+            $yaml_result = \Symfony\Component\Yaml\Yaml::parse($file_contents);
+            $config['metaboxes'] = array();
+            foreach ( $yaml_result as $metabox_name => $metabox_config ) {
+                if ( $metabox_name ) {
+                    $metabox_config['id'] = $metabox_name;
+                    $object = new ZB_Metabox( $metabox_config );
+                    $config['metaboxes'][] = $object;
+                }
+            }
+        }
+    }
+
     private function loadTaxonomies() {
         foreach ( $this->getYamlFromDir( '.taxonomy.yml' ) as $file ) {
             $file_contents = file_get_contents( $file );
@@ -58,13 +74,13 @@ class ZB_ModuleLoader extends ZB_Singleton {
             $file_contents = file_get_contents( $file );
             $yaml_result = \Symfony\Component\Yaml\Yaml::parse($file_contents);
             $config['scripts'] = array();
-            foreach ( $yaml_result as $script_name => $config ) {
+            foreach ( $yaml_result as $script_name => $script_config ) {
                 if ( $script_name ) {
-                    if (!isset($config['path'])) {
+                    if (!isset($script_config['path'])) {
                         throw new Exception('A path for the script should be defined');
                     }
-                    $config['path'] = plugin_dir_url( __FILE__ ) . $config['path'];
-                    $this->registerScript( $script_name, $config );
+                    $script_config['path'] = plugin_dir_url( __FILE__ ) . $script_config['path'];
+                    $this->registerScript( $script_name, $script_config );
                     $config['scripts'][] = $script_name;
                 }
             }
