@@ -17,6 +17,7 @@ class ZerobasePlatform extends ZB_Singleton
 {
     private $dataStorage = array();
     CONST ZEROBASE_ADMIN_PAGE_PREFIX = 'zerobase_settings_page_';
+    
 
     /**
      * __construct Initializes the platform
@@ -25,6 +26,9 @@ class ZerobasePlatform extends ZB_Singleton
      */
     protected function __construct()
     {
+        DEFINE( 'ZEROBASE_ROOT_DIR', plugin_dir_path( __FILE__ ));
+        DEFINE( 'ZEROBASE_LIBRARY_DIR', ZEROBASE_ROOT_DIR . '/library' );
+        DEFINE( 'ZEROBASE_VENDOR_DIR', ZEROBASE_ROOT_DIR . '/vendor' );
         //Load the files
         $this->loadPlatformRequiredFiles();
         //Install platform terms tables
@@ -38,46 +42,33 @@ class ZerobasePlatform extends ZB_Singleton
     }
 
     /**
-     * Returns the platform library path
-     * @return string
-     */
-    private function getPlatformLibraryDir()
-    {
-        // Define the plugin base directory
-        $dir = plugin_dir_path( __FILE__ );
-
-        return $dir . '/library';
-    }
-
-    /**
      * Loads the required files for the platform
      */
     private function loadPlatformRequiredFiles()
     {
-        $libraryPath = $this->getPlatformLibraryDir();
         //Toolkit
-        require_once( $libraryPath . '/toolkit/ZB_HtmlToolkit.php' );
+        require_once( ZEROBASE_LIBRARY_DIR . '/toolkit/ZB_HtmlToolkit.php' );
         //Forms
-        require_once( $libraryPath . '/forms/widgets/ZB_WidgetFactory.php' );
-        require_once( $libraryPath . '/forms/validators/ZB_ValidatorFactory.php' );
-        require_once( $libraryPath . '/forms/models/ZB_ModelFactory.php' );
-        require_once( $libraryPath . '/forms/ZB_Form.php' );
-        require_once( $libraryPath . '/forms/ZB_FormFactory.php' );
+        require_once( ZEROBASE_LIBRARY_DIR . '/forms/widgets/ZB_WidgetFactory.php' );
+        require_once( ZEROBASE_LIBRARY_DIR . '/forms/validators/ZB_ValidatorFactory.php' );
+        require_once( ZEROBASE_LIBRARY_DIR . '/forms/models/ZB_ModelFactory.php' );
+        require_once( ZEROBASE_LIBRARY_DIR . '/forms/ZB_Form.php' );
+        require_once( ZEROBASE_LIBRARY_DIR . '/forms/ZB_FormFactory.php' );
         //Metaboxes
-        require_once( $libraryPath . '/metaboxes/ZB_Metabox.php' );
+        require_once( ZEROBASE_LIBRARY_DIR . '/metaboxes/ZB_Metabox.php' );
         //Post Types
-        require_once( $libraryPath . '/post-types/ZB_BasePostType.php' );
+        require_once( ZEROBASE_LIBRARY_DIR . '/post-types/ZB_BasePostType.php' );
         //Module handling
-        require_once( $libraryPath . '/modules/ZB_ModuleLoader.php' );
+        require_once( ZEROBASE_LIBRARY_DIR . '/modules/ZB_ModuleLoader.php' );
         //Taxonomy extender
-        require_once( $libraryPath . '/taxonomies/ZB_TaxonomyExtender.php' );
+        require_once( ZEROBASE_LIBRARY_DIR . '/taxonomies/ZB_TaxonomyExtender.php' );
         //Widgets
-        require_once( $libraryPath . '/widgets/ZB_BaseWidget.php' );
+        require_once( ZEROBASE_LIBRARY_DIR . '/widgets/ZB_BaseWidget.php' );
         //Settings
-        require_once( $libraryPath . '/settings/ZB_Settings.php' );
-        require_once( $libraryPath . '/settings/ZB_SettingsBag.php' );
+        require_once( ZEROBASE_LIBRARY_DIR . '/settings/ZB_Settings.php' );
+        require_once( ZEROBASE_LIBRARY_DIR . '/settings/ZB_SettingsBag.php' );
         //Vendor files
-        require_once( $libraryPath . '/../vendor/vendor_autoloader.php' );
+        require_once( ZEROBASE_VENDOR_DIR . '/vendor_autoloader.php' );
     }
 
     /**
@@ -86,7 +77,7 @@ class ZerobasePlatform extends ZB_Singleton
     private function installPlatformTermsTables()
     {
         //Extend the database
-        require_once( plugin_dir_path( __FILE__ ) . '/installation/ZB_Installer.php' );
+        require_once( ZEROBASE_ROOT_DIR . '/installation/ZB_Installer.php' );
         global $wpdb;
         $type = 'zerobase_term';
         $table_name = $wpdb->prefix . $type . 'meta';
@@ -338,19 +329,22 @@ class ZerobasePlatform extends ZB_Singleton
     public function initSettingsBag()
     {
         $settings = ZB_Settings::getInstance();
-        $settings->createBag( 'platform' );
+        $settings->createBag( 'performance' );
         $settings->createBag( 'layout' );
         $settings->createBag( 'post_types' );
-        $platform = $settings->getBag( 'platform' );
-        $platform->addSetting( 'platform_use_cdn', 'radio_list', array(
-            'widget_options' => array(
-                'choices' => array(
-                    'cdn'   => __( 'CDN copies of the files (faster)', 'zerobase' ),
-                    'local' => __( 'Local copies of the libraries' )
-                )
-            ),
-            'default'        => 'local'
-        ) );
+        $performance = $settings->getBag( 'performance' );
+        $performance
+            ->addSetting( 'platform_use_cdn', 'radio_list', array(
+                'widget_options' => array(
+                    'label' => 'Use CDN for JS library files',
+                    'choices' => array(
+                        'cdn'   => __( 'CDN copies of the files (faster)', 'zerobase' ),
+                        'local' => __( 'Local copies of the libraries', 'zerobase' )
+                    )
+                ),
+                'default'        => 'local'
+            ) )
+        ;
     }
 
     /**
@@ -358,11 +352,11 @@ class ZerobasePlatform extends ZB_Singleton
      */
     public function addAdminSettingsPage()
     {
-        add_menu_page( __( 'Zerobase Options', 'zerobase' ), __( 'Zerobase Options', 'zerobase' ), 'manage_options', 'zerobase-settings', array( $this, self::ZEROBASE_ADMIN_PAGE_PREFIX . 'platform' ), null, 100 );
+        add_menu_page( __( 'Zerobase Options', 'zerobase' ), __( 'Zerobase Options', 'zerobase' ), 'manage_options', 'zerobase-settings', array( $this, self::ZEROBASE_ADMIN_PAGE_PREFIX . 'performance' ), null, 100 );
         $settings = ZB_Settings::getInstance();
         foreach ( $settings as $key => $bag ) {
             /** @var $bag ZB_SettingsBag */
-            if ( $key != 'platform' && !$bag->isEmpty() ) {
+            if ( $key != 'performance' && !$bag->isEmpty() ) {
                 add_submenu_page( 'zerobase-settings', __( $key, 'zerobase' ), __( $key, 'zerobase' ), 'manage_options', 'zerobase-settings-' . $key, array( $this, self::ZEROBASE_ADMIN_PAGE_PREFIX . $key ) );
             }
         }
@@ -409,5 +403,5 @@ class ZerobasePlatform extends ZB_Singleton
     }
 }
 
-//Instanciate the platform
+//Instantiate the platform
 $zb_platform = ZerobasePlatform::getInstance();

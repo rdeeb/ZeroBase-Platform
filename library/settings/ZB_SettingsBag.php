@@ -30,6 +30,7 @@ class ZB_SettingsBag implements Iterator, ArrayAccess
                 'options' => $options,
                 'section' => $section
             ));
+            return $this;
         }
         else
         {

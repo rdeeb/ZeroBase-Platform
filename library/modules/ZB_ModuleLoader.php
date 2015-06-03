@@ -27,7 +27,7 @@ class ZB_ModuleLoader extends ZB_Singleton {
     }
 
     private function loadPostTypes( array &$config ) {
-        foreach ( $this->getYamlFromDir( $config['path'], '.post_type.yml' ) as $file ) {
+        foreach ( $this->getYamlFilesFromDir( $config['path'], '.post_type.yml' ) as $file ) {
             $file_contents = file_get_contents( $file );
             $yaml_result = \Symfony\Component\Yaml\Yaml::parse($file_contents);
             $config['post_types'] = array();
@@ -42,7 +42,7 @@ class ZB_ModuleLoader extends ZB_Singleton {
     }
 
     private function loadMetaBoxes( array &$config ) {
-        foreach ( $this->getYamlFromDir( $config['path'], '.metabox.yml' ) as $file ) {
+        foreach ( $this->getYamlFilesFromDir( $config['path'], '.metabox.yml' ) as $file ) {
             $file_contents = file_get_contents( $file );
             $yaml_result = \Symfony\Component\Yaml\Yaml::parse($file_contents);
             $config['metaboxes'] = array();
@@ -56,8 +56,23 @@ class ZB_ModuleLoader extends ZB_Singleton {
         }
     }
 
+    private function loadWidgets( array &$config ) {
+        foreach ( $this->getYamlFilesFromDir( $config['path'], '.widget.yml' ) as $file ) {
+            $file_contents = file_get_contents( $file );
+            $yaml_result = \Symfony\Component\Yaml\Yaml::parse($file_contents);
+            $config['widgets'] = array();
+            foreach ( $yaml_result as $widget_name => $widget_config ) {
+                if ( $widget_name ) {
+                    $widget_config['id'] = $widget_name;
+                    $object = new ZB_Metabox( $widget_config );
+                    $config['widgets'][] = $object;
+                }
+            }
+        }
+    }
+
     private function loadTaxonomies() {
-        foreach ( $this->getYamlFromDir( '.taxonomy.yml' ) as $file ) {
+        foreach ( $this->getYamlFilesFromDir( '.taxonomy.yml' ) as $file ) {
             $file_contents = file_get_contents( $file );
             $yaml_result = \Symfony\Component\Yaml\Yaml::parse($file_contents);
             foreach ( $yaml_result as $post_type_name => $post_type_config ) {
@@ -70,7 +85,7 @@ class ZB_ModuleLoader extends ZB_Singleton {
     }
 
     private function loadScripts( array &$config ) {
-        foreach ( $this->getYamlFromDir( $config['path'], '.script.yml' ) as $file ) {
+        foreach ( $this->getYamlFilesFromDir( $config['path'], '.script.yml' ) as $file ) {
             $file_contents = file_get_contents( $file );
             $yaml_result = \Symfony\Component\Yaml\Yaml::parse($file_contents);
             $config['scripts'] = array();
@@ -109,7 +124,7 @@ class ZB_ModuleLoader extends ZB_Singleton {
         );
     }
 
-    private function getYamlFromDir( $path, $mask = '.yml' ) {
+    private function getYamlFilesFromDir( $path, $mask = '.yml' ) {
         $post_types = array();
         foreach( scandir( $path ) as $file ) {
             if ( strpos( $file, $mask ) !== false ) {
