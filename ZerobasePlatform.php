@@ -29,6 +29,7 @@ class ZerobasePlatform extends ZB_Singleton
         DEFINE( 'ZEROBASE_ROOT_DIR', plugin_dir_path( __FILE__ ));
         DEFINE( 'ZEROBASE_LIBRARY_DIR', ZEROBASE_ROOT_DIR . '/library' );
         DEFINE( 'ZEROBASE_VENDOR_DIR', ZEROBASE_ROOT_DIR . '/vendor' );
+        DEFINE( 'ZEROBASE_CACHE_DIR', ZEROBASE_ROOT_DIR . '/cache' );
         //Load the files
         $this->loadPlatformRequiredFiles();
         //Install platform terms tables
@@ -39,6 +40,9 @@ class ZerobasePlatform extends ZB_Singleton
         $this->addWordpressActionHooks();
         //Load the different locales
         load_plugin_textdomain( 'zerobase', false, dirname( plugin_basename( __FILE__ ) ) . '/locales/' );
+        if ( !is_dir( ZEROBASE_CACHE_DIR ) ) {
+            mkdir( ZEROBASE_CACHE_DIR );
+        }
     }
 
     /**
@@ -343,6 +347,15 @@ class ZerobasePlatform extends ZB_Singleton
                     )
                 ),
                 'default'        => 'local'
+            ) )
+            ->addSetting( 'cache', 'radio_list', array(
+                'widget_options' => array(
+                    'choices' => array(
+                        'enabled'   => __( 'Enabled (Recomended)', 'zerobase' ),
+                        'disabled' => __( 'Disabled (For developing use only, hurts performance)', 'zerobase' )
+                    )
+                ),
+                'default'        => 'enabled'
             ) )
         ;
     }
