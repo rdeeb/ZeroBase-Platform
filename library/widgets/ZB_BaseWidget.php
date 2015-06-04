@@ -137,7 +137,6 @@ abstract class ZB_BaseWidget extends WP_Widget
             );
             $form->addWidget( $name, $options['type'], $args, isset($instance[$name]) ? $instance[$name] : null );
         }
-
         return $form;
     }
 }
