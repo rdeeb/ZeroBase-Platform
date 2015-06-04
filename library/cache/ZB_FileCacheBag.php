@@ -4,9 +4,8 @@ include_once( 'ZB_CacheBagInterface.php' );
 class ZB_FileCacheBag implements ZB_CacheBagInterface
 {
     protected $hashes = array();
-    protected $name_space;
 
-    public function __cosntruct( $name_space )
+    public function __construct( $name_space )
     {
         $this->name_space = $name_space;
         $this->hashes = get_option( "zb_file_cache_{$this->name_space}_hashes", array() );
@@ -28,7 +27,8 @@ class ZB_FileCacheBag implements ZB_CacheBagInterface
     {
         $filename = $this->getCacheDir() . '/' . ZerobasePlatform::slugify( $key ) . '.cache';
         file_put_contents( $filename, $data );
-        $this->hashes[$filename] = md5_file($filename);
+        $this->hashes[ $filename ] = md5_file( $filename );
+        update_option( "zb_file_cache_{$this->name_space}_hashes", $this->hashes );
     }
 
     /**
@@ -43,6 +43,7 @@ class ZB_FileCacheBag implements ZB_CacheBagInterface
             {
                 return file_get_contents( $filename );
             }
+            return false;
         }
         return false;
     }
@@ -59,6 +60,7 @@ class ZB_FileCacheBag implements ZB_CacheBagInterface
             {
                 unlink( $filename );
                 unset( $this->hashes[ $filename ] );
+                update_option( "zb_file_cache_{$this->name_space}_hashes", $this->hashes );
             }
             return true;
         }
@@ -70,6 +72,6 @@ class ZB_FileCacheBag implements ZB_CacheBagInterface
 
     private function getCacheDir()
     {
-        return ZEROBASE_CACHE_DIR . '/' . ZerobasePlatform::slugify( $this->name_space );
+        return ZEROBASE_CACHE_DIR . '/' . $this->name_space;
     }
 }
