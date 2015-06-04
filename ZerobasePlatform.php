@@ -41,7 +41,7 @@ class ZerobasePlatform extends ZB_Singleton
         //Load the different locales
         load_plugin_textdomain( 'zerobase', false, dirname( plugin_basename( __FILE__ ) ) . '/locales/' );
         if ( !is_dir( ZEROBASE_CACHE_DIR ) ) {
-            mkdir( ZEROBASE_CACHE_DIR );
+            mkdir( ZEROBASE_CACHE_DIR, 755 );
         }
     }
 
