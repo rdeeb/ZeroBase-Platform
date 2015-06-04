@@ -73,6 +73,9 @@ class ZerobasePlatform extends ZB_Singleton
         require_once( ZEROBASE_LIBRARY_DIR . '/settings/ZB_SettingsBag.php' );
         //Vendor files
         require_once( ZEROBASE_VENDOR_DIR . '/vendor_autoloader.php' );
+        //Cache files
+        require_once( ZEROBASE_LIBRARY_DIR . '/cache/ZB_FileCache.php' );
+        require_once( ZEROBASE_LIBRARY_DIR . '/cache/ZB_FileCachebag.php' );
     }
 
     /**

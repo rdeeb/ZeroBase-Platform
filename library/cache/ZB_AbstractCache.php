@@ -1,4 +1,5 @@
 <?php
+include_once( 'ZB_CacheInterface.php' );
 
 abstract class ZB_AbstractCache extends ZB_Singleton implements ZB_CacheInterface
 {

@@ -1,4 +1,5 @@
 <?php
+include_once( 'ZB_AbstractCache.php' );
 
 class ZB_FileCache extends ZB_AbstractCache
 {

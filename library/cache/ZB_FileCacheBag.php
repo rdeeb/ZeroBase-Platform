@@ -1,4 +1,5 @@
 <?php
+include_once( 'ZB_CacheBagInterface.php' );
 
 class ZB_FileCacheBag implements ZB_CacheBagInterface
 {
