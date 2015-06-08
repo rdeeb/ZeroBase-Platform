@@ -68,8 +68,7 @@ class ZB_ModuleLoader extends ZB_Singleton {
     {
         $cache_bag = ZB_FileCache::getInstance()->createCache( 'config' );
         $loaded_post_types = $cache_bag->retreive( 'cached_' . $cache );
-        var_export($loaded_post_types);
-        if ( $loaded_post_types === false )
+        if ( $loaded_post_types !== false )
         {
             if ( !empty( $loaded_post_types ) )
             {
@@ -107,7 +106,7 @@ class ZB_ModuleLoader extends ZB_Singleton {
                         $loaded_post_types = array();
                     }
                     $loaded_post_types[] = $post_type_name;
-                    $cache_bag->store( 'cached_post_types', 'return ' . var_export( $loaded_post_types, true ) );
+                    $cache_bag->store( 'cached_post_types', '<?php return ' . var_export( $loaded_post_types, true ) . ' ?>' );
                 }
             }
         }

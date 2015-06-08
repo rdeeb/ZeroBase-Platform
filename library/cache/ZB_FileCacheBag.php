@@ -39,9 +39,9 @@ class ZB_FileCacheBag implements ZB_CacheBagInterface
         $filename = $this->getCacheDir() . '/' . ZerobasePlatform::slugify( $key ) . '.cache';
         if ( file_exists( $filename ) )
         {
-            if ( isset( $this->hashes[$filename] ) && md5_file( $filename ) == $this->hashes[$filename] )
+            if ( isset( $this->hashes[ $filename ] ) && md5_file( $filename ) == $this->hashes[ $filename ] )
             {
-                return include( $filename );
+                return require( $filename );
             }
             return false;
         }
