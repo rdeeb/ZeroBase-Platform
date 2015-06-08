@@ -2,65 +2,60 @@
 
 include_once( 'ZB_AbstractImporter.php' );
 
-class ZB_PostTypeImporter extends ZB_AbstractImporter
+class ZB_TaxonomyImporter extends ZB_AbstractImporter
 {
     protected $allowed_keys = array(
+      'label',
       'labels',
-      'arguments',
       'name',
       'singular_name',
       'menu_name',
       'all_items',
-      'add_new',
-      'add_new_item',
       'edit_item',
-      'new_item',
       'view_item',
-      'search_items',
-      'not_found',
-      'not_found_in_trash',
+      'update_item',
+      'add_new_item',
+      'new_item_name',
       'parent_item_colon',
-      'label',
-      'description',
+      'search_items',
+      'popular_items',
+      'separate_items_with_commas',
+      'add_or_remove_items',
+      'choose_from_most_used',
+      'not_found',
       'public',
-      'exclude_from_search',
-      'publicly_queryable',
       'show_ui',
       'show_in_nav_menus',
-      'show_in_menu',
-      'show_in_admin_bar',
-      'menu_position',
-      'menu_icon',
-      'capability_type',
-      'capabilities',
-      'edit_post',
-      'edit_posts',
-      'edit_others_posts',
-      'publish_posts',
-      'read_private_posts',
-      'read_post',
-      'delete_post',
-      'map_meta_cap',
+      'show_tagcloud',
+      'show_in_quick_edit',
+      'meta_box_cb',
+      'show_admin_column',
       'hierarchical',
-      'supports',
-      'taxonomies',
-      'has_archive',
-      'permalink_epmask',
+      'update_count_callback',
+      'query_var',
       'rewrite',
       'slug',
       'with_front',
-      'feeds',
-      'pages',
+      'hierarchical',
       'ep_mask',
-      'query_var',
-      'can_export',
-
+      'capabilities',
+      'manage_terms',
+      'edit_terms',
+      'delete_terms',
+      'assign_terms',
+      'sort',
+      'fields',
+      'post_type'
     );
 
     public static function load( $key, array $config )
     {
         self::validate( $config );
         $config = self::sanitizeConfig( $config );
+        if ( !isset( $config['post_type'] ) )
+        {
+            throw new Exception('You need to specify the post types that this taxonomy will attach to');
+        }
         $arguments = $config[ 'arguments' ];
         //If the labels array is outside of arguments, copy it inside of arguments
         if ( isset( $config[ 'labels' ] ) )
@@ -71,14 +66,15 @@ class ZB_PostTypeImporter extends ZB_AbstractImporter
         if ( $cache_enabled )
         {
             //If we reached this location, is because the cache was empty or compromised
-            $cache_bag = ZB_FileCache::getInstance()->createCache( 'post_types' );
-            $post_type_code = ZB_SkeletonLoader::load( 'post', array(
+            $cache_bag = ZB_FileCache::getInstance()->createCache( 'taxonomies' );
+            $post_type_code = ZB_SkeletonLoader::load( 'taxonomy', array(
               'args' => $arguments,
-              'post_type_name' => $key
+              'taxonomy_name' => $key,
+              'attach_to' => $config['post_type']
             ));
             $cache_bag->store( $key, $post_type_code );
         }
-        register_post_type( $key, $arguments );
+        register_taxonomy( $key, $config['post_type'], $arguments );
     }
 
     private static function sanitizeConfig( array $config ) {
@@ -90,7 +86,6 @@ class ZB_PostTypeImporter extends ZB_AbstractImporter
               'edit_item' => 'Edit Item',
               'new_item' => 'New Item',
               'all_items' => 'All Items',
-              'view_item' => 'View Item',
               'search_items' => 'Search Items',
               'not_found' => 'No items where found',
               'not_found_in_trash' => 'No items where found in the trash bin',
@@ -98,7 +93,6 @@ class ZB_PostTypeImporter extends ZB_AbstractImporter
           'arguments' =>
             array (
               'public' => true,
-              'menu_position' => 5,
             )
         );
         return array_merge( $default, $config );

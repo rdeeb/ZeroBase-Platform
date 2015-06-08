@@ -40,7 +40,7 @@ abstract class ZB_AbstractImporter implements ZB_ImporterInterface
             if ( !is_int( $key ) )
             {
                 $keys[] = $key;
-                if ( is_array( $value ) )
+                if ( is_array( $value ) && $key != 'fields' )
                 {
                     $child_keys = self::getConfigKeys( $value );
                     $keys = array_unique( array_merge( $keys, $child_keys ) );

@@ -4,6 +4,7 @@
  * Autoloader for YML post types
  */
 include_once( 'importers/ZB_PostTypeImporter.php' );
+include_once( 'importers/ZB_TaxonomyImporter.php' );
 
 class ZB_ModuleLoader extends ZB_Singleton {
     protected $modules = array();
@@ -43,19 +44,19 @@ class ZB_ModuleLoader extends ZB_Singleton {
                     {
                         $this->loadPostTypeFromYaml( $file, $cache_enabled );
                     }
-                    else if ( strpos( $file, 'taxonomies' ) !== false && !$taxonomies_loaded )
+                    else if ( strpos( $file, 'taxonomy' ) !== false && !$taxonomies_loaded )
+                    {
+                        $this->loadTaxonomyFromYaml( $file, $cache_enabled );
+                    }
+                    else if ( strpos( $file, 'metabox' ) !== false && !$metaboxes_loaded )
                     {
 
                     }
-                    else if ( strpos( $file, 'metaboxes' ) !== false && !$metaboxes_loaded )
+                    else if ( strpos( $file, 'widget' ) !== false && !$widgets_loaded )
                     {
 
                     }
-                    else if ( strpos( $file, 'widgets' ) !== false && !$widgets_loaded )
-                    {
-
-                    }
-                    else if ( strpos( $file, 'scripts' ) !== false && !$scripts_loaded )
+                    else if ( strpos( $file, 'script' ) !== false && !$scripts_loaded )
                     {
 
                     }
@@ -107,6 +108,30 @@ class ZB_ModuleLoader extends ZB_Singleton {
                     }
                     $loaded_post_types[] = $post_type_name;
                     $cache_bag->store( 'cached_post_types', '<?php return ' . var_export( $loaded_post_types, true ) . ' ?>' );
+                }
+            }
+        }
+    }
+
+    private function loadTaxonomyFromYaml( $file, $cache_enabled = true )
+    {
+        $file_contents = file_get_contents( $file );
+        $yaml_result = \Symfony\Component\Yaml\Yaml::parse($file_contents);
+        foreach ( $yaml_result as $taxonomy_name => $taxonomy_config )
+        {
+            if ( $taxonomy_name )
+            {
+                ZB_TaxonomyImporter::load( $taxonomy_name, $taxonomy_config );
+                if ( $cache_enabled )
+                {
+                    $cache_bag = ZB_FileCache::getInstance()->createCache( 'config' );
+                    $loaded_taxonomies = $cache_bag->retreive( 'cached_taxonomies' );
+                    if ( $loaded_taxonomies === false )
+                    {
+                        $loaded_taxonomies = array();
+                    }
+                    $loaded_taxonomies[] = $taxonomy_name;
+                    $cache_bag->store( 'cached_taxonomies', '<?php return ' . var_export( $loaded_taxonomies, true ) . ' ?>' );
                 }
             }
         }
