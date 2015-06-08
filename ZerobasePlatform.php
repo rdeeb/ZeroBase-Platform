@@ -58,8 +58,6 @@ class ZerobasePlatform extends ZB_Singleton
         require_once( ZEROBASE_LIBRARY_DIR . '/forms/ZB_FormFactory.php' );
         //Metaboxes
         require_once( ZEROBASE_LIBRARY_DIR . '/metaboxes/ZB_Metabox.php' );
-        //Post Types
-        require_once( ZEROBASE_LIBRARY_DIR . '/post-types/ZB_BasePostType.php' );
         //Module handling
         require_once( ZEROBASE_LIBRARY_DIR . '/modules/ZB_ModuleLoader.php' );
         //Taxonomy extender

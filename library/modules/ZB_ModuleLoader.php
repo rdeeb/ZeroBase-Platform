@@ -68,7 +68,7 @@ class ZB_ModuleLoader extends ZB_Singleton {
     {
         $cache_bag = ZB_FileCache::getInstance()->createCache( 'config' );
         $cache_eval = $cache_bag->retreive( 'cached_' . $cache );
-        if ( $cache_eval == false )
+        if ( $cache_eval === false )
         {
             $loaded_post_types = eval( $cache_eval );
             if ( !empty( $loaded_post_types ) )
@@ -77,7 +77,7 @@ class ZB_ModuleLoader extends ZB_Singleton {
                 {
                     $cache_bag = ZB_FileCache::getInstance()->createCache( $cache );
                     $post_type_eval = $cache_bag->retreive( $post_type_name );
-                    if ( $post_type_eval != false )
+                    if ( $post_type_eval !== false )
                     {
                         eval($post_type_eval);
                     }
@@ -107,7 +107,7 @@ class ZB_ModuleLoader extends ZB_Singleton {
                     $cache_bag = ZB_FileCache::getInstance()->createCache( 'config' );
                     $cache_eval = $cache_bag->retreive( 'cached_post_types' );
                     $loaded_post_types = array();
-                    if ( $cache_eval == false )
+                    if ( $cache_eval !== false )
                     {
                         $loaded_post_types = eval( $cache_eval );
                     }
