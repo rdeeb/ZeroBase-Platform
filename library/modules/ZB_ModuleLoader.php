@@ -67,21 +67,17 @@ class ZB_ModuleLoader extends ZB_Singleton {
     private function loadFromCache( $cache )
     {
         $cache_bag = ZB_FileCache::getInstance()->createCache( 'config' );
-        $cache_eval = $cache_bag->retreive( 'cached_' . $cache );
-        if ( $cache_eval === false )
+        $loaded_post_types = $cache_bag->retreive( 'cached_' . $cache );
+        var_export($loaded_post_types);
+        if ( $loaded_post_types === false )
         {
-            $loaded_post_types = eval( $cache_eval );
             if ( !empty( $loaded_post_types ) )
             {
                 foreach( $loaded_post_types as $post_type_name )
                 {
                     $cache_bag = ZB_FileCache::getInstance()->createCache( $cache );
-                    $post_type_eval = $cache_bag->retreive( $post_type_name );
-                    if ( $post_type_eval !== false )
-                    {
-                        eval($post_type_eval);
-                    }
-                    else
+                    $post_type = $cache_bag->retreive( $post_type_name );
+                    if ( $post_type === false )
                     {
                         return false;
                     }
@@ -105,11 +101,10 @@ class ZB_ModuleLoader extends ZB_Singleton {
                 if ( $cache_enabled )
                 {
                     $cache_bag = ZB_FileCache::getInstance()->createCache( 'config' );
-                    $cache_eval = $cache_bag->retreive( 'cached_post_types' );
-                    $loaded_post_types = array();
-                    if ( $cache_eval !== false )
+                    $loaded_post_types = $cache_bag->retreive( 'cached_post_types' );
+                    if ( $loaded_post_types === false )
                     {
-                        $loaded_post_types = eval( $cache_eval );
+                        $loaded_post_types = array();
                     }
                     $loaded_post_types[] = $post_type_name;
                     $cache_bag->store( 'cached_post_types', 'return ' . var_export( $loaded_post_types, true ) );

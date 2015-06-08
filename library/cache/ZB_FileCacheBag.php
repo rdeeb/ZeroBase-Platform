@@ -41,7 +41,7 @@ class ZB_FileCacheBag implements ZB_CacheBagInterface
         {
             if ( isset( $this->hashes[$filename] ) && md5_file( $filename ) == $this->hashes[$filename] )
             {
-                return file_get_contents( $filename );
+                return include( $filename );
             }
             return false;
         }

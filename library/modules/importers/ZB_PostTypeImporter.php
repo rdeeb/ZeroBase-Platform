@@ -72,11 +72,11 @@ class ZB_PostTypeImporter extends ZB_AbstractImporter
         {
             //If we reached this location, is because the cache was empty or compromised
             $cache_bag = ZB_FileCache::getInstance()->createCache('post_types');
-            $post_type_eval = ZB_SkeletonLoader::load( 'post', array(
+            $post_type_code = ZB_SkeletonLoader::load( 'post', array(
               'args' => $arguments,
               'post_type_name' => $key
             ));
-            $cache_bag->store( $key, $post_type_eval );
+            $cache_bag->store( $key, $post_type_code );
         }
         register_post_type($key, $arguments);
     }

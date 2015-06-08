@@ -12,7 +12,7 @@ class ZB_SkeletonLoader
             include( $filename );
             $data = ob_get_contents();
             ob_end_clean();
-            return $data;
+            return "<?php $data ?>";
         }
         throw new Exception("Skeleton $skeleton was not found.");
     }
