@@ -42,8 +42,20 @@ class ZB_BasePostType
     }
 
     public function register() {
-        $arguments = $this->config['arguments'];
-        $arguments['labels'] = $this->config['labels'];
-        register_post_type($this->name, $arguments);
+        $cache = ZB_FileCache::getInstance();
+        $cache_bag = $cache->createCache('post_types');
+        $post_type_eval = $cache_bag->retreive($this->name);
+        if ( $post_type_eval == false )
+        {
+            $arguments = $this->config['arguments'];
+            $arguments['labels'] = $this->config['labels'];
+            $post_type_eval = ZB_SkeletonLoader::load('post', array(
+              'args' => $arguments,
+              'post_type_name' => $this->name
+            ));
+            $cache_bag->store( $this->name, $post_type_eval );
+        }
+        //register_post_type($this->name, $arguments);
+        eval($post_type_eval);
     }
 }

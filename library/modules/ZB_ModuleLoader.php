@@ -3,6 +3,7 @@
 /**
  * Autoloader for YML post types
  */
+include_once( 'importers/ZB_PostTypeImporter.php' );
 
 class ZB_ModuleLoader extends ZB_Singleton {
     protected $modules = array();
@@ -11,33 +12,116 @@ class ZB_ModuleLoader extends ZB_Singleton {
         $this->modules[$name] = $module_config;
     }
 
+    public function getModuleList()
+    {
+        return $this->modules;
+    }
+
     public function load() {
-        foreach( $this->modules as $index => $config ) {
-            $this->loadPostTypes( $config );
-            $this->loadScripts( $config );
-            $this->loadMetaBoxes( $config );
-            $this->modules[$index] = $config;
+        $cache_enabled = (bool) get_option( 'zerobase_platform_cache', TRUE );
+        //Load from Cache
+        $post_types_loaded = false;
+        $taxonomies_loaded = false;
+        $metaboxes_loaded  = false;
+        $widgets_loaded    = false;
+        $scripts_loaded    = false;
+        if ( $cache_enabled )
+        {
+            $post_types_loaded = $this->loadFromCache( 'post_types' );
+            $taxonomies_loaded = $this->loadFromCache( 'taxonomies' );
+            $metaboxes_loaded  = $this->loadFromCache( 'metaboxes' );
+            $widgets_loaded    = $this->loadFromCache( 'widgets' );
+            $scripts_loaded    = $this->loadFromCache( 'scripts' );
+        }
+        if ( !$post_types_loaded || !$taxonomies_loaded || !$metaboxes_loaded || !$widgets_loaded || !$scripts_loaded )
+        {
+            foreach( $this->modules as $index => $config )
+            {
+                foreach ( $this->getYamlFilesFromDir( $config['path'], '.yml' ) as $file )
+                {
+                    if ( strpos( $file, 'post_type' ) !== false && !$post_types_loaded )
+                    {
+                        $this->loadPostTypeFromYaml( $file, $cache_enabled );
+                    }
+                    else if ( strpos( $file, 'taxonomies' ) !== false && !$taxonomies_loaded )
+                    {
+
+                    }
+                    else if ( strpos( $file, 'metaboxes' ) !== false && !$metaboxes_loaded )
+                    {
+
+                    }
+                    else if ( strpos( $file, 'widgets' ) !== false && !$widgets_loaded )
+                    {
+
+                    }
+                    else if ( strpos( $file, 'scripts' ) !== false && !$scripts_loaded )
+                    {
+
+                    }
+                }
+            }
+        }
+    }
+
+    private function loadFromCache( $cache )
+    {
+        $cache_bag = ZB_FileCache::getInstance()->createCache( 'config' );
+        $cache_eval = $cache_bag->retreive( 'cached_' . $cache );
+        if ( $cache_eval == false )
+        {
+            $loaded_post_types = eval( $cache_eval );
+            if ( !empty( $loaded_post_types ) )
+            {
+                foreach( $loaded_post_types as $post_type_name )
+                {
+                    $cache_bag = ZB_FileCache::getInstance()->createCache( $cache );
+                    $post_type_eval = $cache_bag->retreive( $post_type_name );
+                    if ( $post_type_eval != false )
+                    {
+                        eval($post_type_eval);
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+
+    private function loadPostTypeFromYaml( $file, $cache_enabled = true )
+    {
+        $file_contents = file_get_contents( $file );
+        $yaml_result = \Symfony\Component\Yaml\Yaml::parse($file_contents);
+        foreach ( $yaml_result as $post_type_name => $post_type_config )
+        {
+            if ( $post_type_name )
+            {
+                ZB_PostTypeImporter::load( $post_type_name, $post_type_config );
+                if ( $cache_enabled )
+                {
+                    $cache_bag = ZB_FileCache::getInstance()->createCache( 'config' );
+                    $cache_eval = $cache_bag->retreive( 'cached_post_types' );
+                    $loaded_post_types = array();
+                    if ( $cache_eval == false )
+                    {
+                        $loaded_post_types = eval( $cache_eval );
+                    }
+                    $loaded_post_types[] = $post_type_name;
+                    $cache_bag->store( 'cached_post_types', 'return ' . var_export( $loaded_post_types, true ) );
+                }
+            }
         }
     }
 
     public function enqueue() {
-        foreach( $this->modules as $index => $config ) {
+        foreach( $this->modules as $index => $config )
+        {
             $this->enqueueScripts( $config );
-        }
-    }
-
-    private function loadPostTypes( array &$config ) {
-        foreach ( $this->getYamlFilesFromDir( $config['path'], '.post_type.yml' ) as $file ) {
-            $file_contents = file_get_contents( $file );
-            $yaml_result = \Symfony\Component\Yaml\Yaml::parse($file_contents);
-            $config['post_types'] = array();
-            foreach ( $yaml_result as $post_type_name => $post_type_config ) {
-                if ( $post_type_name ) {
-                    $object = new ZB_BasePostType( $post_type_name, $post_type_config );
-                    $object->register();
-                    $config['post_types'][] = $object;
-                }
-            }
         }
     }
 
@@ -48,9 +132,7 @@ class ZB_ModuleLoader extends ZB_Singleton {
             $config['metaboxes'] = array();
             foreach ( $yaml_result as $metabox_name => $metabox_config ) {
                 if ( $metabox_name ) {
-                    $metabox_config['id'] = $metabox_name;
-                    $object = new ZB_Metabox( $metabox_config );
-                    $config['metaboxes'][] = $object;
+
                 }
             }
         }
