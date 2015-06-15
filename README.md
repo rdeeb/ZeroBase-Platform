@@ -2,6 +2,7 @@ ZeroBase Platform
 =================
 
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/cfec1da2-f9e8-4933-a134-4e9242c9ef2a/small.png)](https://insight.sensiolabs.com/projects/cfec1da2-f9e8-4933-a134-4e9242c9ef2a)
+[![Code Climate](https://codeclimate.com/github/rdeeb/ZeroBase-Platform/badges/gpa.svg)](https://codeclimate.com/github/rdeeb/ZeroBase-Platform)
 
 This is the base of the ZeroBase Wordpress Framework. This gives the ZeroBase powered plugins and themes a common base to work on. This consists in a combination of mini frameworks wich aids in the extention of wordpress functionalities.
 
