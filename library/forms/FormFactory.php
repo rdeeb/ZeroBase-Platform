@@ -1,6 +1,7 @@
 <?php
+namespace Zerobase\Forms;
 
-class ZB_FormFactory
+class FormFactory
 {
     /**
      * @param string $formName
@@ -11,7 +12,7 @@ class ZB_FormFactory
     {
         $rendererClass = self::getRenderer($renderer);
         $modelClass = self::getModel($model);
-        return new ZB_Form($formName, $rendererClass, $modelClass);
+        return new Form($formName, $rendererClass, $modelClass);
     }
 
     private static function getModel($model)
@@ -44,12 +45,12 @@ class ZB_FormFactory
             require_once($fileName);
             if (!self::checkIfRenderingClassExists($renderer))
             {
-                throw new Exception("A class with the name \"$className\" wasn't found in \"$fileName\"");
+                throw new \Exception("A class with the name \"$className\" wasn't found in \"$fileName\"");
             }
         }
         else
         {
-            throw new Exception("The file \"$fileName\" wasn't found");
+            throw new \Exception("The file \"$fileName\" wasn't found");
         }
     }
 

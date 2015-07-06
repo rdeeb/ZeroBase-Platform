@@ -1,6 +1,7 @@
 <?php
+namespace Zerobase\Forms\Models;
 
-interface ZB_ModelInterface
+interface ModelInterface
 {
     public function setModel(array $model);
     public function setValue($name, $value);

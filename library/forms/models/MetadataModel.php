@@ -1,7 +1,7 @@
 <?php
-require_once(__DIR__.'/ZB_AbstractModel.php');
+namespace Zerobase\Forms\Models;
 
-class ZB_MetadataModel extends ZB_AbstractModel
+class MetadataModel extends AbstractModel
 {
 
     protected function getPostId()

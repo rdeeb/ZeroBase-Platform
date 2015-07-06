@@ -1,7 +1,7 @@
 <?php
-require_once(__DIR__.'/ZB_AbstractModel.php');
+namespace Zerobase\Forms\Models;
 
-class ZB_OptionsModel extends ZB_AbstractModel
+class OptionsModel extends AbstractModel
 {
     protected function storeData($name, $value)
     {

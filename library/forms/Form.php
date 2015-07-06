@@ -1,14 +1,14 @@
 <?php
-
+namespace Zerobase\Forms;
 /**
- * ZB_Form
+ * Form
  * A class that builds options forms for Wordpress
  *
  * @package ZeroBase
  * @author  Ramy Deeb <me@ramydeeb.com>
  * @license Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. http://creativecommons.org/licenses/by-nc-nd/3.0/.
  **/
-class ZB_Form
+class Form
 {
     protected $formName;
     protected $model;

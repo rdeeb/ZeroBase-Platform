@@ -1,7 +1,7 @@
 <?php
-require_once(__DIR__.'/ZB_ModelInterface.php');
+namespace Zerobase\Forms\Models;
 
-abstract class ZB_AbstractModel implements ZB_ModelInterface
+abstract class AbstractModel implements ModelInterface
 {
     protected $values = array();
     protected $model = array();
@@ -39,7 +39,7 @@ abstract class ZB_AbstractModel implements ZB_ModelInterface
         }
         else
         {
-            throw new Exception("The key \"$name\" doesn't exists in the model");
+            throw new \Exception("The key \"$name\" doesn't exists in the model");
         }
     }
 
@@ -51,7 +51,7 @@ abstract class ZB_AbstractModel implements ZB_ModelInterface
         }
         else
         {
-            throw new Exception("The key \"$name\" doesn't exists in the model");
+            throw new \Exception("The key \"$name\" doesn't exists in the model");
         }
     }
 
