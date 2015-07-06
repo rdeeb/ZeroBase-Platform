@@ -1,6 +1,7 @@
 <?php
+namespace Zerobase\Toolkit;
 
-abstract class ZB_Singleton
+abstract class Singleton
 {
     protected function __construct(){}
     /**

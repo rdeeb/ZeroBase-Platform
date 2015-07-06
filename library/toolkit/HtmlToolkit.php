@@ -1,6 +1,7 @@
 <?php
+namespace Zerobase\Toolkit;
 /**
- * ZB_HtmlToolkit
+ * HtmlToolkit
  * This file helps in building html tags
  *
  * @author  Ramy Deeb <me@ramydeeb.com>
@@ -8,7 +9,7 @@
  * @license Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. http://creativecommons.org/licenses/by-nc-nd/3.0/.
  */
 
-class ZB_HtmlToolkit
+class HtmlToolkit
 {
 
     /**
