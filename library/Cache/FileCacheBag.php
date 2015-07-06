@@ -1,7 +1,7 @@
 <?php
-include_once( 'ZB_CacheBagInterface.php' );
+namespace Zerobase\Cache;
 
-class ZB_FileCacheBag implements ZB_CacheBagInterface
+class FileCacheBag implements CacheBagInterface
 {
     protected $hashes = array();
 
@@ -25,7 +25,7 @@ class ZB_FileCacheBag implements ZB_CacheBagInterface
      */
     public function store( $key, $data )
     {
-        $filename = $this->getCacheDir() . '/' . ZerobasePlatform::slugify( $key ) . '.cache';
+        $filename = $this->getCacheDir() . '/' . \ZerobasePlatform::slugify( $key ) . '.cache';
         file_put_contents( $filename, $data );
         $this->hashes[ $filename ] = md5_file( $filename );
         update_option( "zb_file_cache_{$this->name_space}_hashes", $this->hashes );
@@ -36,7 +36,7 @@ class ZB_FileCacheBag implements ZB_CacheBagInterface
      */
     public function retreive( $key )
     {
-        $filename = $this->getCacheDir() . '/' . ZerobasePlatform::slugify( $key ) . '.cache';
+        $filename = $this->getCacheDir() . '/' . \ZerobasePlatform::slugify( $key ) . '.cache';
         if ( file_exists( $filename ) )
         {
             if ( isset( $this->hashes[ $filename ] ) && md5_file( $filename ) == $this->hashes[ $filename ] )
@@ -53,7 +53,7 @@ class ZB_FileCacheBag implements ZB_CacheBagInterface
      */
     public function destroy( $key )
     {
-        $filename = $this->getCacheDir() . '/' . ZerobasePlatform::slugify( $key ) . '.cache';
+        $filename = $this->getCacheDir() . '/' . \ZerobasePlatform::slugify( $key ) . '.cache';
         try
         {
             if ( file_exists( $filename ) )
@@ -64,7 +64,7 @@ class ZB_FileCacheBag implements ZB_CacheBagInterface
             }
             return true;
         }
-        catch ( Exception $e )
+        catch ( \Exception $e )
         {
             return false;
         }

@@ -1,7 +1,9 @@
 <?php
-include_once( 'ZB_CacheInterface.php' );
+namespace Zerobase\Cache;
 
-abstract class ZB_AbstractCache extends ZB_Singleton implements ZB_CacheInterface
+use Zerobase\Toolkit\Singleton;
+
+abstract class AbstractCache extends Singleton implements CacheInterface
 {
     protected $bags = array();
 

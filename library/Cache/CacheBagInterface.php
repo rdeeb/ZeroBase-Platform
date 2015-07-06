@@ -1,6 +1,7 @@
 <?php
+namespace Zerobase\Cache;
 
-interface ZB_CacheBagInterface
+interface CacheBagInterface
 {
     /**
      * @param string $key Key of the data to store
