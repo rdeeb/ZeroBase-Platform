@@ -1,6 +1,7 @@
 <?php
+namespace Zerobase\Forms\Renderers;
 
-interface ZB_RendererInterface
+interface RendererInterface
 {
     public function addWidget($name, WidgetInterface $widget);
     public function addWidgets(array $widgets);

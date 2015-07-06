@@ -1,7 +1,9 @@
 <?php
-include_once( __DIR__.'/ZB_RendererInterface.php' );
+namespace Zerobase\Forms\Renderers;
 
-abstract class ZB_AbstractRender implements ZB_RendererInterface
+use Zerobase\Toolkit\HtmlToolkit;
+
+abstract class AbstractRender implements RendererInterface
 {
     protected $widgets = array();
 
@@ -41,8 +43,10 @@ abstract class ZB_AbstractRender implements ZB_RendererInterface
 
     public function renderRow($widgetName)
     {
-        return ZB_HtmlToolkit::buildDiv(
-            $this->renderLabel( $widgetName ).ZB_HtmlToolkit::buildDiv(
+        return HtmlToolkit::buildDiv(
+            $this->renderLabel( $widgetName )
+            .
+            HtmlToolkit::buildDiv(
                 $this->renderWidget( $widgetName ),
                 array(
                     'class' => 'uk-form-controls'
@@ -63,7 +67,7 @@ abstract class ZB_AbstractRender implements ZB_RendererInterface
         }
         else
         {
-            throw new Exception("The widget \"$widgetName\" doesn't exists.");
+            throw new \Exception("The widget \"$widgetName\" doesn't exists.");
         }
     }
 
@@ -76,7 +80,7 @@ abstract class ZB_AbstractRender implements ZB_RendererInterface
         }
         else
         {
-            throw new Exception("The widget \"$widgetName\" doesn't exists.");
+            throw new \Exception("The widget \"$widgetName\" doesn't exists.");
         }
     }
 

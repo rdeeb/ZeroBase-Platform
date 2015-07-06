@@ -1,11 +1,13 @@
 <?php
-require_once(__DIR__.'/ZB_AbstractRenderer.php');
+namespace Zerobase\Forms\Renderers;
 
-class ZB_TaxonomyRenderer extends ZB_AbstractRender
+use Zerobase\Toolkit\HtmlToolkit;
+
+class TaxonomyRenderer extends AbstractRender
 {
     public function renderRow( $widgetName )
     {
-        return ZB_HtmlToolkit::buildTag( 'div', array(
+        return HtmlToolkit::buildTag( 'div', array(
                 'class' => "form-field term-$widgetName-wrap"
             ), false,
             $this->renderLabel( $widgetName ).$this->renderWidget( $widgetName )

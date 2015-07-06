@@ -11,9 +11,9 @@
  * @author  Ramy Deeb <me@ramydeeb.com>
  * @package ZeroBase
  */
-require_once( __DIR__ . '/library/toolkit/ZB_Singleton.php' );
+require_once(__DIR__.'/autoloader.php');
 
-class ZerobasePlatform extends ZB_Singleton
+class ZerobasePlatform extends \Zerobase\Toolkit\Singleton
 {
     private $dataStorage = array();
     CONST ZEROBASE_ADMIN_PAGE_PREFIX = 'zerobase_settings_page_';
@@ -30,8 +30,6 @@ class ZerobasePlatform extends ZB_Singleton
         DEFINE( 'ZEROBASE_LIBRARY_DIR', ZEROBASE_ROOT_DIR . '/library' );
         DEFINE( 'ZEROBASE_VENDOR_DIR', ZEROBASE_ROOT_DIR . '/vendor' );
         DEFINE( 'ZEROBASE_CACHE_DIR', ZEROBASE_ROOT_DIR . '/cache' );
-        //Load the files
-        $this->loadPlatformRequiredFiles();
         //Install platform terms tables
         $this->installPlatformTermsTables();
         //Set the required Wordpress hooks
@@ -41,39 +39,6 @@ class ZerobasePlatform extends ZB_Singleton
         if ( !is_dir( ZEROBASE_CACHE_DIR ) ) {
             mkdir( ZEROBASE_CACHE_DIR, 755 );
         }
-    }
-
-    /**
-     * Loads the required files for the platform
-     */
-    private function loadPlatformRequiredFiles()
-    {
-        //Toolkit
-        require_once( ZEROBASE_LIBRARY_DIR . '/toolkit/ZB_HtmlToolkit.php' );
-        //Forms
-        require_once( ZEROBASE_LIBRARY_DIR . '/forms/widgets/ZB_WidgetFactory.php' );
-        require_once( ZEROBASE_LIBRARY_DIR . '/forms/validators/ZB_ValidatorFactory.php' );
-        require_once( ZEROBASE_LIBRARY_DIR . '/forms/models/ZB_ModelFactory.php' );
-        require_once( ZEROBASE_LIBRARY_DIR . '/forms/ZB_Form.php' );
-        require_once( ZEROBASE_LIBRARY_DIR . '/forms/ZB_FormFactory.php' );
-        //Metaboxes
-        require_once( ZEROBASE_LIBRARY_DIR . '/metaboxes/ZB_Metabox.php' );
-        //Module handling
-        require_once( ZEROBASE_LIBRARY_DIR . '/modules/ZB_ModuleLoader.php' );
-        //Taxonomy extender
-        require_once( ZEROBASE_LIBRARY_DIR . '/taxonomies/ZB_TaxonomyExtender.php' );
-        //Widgets
-        require_once( ZEROBASE_LIBRARY_DIR . '/widgets/ZB_BaseWidget.php' );
-        //Settings
-        require_once( ZEROBASE_LIBRARY_DIR . '/settings/ZB_Settings.php' );
-        require_once( ZEROBASE_LIBRARY_DIR . '/settings/ZB_SettingsBag.php' );
-        //Vendor files
-        require_once( ZEROBASE_VENDOR_DIR . '/vendor_autoloader.php' );
-        //Cache files
-        require_once( ZEROBASE_LIBRARY_DIR . '/cache/ZB_FileCache.php' );
-        require_once( ZEROBASE_LIBRARY_DIR . '/cache/ZB_FileCacheBag.php' );
-        //Skeleton
-        require_once( ZEROBASE_LIBRARY_DIR . '/skeletons/ZB_SkeletonLoader.php' );
     }
 
     /**
