@@ -57,6 +57,11 @@ class ZB_TaxonomyImporter extends ZB_AbstractImporter
             throw new Exception('You need to specify the post types that this taxonomy will attach to');
         }
         $arguments = $config[ 'arguments' ];
+        $fields = array();
+        if ( isset( $config[ 'fields' ] ) )
+        {
+            $fields = $config[ 'fields' ];
+        }
         //If the labels array is outside of arguments, copy it inside of arguments
         if ( isset( $config[ 'labels' ] ) )
         {
@@ -70,11 +75,17 @@ class ZB_TaxonomyImporter extends ZB_AbstractImporter
             $post_type_code = ZB_SkeletonLoader::load( 'taxonomy', array(
               'args' => $arguments,
               'taxonomy_name' => $key,
-              'attach_to' => $config['post_type']
+              'attach_to' => $config['post_type'],
+              'fields' => $fields
             ));
             $cache_bag->store( $key, $post_type_code );
         }
         register_taxonomy( $key, $config['post_type'], $arguments );
+        if ( !empty( $fields ) )
+        {
+            $tax_extender = new ZB_TaxonomyExtender( $key, $fields );
+            $tax_extender->register();
+        }
     }
 
     private static function sanitizeConfig( array $config ) {

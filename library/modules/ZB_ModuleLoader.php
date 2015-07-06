@@ -97,17 +97,20 @@ class ZB_ModuleLoader extends ZB_Singleton {
         {
             if ( $post_type_name )
             {
-                ZB_PostTypeImporter::load( $post_type_name, $post_type_config );
-                if ( $cache_enabled )
+                if ( !post_type_exists( $post_type_name ) )
                 {
-                    $cache_bag = ZB_FileCache::getInstance()->createCache( 'config' );
-                    $loaded_post_types = $cache_bag->retreive( 'cached_post_types' );
-                    if ( $loaded_post_types === false )
+                    ZB_PostTypeImporter::load( $post_type_name, $post_type_config );
+                    if ( $cache_enabled )
                     {
-                        $loaded_post_types = array();
+                        $cache_bag = ZB_FileCache::getInstance()->createCache( 'config' );
+                        $loaded_post_types = $cache_bag->retreive( 'cached_post_types' );
+                        if ( $loaded_post_types === false )
+                        {
+                            $loaded_post_types = array();
+                        }
+                        $loaded_post_types[] = $post_type_name;
+                        $cache_bag->store( 'cached_post_types', '<?php return ' . var_export( $loaded_post_types, true ) . ' ?>' );
                     }
-                    $loaded_post_types[] = $post_type_name;
-                    $cache_bag->store( 'cached_post_types', '<?php return ' . var_export( $loaded_post_types, true ) . ' ?>' );
                 }
             }
         }
@@ -121,7 +124,25 @@ class ZB_ModuleLoader extends ZB_Singleton {
         {
             if ( $taxonomy_name )
             {
-                ZB_TaxonomyImporter::load( $taxonomy_name, $taxonomy_config );
+                if ( !taxonomy_exists( $taxonomy_name ) )
+                {
+                    ZB_TaxonomyImporter::load( $taxonomy_name, $taxonomy_config );
+                    if ( $cache_enabled )
+                    {
+                        $cache_bag = ZB_FileCache::getInstance()->createCache( 'config' );
+                        $loaded_taxonomies = $cache_bag->retreive( 'cached_taxonomies' );
+                        if ( $loaded_taxonomies === false )
+                        {
+                            $loaded_taxonomies = array();
+                        }
+                        $loaded_taxonomies[] = $taxonomy_name;
+                        $cache_bag->store( 'cached_taxonomies', '<?php return ' . var_export( $loaded_taxonomies, true ) . ' ?>' );
+                    }
+                }
+            }
+        }
+    }
+
                 if ( $cache_enabled )
                 {
                     $cache_bag = ZB_FileCache::getInstance()->createCache( 'config' );

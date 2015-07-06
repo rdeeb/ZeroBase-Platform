@@ -5,10 +5,10 @@ class ZB_TaxonomyRenderer extends ZB_AbstractRender
 {
     public function renderRow( $widgetName )
     {
-        return ZB_HtmlToolkit::buildTag( 'tr', array(), false,
-            ZB_HtmlToolkit::buildTag( 'td', array( 'colspan' => '2' ), false,
-                $this->renderLabel( $widgetName ).$this->renderWidget( $widgetName )
-            )
+        return ZB_HtmlToolkit::buildTag( 'div', array(
+                'class' => "form-field term-$widgetName-wrap"
+            ), false,
+            $this->renderLabel( $widgetName ).$this->renderWidget( $widgetName )
         );
     }
 }

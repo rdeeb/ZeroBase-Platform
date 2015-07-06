@@ -58,7 +58,7 @@ class ZB_TaxonomyExtender
             }
         }
         $project = $this->getForm( $term_meta );
-        echo $project->render();
+        echo $project->getRenderer()->render();
     }
 
     /**
@@ -79,7 +79,7 @@ class ZB_TaxonomyExtender
             }
         }
         $client = $this->getForm( $term_meta );
-        echo $client->renderTr();
+        echo $client->getRenderer()->render();
     }
 
     /**
@@ -102,12 +102,12 @@ class ZB_TaxonomyExtender
      * getForm
      * Creates the form to be used in the custom taxonomies fields
      *
-     * @return ZB_TaxonomyForm
+     * @return ZB_Form
      * @author Ramy Deeb
      **/
     private function getForm( $term = array() )
     {
-        $object = ZB_FormFactory::createForm($this->taxonomyName, 'taxonomy');
+        $object = ZB_FormFactory::createForm($this->taxonomyName, 'Taxonomy');
         foreach ( $this->taxonomyFields as $name => $options )
         {
             $object->addWidget( $name, $options['type'], $options['options'], isset( $term[$this->taxonomyName] ) ? $term[$this->taxonomyName] : '' );
