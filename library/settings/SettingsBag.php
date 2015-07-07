@@ -1,6 +1,9 @@
 <?php
+namespace Zerobase\Settings;
 
-class ZB_SettingsBag implements Iterator, ArrayAccess
+use Zerobase\Forms\FormFactory;
+
+class SettingsBag implements \Iterator, \ArrayAccess
 {
     protected $settingsBag = array();
     protected $bagIndexes = array();
@@ -19,7 +22,7 @@ class ZB_SettingsBag implements Iterator, ArrayAccess
             $fm = ZB_WidgetFactory::getInstance();
             if (!$fm->widgetExists($widget))
             {
-                throw new Exception("The widget \"$widget\" is not a supported widget type");
+                throw new \Exception("The widget \"$widget\" is not a supported widget type");
             }
             if (!$this->offsetExists($name))
             {
@@ -34,7 +37,7 @@ class ZB_SettingsBag implements Iterator, ArrayAccess
         }
         else
         {
-            throw new Exception("The setting name must be a valid name between 3 and 99 characters in length");
+            throw new \Exception("The setting name must be a valid name between 3 and 99 characters in length");
         }
     }
 
@@ -46,7 +49,7 @@ class ZB_SettingsBag implements Iterator, ArrayAccess
         }
         else
         {
-            throw new Exception("The setting \"$name\" is not set");
+            throw new \Exception("The setting \"$name\" is not set");
         }
     }
 
@@ -62,7 +65,7 @@ class ZB_SettingsBag implements Iterator, ArrayAccess
         {
             if (!isset($pages[$options['section']]))
             {
-                $pages[$options['section']] = ZB_FormFactory::createForm($form_name.'-'.$options['section'], 'options', 'option');
+                $pages[$options['section']] = FormFactory::createForm($form_name.'-'.$options['section'], 'options', 'option');
             }
             $pages[$options['section']]->addWidget($widget_name, $options['widget'], $options['options']['widget_options'], get_option($widget_name, isset($options['options']['default']) ? $options['options']['default'] : null));
         }

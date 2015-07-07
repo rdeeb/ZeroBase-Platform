@@ -1,6 +1,9 @@
 <?php
+namespace Zerobase\Settings;
 
-class ZB_Settings extends ZB_Singleton implements Iterator
+use Zerobase\Toolkit\Singleton;
+
+class Settings extends Singleton implements \Iterator
 {
     protected $bagStorage = array();
     protected $bagIndexes = array();
@@ -9,7 +12,7 @@ class ZB_Settings extends ZB_Singleton implements Iterator
     /**
      * Returns a bag
      * @param $name string The name of the bag to retrieve
-     * @return ZB_SettingsBag
+     * @return SettingsBag
      */
     public function getBag($name)
     {
@@ -33,7 +36,7 @@ class ZB_Settings extends ZB_Singleton implements Iterator
         {
             $this->bagIndexes[] = $name;
         }
-        $this->bagStorage[$name] = new ZB_SettingsBag();
+        $this->bagStorage[$name] = new SettingsBag();
     }
 
     /**
