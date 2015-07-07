@@ -9,7 +9,12 @@ use Zerobase\Modules\Importers\TaxonomyImporter;
 use Zerobase\Toolkit\Singleton;
 
 class ModuleLoader extends Singleton {
-    protected $modules = array();
+    protected $modules           = array();
+    protected $post_types_loaded = false;
+    protected $taxonomies_loaded = false;
+    protected $metaboxes_loaded  = false;
+    protected $widgets_loaded    = false;
+    protected $scripts_loaded    = false;
 
     public function addModule( $name, array $module_config ) {
         $this->modules[$name] = $module_config;
@@ -23,51 +28,32 @@ class ModuleLoader extends Singleton {
     public function load() {
         $cache_enabled = (bool) get_option( 'zerobase_platform_cache', TRUE );
         //Load from Cache
-        $post_types_loaded = false;
-        $taxonomies_loaded = false;
-        $metaboxes_loaded  = false;
-        $widgets_loaded    = false;
-        $scripts_loaded    = false;
         if ( $cache_enabled )
         {
-            $post_types_loaded = $this->loadFromCache( 'post_types' );
-            $taxonomies_loaded = $this->loadFromCache( 'taxonomies' );
-            $metaboxes_loaded  = $this->loadFromCache( 'metaboxes' );
-            $widgets_loaded    = $this->loadFromCache( 'widgets' );
-            $scripts_loaded    = $this->loadFromCache( 'scripts' );
-        }
-        if ( !$post_types_loaded || !$taxonomies_loaded || !$metaboxes_loaded || !$widgets_loaded || !$scripts_loaded )
-        {
-            foreach( $this->modules as $index => $config )
+            if ($this->tryLoadCache())
             {
-                foreach ( $this->getYamlFilesFromDir( $config['path'], '.yml' ) as $file )
-                {
-                    if ( strpos( $file, 'post_type' ) !== false && !$post_types_loaded )
-                    {
-                        $this->loadPostTypeFromYaml( $file, $cache_enabled );
-                    }
-                    else if ( strpos( $file, 'taxonomy' ) !== false && !$taxonomies_loaded )
-                    {
-                        $this->loadTaxonomyFromYaml( $file, $cache_enabled );
-                    }
-                    else if ( strpos( $file, 'metabox' ) !== false && !$metaboxes_loaded )
-                    {
-                        $this->loadMetaboxesFromYaml( $file, $cache_enabled );
-                    }
-                    else if ( strpos( $file, 'widget' ) !== false && !$widgets_loaded )
-                    {
-
-                    }
-                    else if ( strpos( $file, 'script' ) !== false && !$scripts_loaded )
-                    {
-
-                    }
-                }
+                return true;
             }
         }
+        return $this->loadYamlFiles();
     }
 
-    private function loadFromCache( $cache )
+    private function tryLoadCache()
+    {
+        $this->post_types_loaded = $this->loadCacheSegment( 'post_types' );
+        $this->taxonomies_loaded = $this->loadCacheSegment( 'taxonomies' );
+        $this->metaboxes_loaded  = $this->loadCacheSegment( 'metaboxes' );
+        $this->widgets_loaded    = $this->loadCacheSegment( 'widgets' );
+        $this->scripts_loaded    = $this->loadCacheSegment( 'scripts' );
+
+        if ( !$this->post_types_loaded || !$this->taxonomies_loaded || !$this->metaboxes_loaded || !$this->widgets_loaded || !$this->scripts_loaded )
+        {
+            return false;
+        }
+        return true;
+    }
+
+    private function loadCacheSegment( $cache )
     {
         $cache_bag = FileCache::getInstance()->createCache( 'config' );
         $loaded_post_types = $cache_bag->retreive( 'cached_' . $cache );
@@ -89,6 +75,41 @@ class ModuleLoader extends Singleton {
             return false;
         }
         return false;
+    }
+
+    private function loadYamlFiles()
+    {
+        $cache_enabled = (bool) get_option( 'zerobase_platform_cache', TRUE );
+        foreach( $this->modules as $index => $config )
+        {
+            foreach ( $this->getYamlFilesFromDir( $config['path'], '.yml' ) as $file )
+            {
+                if ( strpos( $file, 'post_type' ) !== false && !$this->post_types_loaded )
+                {
+                    $this->loadPostTypeFromYaml( $file, $cache_enabled );
+                    $this->post_types_loaded = true;
+                }
+                else if ( strpos( $file, 'taxonomy' ) !== false && !$this->taxonomies_loaded )
+                {
+                    $this->loadTaxonomyFromYaml( $file, $cache_enabled );
+                    $this->taxonomies_loaded = true;
+                }
+                else if ( strpos( $file, 'metabox' ) !== false && !$this->metaboxes_loaded )
+                {
+                    $this->loadMetaboxesFromYaml( $file, $cache_enabled );
+                    $this->metaboxes_loaded = true;
+                }
+                else if ( strpos( $file, 'widget' ) !== false && !$this->widgets_loaded )
+                {
+                    $this->widgets_loaded = true;
+                }
+                else if ( strpos( $file, 'script' ) !== false && !$this->scripts_loaded )
+                {
+                    $this->scripts_loaded = true;
+                }
+            }
+        }
+        return true;
     }
 
     private function loadPostTypeFromYaml( $file, $cache_enabled = true )
