@@ -40,7 +40,7 @@ abstract class AbstractImporter implements ImporterInterface
             if ( !is_int( $key ) )
             {
                 $keys[] = $key;
-                if ( is_array( $value ) && $key != 'fields' )
+                if ( is_array( $value ) && $key != 'fields' && $key != 'choices' )
                 {
                     $child_keys = self::getConfigKeys( $value );
                     $keys = array_unique( array_merge( $keys, $child_keys ) );

@@ -3,6 +3,7 @@ namespace Zerobase\Modules;
 
 use Symfony\Component\Yaml\Yaml;
 use Zerobase\Cache\FileCache;
+use Zerobase\Modules\Importers\MetaboxImporter;
 use Zerobase\Modules\Importers\PostTypeImporter;
 use Zerobase\Modules\Importers\TaxonomyImporter;
 use Zerobase\Toolkit\Singleton;
@@ -51,7 +52,7 @@ class ModuleLoader extends Singleton {
                     }
                     else if ( strpos( $file, 'metabox' ) !== false && !$metaboxes_loaded )
                     {
-
+                        $this->loadMetaboxesFromYaml( $file, $cache_enabled );
                     }
                     else if ( strpos( $file, 'widget' ) !== false && !$widgets_loaded )
                     {
@@ -144,69 +145,34 @@ class ModuleLoader extends Singleton {
         }
     }
 
+    private function loadMetaboxesFromYaml( $file, $cache_enabled = true )
+    {
+        $file_contents = file_get_contents( $file );
+        $yaml_result = Yaml::parse($file_contents);
+        foreach ( $yaml_result as $metabox_name => $metabox_config )
+        {
+            if ( $metabox_name )
+            {
+                MetaboxImporter::load( $metabox_name, $metabox_config );
+                if ( $cache_enabled )
+                {
+                    $cache_bag = FileCache::getInstance()->createCache( 'config' );
+                    $loaded_metaboxes = $cache_bag->retreive( 'cached_metaboxes' );
+                    if ( $loaded_metaboxes === false )
+                    {
+                        $loaded_metaboxes = array();
+                    }
+                    $loaded_metaboxes[] = $metabox_name;
+                    $cache_bag->store( 'cached_metaboxes', '<?php return ' . var_export( $loaded_metaboxes, true ) . ' ?>' );
+                }
+            }
+        }
+    }
+
     public function enqueue() {
         foreach( $this->modules as $index => $config )
         {
             $this->enqueueScripts( $config );
-        }
-    }
-
-    private function loadMetaBoxes( array &$config ) {
-        foreach ( $this->getYamlFilesFromDir( $config['path'], '.metabox.yml' ) as $file ) {
-            $file_contents = file_get_contents( $file );
-            $yaml_result = \Symfony\Component\Yaml\Yaml::parse($file_contents);
-            $config['metaboxes'] = array();
-            foreach ( $yaml_result as $metabox_name => $metabox_config ) {
-                if ( $metabox_name ) {
-
-                }
-            }
-        }
-    }
-
-    private function loadWidgets( array &$config ) {
-        foreach ( $this->getYamlFilesFromDir( $config['path'], '.widget.yml' ) as $file ) {
-            $file_contents = file_get_contents( $file );
-            $yaml_result = \Symfony\Component\Yaml\Yaml::parse($file_contents);
-            $config['widgets'] = array();
-            foreach ( $yaml_result as $widget_name => $widget_config ) {
-                if ( $widget_name ) {
-                    $widget_config['id'] = $widget_name;
-                    $object = new ZB_Metabox( $widget_config );
-                    $config['widgets'][] = $object;
-                }
-            }
-        }
-    }
-
-    private function loadTaxonomies() {
-        foreach ( $this->getYamlFilesFromDir( '.taxonomy.yml' ) as $file ) {
-            $file_contents = file_get_contents( $file );
-            $yaml_result = \Symfony\Component\Yaml\Yaml::parse($file_contents);
-            foreach ( $yaml_result as $post_type_name => $post_type_config ) {
-
-                if ( $post_type_name ) {
-
-                }
-            }
-        }
-    }
-
-    private function loadScripts( array &$config ) {
-        foreach ( $this->getYamlFilesFromDir( $config['path'], '.script.yml' ) as $file ) {
-            $file_contents = file_get_contents( $file );
-            $yaml_result = \Symfony\Component\Yaml\Yaml::parse($file_contents);
-            $config['scripts'] = array();
-            foreach ( $yaml_result as $script_name => $script_config ) {
-                if ( $script_name ) {
-                    if (!isset($script_config['path'])) {
-                        throw new Exception('A path for the script should be defined');
-                    }
-                    $script_config['path'] = plugin_dir_url( __FILE__ ) . $script_config['path'];
-                    $this->registerScript( $script_name, $script_config );
-                    $config['scripts'][] = $script_name;
-                }
-            }
         }
     }
 

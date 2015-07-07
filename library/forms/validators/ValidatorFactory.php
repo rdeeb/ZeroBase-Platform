@@ -59,7 +59,7 @@ class ValidatorFactory extends Singleton
     {
         if ($this->validatorExists($name))
         {
-            $className = $this->validators[$name];
+            $className = 'Zerobase\Forms\Validators\\' . $this->validators[$name];
             return new $className($options['options'], $options['messages']);
         }
         else
@@ -75,11 +75,17 @@ class ValidatorFactory extends Singleton
      */
     private function checkClassImplements($className)
     {
-        if (!class_exists($className))
+        $class = 'Zerobase\Forms\Validators\\' . $className;
+        try
+        {
+            $obj = new $class();
+            unset($obj);
+        }
+        catch(\Exception $e)
         {
             throw new \Exception("The class \"$className\" doesn't exists");
         }
-        $implements = class_implements($className);
+        $implements = class_implements($class);
         if (in_array('Zerobase\Forms\Validators\ValidatorInterface', $implements))
         {
             return true;
