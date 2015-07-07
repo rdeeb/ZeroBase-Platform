@@ -1,7 +1,7 @@
 <?php
-require_once(__DIR__.'/ZB_ValidatorInterface.php');
+namespace Zerobase\Forms\Validators;
 
-abstract class ZB_AbstractValidator implements ZB_ValidatorInterface
+abstract class AbstractValidator implements ValidatorInterface
 {
     protected $value;
     protected $errorMessages = array();

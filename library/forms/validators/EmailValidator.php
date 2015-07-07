@@ -1,7 +1,7 @@
 <?php
-require_once(__DIR__.'/ZB_AbstractValidator.php');
+namespace Zerobase\Forms\Validators;
 
-class ZB_EmailValidator extends ZB_AbstractValidator
+class EmailValidator extends AbstractValidator
 {
     protected function getDefaultMessages()
     {

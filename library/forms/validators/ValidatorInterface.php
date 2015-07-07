@@ -1,6 +1,7 @@
 <?php
+namespace Zerobase\Forms\Validators;
 
-interface ZB_ValidatorInterface
+interface ValidatorInterface
 {
     public function assert();
     public function setValue($value);
