@@ -1,14 +1,9 @@
 <?php
-/**
- * ZB_BaseWidget
- * Defines a base way to generate widgets
- *
- * @author  Ramy Deeb <me@ramydeeb.com>
- * @package ZeroBase
- * @license Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. http://creativecommons.org/licenses/by-nc-nd/3.0/.
- */
+namespace Zerobase\Widgets;
 
-abstract class ZB_BaseWidget extends WP_Widget
+use Zerobase\Forms\FormFactory;
+
+abstract class BaseWidget extends \WP_Widget
 {
     /**
      * Builds the widget base info
@@ -128,7 +123,7 @@ abstract class ZB_BaseWidget extends WP_Widget
     private function buildForm( $instance )
     {
         $fields = $this->widgetFields();
-        $form   = ZB_FormFactory::createForm(get_class( $this ), 'widget');
+        $form   = FormFactory::createForm(get_class( $this ), 'widget');
         foreach ( $fields as $name => $options )
         {
             $args = array(
