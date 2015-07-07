@@ -1,6 +1,7 @@
 <?php
+namespace Zerobase\Modules\Importers;
 
-interface ZB_ImporterInterface
+interface ImporterInterface
 {
     /**
      * @param array $config The configuration to validate

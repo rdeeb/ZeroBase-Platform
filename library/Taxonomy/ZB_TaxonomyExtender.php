@@ -1,13 +1,9 @@
 <?php
-/**
- * ZB_TaxonomyExtender
- * Allows you to add new fields to a taxonomy
- *
- * @author  Ramy Deeb <me@ramydeeb.com>
- * @package ZeroBase
- * @license Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. http://creativecommons.org/licenses/by-nc-nd/3.0/.
- */
-class ZB_TaxonomyExtender
+namespace Zerobase\Taxonomy;
+
+use Zerobase\Forms\FormFactory;
+
+class TaxonomyExtender
 {
     //Variables
     private $taxonomyName;
@@ -107,7 +103,7 @@ class ZB_TaxonomyExtender
      **/
     private function getForm( $term = array() )
     {
-        $object = ZB_FormFactory::createForm($this->taxonomyName, 'Taxonomy');
+        $object = FormFactory::createForm($this->taxonomyName, 'Taxonomy');
         foreach ( $this->taxonomyFields as $name => $options )
         {
             $object->addWidget( $name, $options['type'], $options['options'], isset( $term[$this->taxonomyName] ) ? $term[$this->taxonomyName] : '' );

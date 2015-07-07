@@ -1,6 +1,7 @@
 <?php
+namespace Zerobase\Skeletons;
 
-class ZB_SkeletonLoader
+class SkeletonLoader
 {
     static public function load($skeleton, $variables)
     {

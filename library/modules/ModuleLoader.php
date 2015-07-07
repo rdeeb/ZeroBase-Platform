@@ -1,12 +1,10 @@
 <?php
+namespace Zerobase\Modules;
 
-/**
- * Autoloader for YML post types
- */
-include_once( 'importers/ZB_PostTypeImporter.php' );
-include_once( 'importers/ZB_TaxonomyImporter.php' );
+use Zerobase\Cache\FileCache;
+use Zerobase\Toolkit\Singleton;
 
-class ZB_ModuleLoader extends ZB_Singleton {
+class ModuleLoader extends Singleton {
     protected $modules = array();
 
     public function addModule( $name, array $module_config ) {
@@ -67,7 +65,7 @@ class ZB_ModuleLoader extends ZB_Singleton {
 
     private function loadFromCache( $cache )
     {
-        $cache_bag = ZB_FileCache::getInstance()->createCache( 'config' );
+        $cache_bag = FileCache::getInstance()->createCache( 'config' );
         $loaded_post_types = $cache_bag->retreive( 'cached_' . $cache );
         if ( $loaded_post_types !== false )
         {
@@ -75,7 +73,7 @@ class ZB_ModuleLoader extends ZB_Singleton {
             {
                 foreach( $loaded_post_types as $post_type_name )
                 {
-                    $cache_bag = ZB_FileCache::getInstance()->createCache( $cache );
+                    $cache_bag = FileCache::getInstance()->createCache( $cache );
                     $post_type = $cache_bag->retreive( $post_type_name );
                     if ( $post_type === false )
                     {
@@ -102,7 +100,7 @@ class ZB_ModuleLoader extends ZB_Singleton {
                     ZB_PostTypeImporter::load( $post_type_name, $post_type_config );
                     if ( $cache_enabled )
                     {
-                        $cache_bag = ZB_FileCache::getInstance()->createCache( 'config' );
+                        $cache_bag = FileCache::getInstance()->createCache( 'config' );
                         $loaded_post_types = $cache_bag->retreive( 'cached_post_types' );
                         if ( $loaded_post_types === false )
                         {
@@ -129,7 +127,7 @@ class ZB_ModuleLoader extends ZB_Singleton {
                     ZB_TaxonomyImporter::load( $taxonomy_name, $taxonomy_config );
                     if ( $cache_enabled )
                     {
-                        $cache_bag = ZB_FileCache::getInstance()->createCache( 'config' );
+                        $cache_bag = FileCache::getInstance()->createCache( 'config' );
                         $loaded_taxonomies = $cache_bag->retreive( 'cached_taxonomies' );
                         if ( $loaded_taxonomies === false )
                         {
@@ -138,21 +136,6 @@ class ZB_ModuleLoader extends ZB_Singleton {
                         $loaded_taxonomies[] = $taxonomy_name;
                         $cache_bag->store( 'cached_taxonomies', '<?php return ' . var_export( $loaded_taxonomies, true ) . ' ?>' );
                     }
-                }
-            }
-        }
-    }
-
-                if ( $cache_enabled )
-                {
-                    $cache_bag = ZB_FileCache::getInstance()->createCache( 'config' );
-                    $loaded_taxonomies = $cache_bag->retreive( 'cached_taxonomies' );
-                    if ( $loaded_taxonomies === false )
-                    {
-                        $loaded_taxonomies = array();
-                    }
-                    $loaded_taxonomies[] = $taxonomy_name;
-                    $cache_bag->store( 'cached_taxonomies', '<?php return ' . var_export( $loaded_taxonomies, true ) . ' ?>' );
                 }
             }
         }

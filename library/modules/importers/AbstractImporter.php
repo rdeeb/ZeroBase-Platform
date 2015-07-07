@@ -1,10 +1,10 @@
 <?php
+namespace Zerobase\Modules\Importers;
 
-include_once( 'ZB_ImporterInterface.php' );
-
-abstract class ZB_AbstractImporter implements ZB_ImporterInterface
+abstract class AbstractImporter implements ImporterInterface
 {
     protected $allowed_keys = array();
+
     /**
      * @inheritdoc
      */
@@ -17,7 +17,7 @@ abstract class ZB_AbstractImporter implements ZB_ImporterInterface
             {
                 if ( !in_array( $key, self::allowed_keys ) )
                 {
-                    throw new Exception("Unsupported key [$key] in configuration file");
+                    throw new \Exception("Unsupported key [$key] in configuration file");
                 }
             }
         }
