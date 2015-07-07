@@ -3,18 +3,10 @@ namespace Zerobase\Settings;
 
 use Zerobase\Forms\FormFactory;
 use Zerobase\Forms\Widgets\WidgetFactory;
+use Zerobase\Toolkit\Iterator;
 
-class SettingsBag implements \Iterator, \ArrayAccess
+class SettingsBag extends Iterator
 {
-    protected $settingsBag = array();
-    protected $bagIndexes = array();
-    private $position = 0;
-
-    public function __construct()
-    {
-        $this->position = 0;
-    }
-
     public function addSetting($name, $widget, array $options = array(), $section = 'General')
     {
         $name_re = '/^[a-z0-9_-]{3,99}$/';
@@ -27,7 +19,7 @@ class SettingsBag implements \Iterator, \ArrayAccess
             }
             if (!$this->offsetExists($name))
             {
-                $this->bagIndexes[] = $name;
+                $this->indexes[] = $name;
             }
             $this->offsetSet($name, array(
                 'widget' => $widget,
@@ -62,7 +54,7 @@ class SettingsBag implements \Iterator, \ArrayAccess
     public function getPages($form_name)
     {
         $pages = array();
-        foreach ($this->settingsBag as $widget_name => $options)
+        foreach ($this->data as $widget_name => $options)
         {
             if (!isset($pages[$options['section']]))
             {
@@ -71,59 +63,5 @@ class SettingsBag implements \Iterator, \ArrayAccess
             $pages[$options['section']]->addWidget($widget_name, $options['widget'], $options['options']['widget_options'], get_option($widget_name, isset($options['options']['default']) ? $options['options']['default'] : null));
         }
         return $pages;
-    }
-
-    public function isEmpty()
-    {
-        return empty($this->settingsBag);
-    }
-
-    public function rewind()
-    {
-        $this->position = 0;
-    }
-
-    public function current()
-    {
-        return $this->settingsBag[$this->bagIndexes[$this->position]];
-    }
-
-    public function key()
-    {
-        return $this->bagIndexes[$this->position];
-    }
-
-    public function next()
-    {
-        ++$this->position;
-    }
-
-    public function valid()
-    {
-        return isset($this->settingsBag[$this->bagIndexes[$this->position]]);
-    }
-
-    public function offsetExists($offset)
-    {
-        return isset($this->settingsBag[$offset]);
-    }
-
-    public function offsetSet($offset, $value)
-    {
-        if (is_null($offset)) {
-            $this->settingsBag[] = $value;
-        } else {
-            $this->settingsBag[$offset] = $value;
-        }
-    }
-
-    public function offsetGet($offset)
-    {
-        return $this->offsetExists($offset) ? $this->settingsBag[$offset] : null;
-    }
-
-    public function offsetUnset($offset)
-    {
-        unset($this->settingsBag[$offset]);
     }
 }
