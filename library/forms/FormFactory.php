@@ -1,6 +1,8 @@
 <?php
 namespace Zerobase\Forms;
 
+use Zerobase\Forms\Models\ModelFactory;
+
 class FormFactory
 {
     /**
@@ -17,7 +19,7 @@ class FormFactory
 
     private static function getModel($model)
     {
-        $modelFactory = ZB_ModelFactory::getInstance();
+        $modelFactory = ModelFactory::getInstance();
         return $modelFactory->createModel($model);
     }
 
@@ -39,23 +41,19 @@ class FormFactory
     private static function loadRendererClass($renderer)
     {
         $className = self::getClassName($renderer);
-        $fileName = __DIR__.'/renderers/'.$className.'.php';
-        if (file_exists($fileName))
+        try
         {
-            require_once($fileName);
-            if (!self::checkIfRenderingClassExists($renderer))
-            {
-                throw new \Exception("A class with the name \"$className\" wasn't found in \"$fileName\"");
-            }
+            $obj = new $className();
+            unset($obj);
         }
-        else
+        catch(\Exception $e)
         {
-            throw new \Exception("The file \"$fileName\" wasn't found");
+            throw new \Exception("Unknown Renderer $renderer");
         }
     }
 
     private static function getClassName($string)
     {
-        return 'ZB_'.ucwords($string).'Renderer';
+        return 'Zerobase\Forms\Renderers\\' . ucwords($string).'Renderer';
     }
 }

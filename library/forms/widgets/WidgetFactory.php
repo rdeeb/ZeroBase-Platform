@@ -62,35 +62,41 @@ class WidgetFactory extends Singleton
      * Creates a new instance of a widget
      * @param $name string The name of the widget
      * @param $options array The options for the widget
-     * @throws Exception If the widget doesn't exists
-     * @return ZB_BaseWidget Returns a widget extending the BaseInputWidget class
+     * @throws \Exception If the widget doesn't exists
+     * @return BaseWidget Returns a widget extending the BaseInputWidget class
      */
     public function createWidget($name, $options)
     {
         if ($this->widgetExists($name))
         {
-            $className = $this->widgets[$name];
+            $className = 'Zerobase\Forms\Widgets\\' . $this->widgets[$name];
             return new $className($options);
         }
         else
         {
-            throw new Exception("The widget \"$name\" doesn't exists");
+            throw new \Exception("The widget \"$name\" doesn't exists");
         }
     }
 
     /**
      * @param $className string The class name to check
      * @return bool True if the class implements the WidgetInterface
-     * @throws Exception If the Class doesn't exists or if the class doesn't implements the WidgetInterface
+     * @throws \Exception If the Class doesn't exists or if the class doesn't implements the WidgetInterface
      */
     private function checkClassImplements($className)
     {
-        if (!class_exists($className))
+        $class = 'Zerobase\Forms\Widgets\\' . $className;
+        try
         {
-            throw new Exception("The class \"$className\" doesn't exists");
+            $obj = new $class();
+            unset($obj);
         }
-        $implements = class_implements($className);
-        if (in_array('WidgetInterface', $implements))
+        catch(\Exception $e)
+        {
+            throw new \Exception("The class \"$className\" doesn't exists");
+        }
+        $implements = class_implements($class);
+        if (in_array('Zerobase\Forms\Widgets\WidgetInterface', $implements))
         {
             return true;
         }

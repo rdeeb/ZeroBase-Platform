@@ -1,5 +1,5 @@
 <?php
 namespace Zerobase\Forms\Renderers;
 
-class DefaultRenderer extends AbstractRender
+class DefaultRenderer extends AbstractRenderer
 {}

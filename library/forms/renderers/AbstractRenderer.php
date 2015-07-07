@@ -1,9 +1,10 @@
 <?php
 namespace Zerobase\Forms\Renderers;
 
+use Zerobase\Forms\Widgets\WidgetInterface;
 use Zerobase\Toolkit\HtmlToolkit;
 
-abstract class AbstractRender implements RendererInterface
+abstract class AbstractRenderer implements RendererInterface
 {
     protected $widgets = array();
 

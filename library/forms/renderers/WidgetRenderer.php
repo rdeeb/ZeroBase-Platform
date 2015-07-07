@@ -3,7 +3,7 @@ namespace Zerobase\Forms\Renderers;
 
 use Zerobase\Toolkit\HtmlToolkit;
 
-class WidgetRenderer extends AbstractRender
+class WidgetRenderer extends AbstractRenderer
 {
     public function renderRow( $widgetName )
     {

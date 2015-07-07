@@ -1,5 +1,11 @@
 <?php
 namespace Zerobase\Forms;
+
+use Zerobase\Forms\Models\ModelInterface;
+use Zerobase\Forms\Renderers\RendererInterface;
+use Zerobase\Forms\Validators\ValidatorFactory;
+use Zerobase\Forms\Widgets\WidgetFactory;
+
 /**
  * Form
  * A class that builds options forms for Wordpress
@@ -18,7 +24,7 @@ class Form
     protected $taintedValues;
     protected $validations = array();
 
-    public function __construct( $form_name, ZB_RendererInterface $renderer, ZB_ModelInterface $model )
+    public function __construct( $form_name, RendererInterface $renderer, ModelInterface $model )
     {
         $this->formName = $form_name;
         $this->renderer = $renderer;
@@ -41,7 +47,7 @@ class Form
     public function addWidget( $name, $type, array $options = array(), $value = NULL )
     {
         $options = $this->sanitizeWidgetOptions($name, $options);
-        $wm = ZB_WidgetFactory::getInstance();
+        $wm = WidgetFactory::getInstance();
         if (isset($options['validations']))
         {
             $this->setWidgetValidators($name, $options['validations']);
@@ -114,7 +120,7 @@ class Form
     {
         if (!is_array($validators))
         {
-            throw new Exception("The validators must be defined as an array of validator options");
+            throw new \Exception("The validators must be defined as an array of validator options");
         }
         foreach ($validators as $key => $options)
         {
@@ -148,7 +154,7 @@ class Form
     public function isValid()
     {
         $isValid = true;
-        $validatorFactory = ZB_ValidatorFactory::getInstance();
+        $validatorFactory = ValidatorFactory::getInstance();
         foreach($this->validations as $name => $validators)
         {
             foreach($validators as $key => $options)

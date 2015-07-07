@@ -132,7 +132,7 @@ class ZerobasePlatform extends \Zerobase\Toolkit\Singleton
         try
         {
             $this->validateModuleConfiguration( $config );
-            $module_loader = ZB_ModuleLoader::getInstance();
+            $module_loader = \Zerobase\Modules\ModuleLoader::getInstance();
             $module_loader->addModule( self::slugify( $config[ 'name' ] ), $config );
         }
         catch ( Exception $e ) {}
@@ -140,7 +140,7 @@ class ZerobasePlatform extends \Zerobase\Toolkit\Singleton
 
     public function enqueueScripts()
     {
-        $module_loader = ZB_ModuleLoader::getInstance();
+        $module_loader = \Zerobase\Modules\ModuleLoader::getInstance();
         $module_loader->enqueue();
     }
 
@@ -176,7 +176,7 @@ class ZerobasePlatform extends \Zerobase\Toolkit\Singleton
 
     public function registerModules()
     {
-        $module_loader = ZB_ModuleLoader::getInstance();
+        $module_loader = \Zerobase\Modules\ModuleLoader::getInstance();
         $module_loader->load();
     }
 
@@ -299,7 +299,7 @@ class ZerobasePlatform extends \Zerobase\Toolkit\Singleton
      */
     public function initSettingsBag()
     {
-        $settings = ZB_Settings::getInstance();
+        $settings = \Zerobase\Settings\Settings::getInstance();
         $settings->createBag( 'performance' );
         $settings->createBag( 'layout' );
         $settings->createBag( 'zerobase-plugin' );
@@ -326,7 +326,7 @@ class ZerobasePlatform extends \Zerobase\Toolkit\Singleton
                 'default'        => '1'
             ) )
         ;
-        $module_list = ZB_ModuleLoader::getInstance()->getModuleList();
+        $module_list = \Zerobase\Modules\ModuleLoader::getInstance()->getModuleList();
         $module_bag = $settings->getBag( 'zerobase-plugin' );
         foreach( $module_list as $module => $config )
         {
@@ -349,7 +349,7 @@ class ZerobasePlatform extends \Zerobase\Toolkit\Singleton
     public function addAdminSettingsPage()
     {
         add_menu_page( __( 'Zerobase Options', 'zerobase' ), __( 'Zerobase Options', 'zerobase' ), 'manage_options', 'zerobase-settings', array( $this, self::ZEROBASE_ADMIN_PAGE_PREFIX . 'performance' ), null, 100 );
-        $settings = ZB_Settings::getInstance();
+        $settings = \Zerobase\Settings\Settings::getInstance();
         foreach ( $settings as $key => $bag ) {
             /** @var $bag ZB_SettingsBag */
             if ( $key != 'performance' && !$bag->isEmpty() ) {
@@ -368,7 +368,7 @@ class ZerobasePlatform extends \Zerobase\Toolkit\Singleton
         $dir = plugin_dir_path( __FILE__ );
         $lib_dir = $dir . '/library';
         $page_name = __( $bagName, 'zerobase' );
-        $settings = ZB_Settings::getInstance();
+        $settings = Zerobase\Settings\Settings::getInstance();
         $bag = $settings->getBag( $bagName );
         $settings_pages = $bag->getPages( $bagName );
         if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {
