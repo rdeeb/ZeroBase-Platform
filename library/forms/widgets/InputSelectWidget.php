@@ -1,5 +1,7 @@
 <?php
-require_once(__DIR__ . '/ZB_BaseInputWidget.php');
+namespace Zerobase\Forms\Widgets;
+
+use Zerobase\Toolkit\HtmlToolkit;
 
 /**
  * InputSelectWidget
@@ -9,7 +11,7 @@ require_once(__DIR__ . '/ZB_BaseInputWidget.php');
  * @author  Ramy Deeb <me@ramydeeb.com>
  * @license Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. http://creativecommons.org/licenses/by-nc-nd/3.0/.
  **/
-class InputSelectWidget extends ZB_BaseInputWidget
+class InputSelectWidget extends BaseInputWidget
 {
     /**
      * getType
@@ -37,19 +39,19 @@ class InputSelectWidget extends ZB_BaseInputWidget
         {
             if ( $this->getValue() == $key )
             {
-                $content .= ZB_HtmlToolkit::buildTag( 'option', array(
+                $content .= HtmlToolkit::buildTag( 'option', array(
                     'value'    => $key,
                     'selected' => 'selected'
                 ), false, $name );
             }
             else
             {
-                $content .= ZB_HtmlToolkit::buildTag( 'option', array(
+                $content .= HtmlToolkit::buildTag( 'option', array(
                     'value' => $key
                 ), false, $name );
             }
         }
 
-        return ZB_HtmlToolkit::buildTag( 'select', $this->attr, false, $content );
+        return HtmlToolkit::buildTag( 'select', $this->attr, false, $content );
     }
 }

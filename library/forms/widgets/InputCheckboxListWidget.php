@@ -1,5 +1,7 @@
 <?php
-require_once(__DIR__ . '/ZB_BaseInputWidget.php');
+namespace Zerobase\Forms\Widgets;
+
+use Zerobase\Toolkit\HtmlToolkit;
 
 /**
  * InputCheckboxListWidget
@@ -9,7 +11,7 @@ require_once(__DIR__ . '/ZB_BaseInputWidget.php');
  * @author  Ramy Deeb <me@ramydeeb.com>
  * @license Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. http://creativecommons.org/licenses/by-nc-nd/3.0/.
  **/
-class InputCheckboxListWidget extends ZB_BaseInputWidget
+class InputCheckboxListWidget extends BaseInputWidget
 {
     /**
      * getType
@@ -48,7 +50,7 @@ class InputCheckboxListWidget extends ZB_BaseInputWidget
                 $options['attr']['checked'] = 'checked';
             }
             $widget = new InputCheckboxWidget( $options );
-            $contents .= ZB_HtmlToolkit::buildTag( 'label', array(), false, $widget->render() . ' ' . $label );
+            $contents .= HtmlToolkit::buildTag( 'label', array(), false, $widget->render() . ' ' . $label );
         }
 
         return $contents;

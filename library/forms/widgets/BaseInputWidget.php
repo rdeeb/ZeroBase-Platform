@@ -1,15 +1,17 @@
 <?php
-require_once( __DIR__ . '/WidgetInterface.php' );
+namespace Zerobase\Forms\Widgets;
+
+use Zerobase\Toolkit\HtmlToolkit;
 
 /**
- * ZB_BaseInputWidget
+ * BaseInputWidget
  * An abstract class that handles the base functionalities of a widget
  *
  * @package ZeroBase
  * @author  Ramy Deeb <me@ramydeeb.com>
  * @license Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. http://creativecommons.org/licenses/by-nc-nd/3.0/.
  **/
-abstract class ZB_BaseInputWidget implements WidgetInterface
+abstract class BaseInputWidget implements WidgetInterface
 {
     //Internal variables
     protected $value; //The value stored by the widget
@@ -97,7 +99,7 @@ abstract class ZB_BaseInputWidget implements WidgetInterface
         {
             if ( !in_array( $key, $supported, true ) && $key != 'attr' )
             {
-                throw new Exception( "The parameter $key is not supported by this widget" );
+                throw new \Exception( "The parameter $key is not supported by this widget" );
             }
         }
 
@@ -142,7 +144,7 @@ abstract class ZB_BaseInputWidget implements WidgetInterface
      */
     public function renderLabel()
     {
-        return ZB_HtmlToolkit::buildLabel(
+        return HtmlToolkit::buildLabel(
             $this->params['label'],
             array(
                 'for' => isset($this->params['name']) ? $this->params['name'] : ''
@@ -158,9 +160,9 @@ abstract class ZB_BaseInputWidget implements WidgetInterface
         $liTags = '';
         foreach ($this->errors as $error)
         {
-            $liTags .= ZB_HtmlToolkit::buildTag('li', array(), false, $error)."\n";
+            $liTags .= HtmlToolkit::buildTag('li', array(), false, $error)."\n";
         }
-        return ZB_HtmlToolkit::buildTag('ul', array(
+        return HtmlToolkit::buildTag('ul', array(
             'class' => 'errors'
         ), false, $liTags);
     }

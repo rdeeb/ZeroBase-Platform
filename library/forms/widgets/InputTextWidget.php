@@ -1,5 +1,7 @@
 <?php
-require_once(__DIR__ . '/ZB_BaseInputWidget.php');
+namespace Zerobase\Forms\Widgets;
+
+use Zerobase\Toolkit\HtmlToolkit;
 
 /**
  * InputTextWidget
@@ -9,7 +11,7 @@ require_once(__DIR__ . '/ZB_BaseInputWidget.php');
  * @author  Ramy Deeb <me@ramydeeb.com>
  * @license Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. http://creativecommons.org/licenses/by-nc-nd/3.0/.
  **/
-class InputTextWidget extends ZB_BaseInputWidget
+class InputTextWidget extends BaseInputWidget
 {
     /**
      * getType
@@ -51,6 +53,6 @@ class InputTextWidget extends ZB_BaseInputWidget
         $this->attr['value'] = $this->getValue();
         $this->attr['type']  = $this->getType();
 
-        return ZB_HtmlToolkit::buildTag( 'input', $this->attr, true );
+        return HtmlToolkit::buildTag( 'input', $this->attr, true );
     }
 }

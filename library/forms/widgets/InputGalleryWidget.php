@@ -1,5 +1,7 @@
 <?php
-require_once(__DIR__ . '/ZB_BaseInputWidget.php');
+namespace Zerobase\Forms\Widgets;
+
+use Zerobase\Toolkit\HtmlToolkit;
 
 /**
  * InputGalleryWidget
@@ -9,7 +11,7 @@ require_once(__DIR__ . '/ZB_BaseInputWidget.php');
  * @author  Ramy Deeb <me@ramydeeb.com>
  * @license Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. http://creativecommons.org/licenses/by-nc-nd/3.0/.
  **/
-class InputGalleryWidget extends ZB_BaseInputWidget
+class InputGalleryWidget extends BaseInputWidget
 {
     /**
      * getType
@@ -50,17 +52,17 @@ class InputGalleryWidget extends ZB_BaseInputWidget
         }
         $this->attr['value'] = $this->getValue();
         $this->attr['type']  = 'hidden';
-        $base_widget         = ZB_HtmlToolkit::buildTag( 'input', $this->attr, true ) . ZB_HtmlToolkit::buildTag( 'button', array( 'type' => 'button', 'class' => 'button action gallery' ), false, __( 'Select a gallery', 'zerobase' ) );
+        $base_widget         = HtmlToolkit::buildTag( 'input', $this->attr, true ) . HtmlToolkit::buildTag( 'button', array( 'type' => 'button', 'class' => 'button action gallery' ), false, __( 'Select a gallery', 'zerobase' ) );
         $contents            = '';
         if ( $this->getValue() )
         {
-            $remove_link = ZB_HtmlToolkit::buildTag( 'a', array( 'href' => '#', 'class' => 'delete' ), false, __( 'Delete' ) );
+            $remove_link = HtmlToolkit::buildTag( 'a', array( 'href' => '#', 'class' => 'delete' ), false, __( 'Delete' ) );
             foreach ( explode( ',', $this->getValue() ) as $id )
             {
-                $contents .= ZB_HtmlToolkit::buildTag( 'li', array( 'class' => 'image', 'data-attachment_id' => $id ), false, wp_get_attachment_image( $id, array( 60, 60 ), false, array() ) . $remove_link );
+                $contents .= HtmlToolkit::buildTag( 'li', array( 'class' => 'image', 'data-attachment_id' => $id ), false, wp_get_attachment_image( $id, array( 60, 60 ), false, array() ) . $remove_link );
             }
         }
 
-        return ZB_HtmlToolkit::buildTag( 'ul', array( 'class' => 'gallery-preview' ), false, $contents ) . $base_widget;
+        return HtmlToolkit::buildTag( 'ul', array( 'class' => 'gallery-preview' ), false, $contents ) . $base_widget;
     }
 }

@@ -1,7 +1,10 @@
 <?php
 namespace Zerobase\Modules;
 
+use Symfony\Component\Yaml\Yaml;
 use Zerobase\Cache\FileCache;
+use Zerobase\Modules\Importers\PostTypeImporter;
+use Zerobase\Modules\Importers\TaxonomyImporter;
 use Zerobase\Toolkit\Singleton;
 
 class ModuleLoader extends Singleton {
@@ -90,14 +93,14 @@ class ModuleLoader extends Singleton {
     private function loadPostTypeFromYaml( $file, $cache_enabled = true )
     {
         $file_contents = file_get_contents( $file );
-        $yaml_result = \Symfony\Component\Yaml\Yaml::parse($file_contents);
+        $yaml_result = Yaml::parse($file_contents);
         foreach ( $yaml_result as $post_type_name => $post_type_config )
         {
             if ( $post_type_name )
             {
                 if ( !post_type_exists( $post_type_name ) )
                 {
-                    ZB_PostTypeImporter::load( $post_type_name, $post_type_config );
+                    PostTypeImporter::load( $post_type_name, $post_type_config );
                     if ( $cache_enabled )
                     {
                         $cache_bag = FileCache::getInstance()->createCache( 'config' );
@@ -117,14 +120,14 @@ class ModuleLoader extends Singleton {
     private function loadTaxonomyFromYaml( $file, $cache_enabled = true )
     {
         $file_contents = file_get_contents( $file );
-        $yaml_result = \Symfony\Component\Yaml\Yaml::parse($file_contents);
+        $yaml_result = Yaml::parse($file_contents);
         foreach ( $yaml_result as $taxonomy_name => $taxonomy_config )
         {
             if ( $taxonomy_name )
             {
                 if ( !taxonomy_exists( $taxonomy_name ) )
                 {
-                    ZB_TaxonomyImporter::load( $taxonomy_name, $taxonomy_config );
+                    TaxonomyImporter::load( $taxonomy_name, $taxonomy_config );
                     if ( $cache_enabled )
                     {
                         $cache_bag = FileCache::getInstance()->createCache( 'config' );

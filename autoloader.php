@@ -2,12 +2,12 @@
 
 spl_autoload_register(function ($class) {
 
-    // project-specific namespace prefix
-    $prefix = 'Zerobase\\';
+    zerobase_autoload_dir($class, 'Zerobase\\', __DIR__ . '/library/');
+    zerobase_autoload_dir($class, 'Symfony\\Component\\', __DIR__ . '/vendor/symfony/');
 
-    // base directory for the namespace prefix
-    $base_dir = __DIR__ . '/library/';
+});
 
+function zerobase_autoload_dir($class, $prefix, $base_dir) {
     // does the class use the namespace prefix?
     $len = strlen($prefix);
     if (strncmp($prefix, $class, $len) !== 0) {
@@ -27,4 +27,4 @@ spl_autoload_register(function ($class) {
     if (file_exists($file)) {
         require $file;
     }
-});
+}

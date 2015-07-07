@@ -1,6 +1,9 @@
 <?php
 namespace Zerobase\Metaboxes;
 
+use Zerobase\Forms\Form;
+use Zerobase\Forms\FormFactory;
+
 class Metabox
 {
     /**
@@ -51,7 +54,7 @@ class Metabox
      * @param WP_Post $post The Post Object
      * @return mixed
      **/
-    public function saveMetaInfo( $post_id, WP_Post $post )
+    public function saveMetaInfo( $post_id, \WP_Post $post )
     {
         $options = $this->options;
 
@@ -78,7 +81,7 @@ class Metabox
      * Renders the custom meta box
      * @return void
      **/
-    public function renderMetaBox( WP_Post $post )
+    public function renderMetaBox( \WP_Post $post )
     {
         $form  = $this->getForm( $post->ID );
         $nonce = wp_nonce_field( $this->options['id'], 'ZB_Metabox' );
@@ -105,7 +108,7 @@ class Metabox
      **/
     private function getForm( $post_id )
     {
-        $form     = ZB_FormFactory::createForm( $this->options['id'], 'default', 'metadata' );
+        $form     = FormFactory::createForm( $this->options['id'], 'default', 'metadata' );
         $defaults = array(
             'type'    => 'text',
             'default' => NULL
@@ -117,7 +120,7 @@ class Metabox
             if ( $type == 'tabs' )
             {
                 if (!isset($options['label']) || !$options['label']) {
-                    throw new Exception('Every tab must implement a Label');
+                    throw new \Exception('Every tab must implement a Label');
                 }
                 foreach ( $options['fields'] as $field => $field_ops )
                 {
@@ -174,7 +177,7 @@ class Metabox
     /**
      * gets the current post type in the WordPress Admin
      * @return mixed
-     * @author http://themergency.com/wordpress-tip-get-post-type-in-admin/, Ramy Deeb
+     * @author http://themergency.com/wordpress-tip-get-post-type-in-admin/ , Ramy Deeb
      */
     private function getCurrentPostType()
     {
@@ -192,7 +195,7 @@ class Metabox
             return $typenow;
         }
 
-        //check the global $current_screen object - set in sceen.php
+        //check the global $current_screen object - set in screen.php
         elseif ( $current_screen && $current_screen->post_type )
         {
             return $current_screen->post_type;
