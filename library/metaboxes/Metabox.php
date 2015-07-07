@@ -1,14 +1,7 @@
 <?php
+namespace Zerobase\Metaboxes;
 
-/**
- * ZB_Metabox
- * Generates custom metaboxes for your post, pages and custom post types
- *
- * @package ZeroBase
- * @author  Ramy Deeb <me@ramydeeb.com>
- * @license Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. http://creativecommons.org/licenses/by-nc-nd/3.0/.
- **/
-class ZB_Metabox
+class Metabox
 {
     /**
      * @param array $options The options for building the custom meta box
@@ -107,8 +100,8 @@ class ZB_Metabox
     }
 
     /**
-     * Returns the ZB_Form object
-     * @return ZB_Form
+     * Returns the Form object
+     * @return Form
      **/
     private function getForm( $post_id )
     {
