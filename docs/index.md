@@ -1,19 +1,65 @@
-# ZeroBase Docs
+# Zerobase Platform Docs
 
-Here you will find the docs of the different helpers included in the ZeroBase Platform plugin. With these helpers you will be able to implement Wordpress extentions using a common base.
+Zerobase will allow you to develop a plugin or theme with ease, by writing rules in a YAML file,
+you will be able to create different elements for your Wordpress site.
 
-## Foms
+## Anatomy of a Zerobase Plugin
 
-The heart of the platform, this powers all the user inputs available thru the ZeroBase Platform.
+A tipical Zerobase powered plugin will have the following structure:
 
-## Post Types
+```
+wp_contents/plugins
+    + my_zb_plugin/
+    |-- my_zb_plugin.php
+    |-- my_zb_plugin.post_type.yml
+    |-- my_zb_plugin.taxonomy.yml
+    |-- my_zb_plugin.metabox.yml
+```
 
-The platform offers a class interface that will help you standarize the way to implement and load post types.
+### my_zb_plugin.php
 
-## Taxonomy extender
+This file is your standard Wordpress plugin, this is where you are going to writ the only "required"
+piece of code that is used to activate your Zerobase Powered Plugin. This file will look something
+like this:
 
-An standard way to add extra fields to taxonomies.
+``` php
+/*
+Plugin Name: My Zerobase Plugin
+Description: A plugin to test the Zerobase Platform
+Version: 1.0
+Author: Ramy Deeb
+Author URI: http://www.ramydeeb.com/
+License: MIT License.
+*/
+function my_zb_module( ZerobasePlatform $platform )
+{
+    $platform->addModule(array(
+      'name' => 'My ZB Module',
+      'path' => plugin_dir_path( __FILE__ )
+    ));
+}
 
-## [Widgets](https://github.com/rdeeb/ZeroBase-Platform/blob/develop/docs/Widgets.md)
+add_action( 'zerobase_load_modules', 'my_zb_module' );
+```
 
-An standard way to implement widgets, uses the Form sub framework to generate the widget options, and loads a PHP file for your templates.
+As you can see we will have the default Wordpress plugin definition, after that you will see the Zerobase
+Module definition inside the callback function ``` php function my_zb_module( ZerobasePlatform $platform ) ```
+This function will receive as parameter the ZerobasePlatform current instance, during all the execution of
+your Wordpress request there will be only one instance of the Zerobase Platform.
+
+Inside this function you will define your module, after you add it Zerobase will do it's magic and load the
+yaml files and convert them into the required PHP code that will create your Post Types, Taxonomies, Widgets
+even Settings pages.
+
+Lastly you will have to register your callback using the ``` php add_action( 'zerobase_load_modules', 'my_zb_module' );```
+
+## YAML Loaders
+
+The platform offers a set of configuration loaders that will transform YAML files into usable Wordpress
+components, as of right now you can create the following components from YAML files:
+
+* Post Types
+* Metaboxes
+* Taxonomies
+* Widgets
+* Javascripts & CSS

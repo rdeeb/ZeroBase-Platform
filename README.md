@@ -3,8 +3,24 @@ ZeroBase Platform
 
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/cfec1da2-f9e8-4933-a134-4e9242c9ef2a/small.png)](https://insight.sensiolabs.com/projects/cfec1da2-f9e8-4933-a134-4e9242c9ef2a)
 
-This is the base of the ZeroBase Wordpress Framework. This gives the ZeroBase powered plugins and themes a common base to work on. This consists in a combination of mini frameworks wich aids in the extention of wordpress functionalities.
+## Introduction
 
-ZeroBase provides themes and plugins developers, with an standard way to extend Wordpress by allowing them to use a base set of tools that will allow them to implement different type of extentions using the same type of workflow for every each one of them. This will reduce the major labor work and give the developer the ability to deliver the same level of user experience that a Wordpress user is used to, while taking away all the hazle of having to work with different programming aproaches ussually forced by the Wordpress core functionalities.
+Zerobase Platform is a Wordpress plugin that implements easy access to Wordpress most common tasks. 
+This is accomplished by allowing the user to create elements like Post Types or Taxonomies from YAML
+files. This allows to even non savy developers to implement easily a plugin that includes post types
+with metaboxes and taxonomies without having to write a single line of code to accomplish this tasks.
 
-Read the documentation [here](https://github.com/rdeeb/ZeroBase-Platform/blob/develop/docs/index.md)
+## Installation
+
+To install the platform you can download the package zip, and extract it in your ```wp_content/plugins```
+folder. And activate it in your Wordpress site, when installed Zerobase by itself won't modify in anyway
+your Wordpress site, this is the job of Zerobase powered plugins.
+ 
+## Usage
+
+For a complete usage guide read the documentation [here](https://github.com/rdeeb/ZeroBase-Platform/blob/develop/docs/index.md)
+
+## Credits
+
+This plugin is released with the MIT License, so basically you can use it in your personal or commercial
+projects. This project is developed by [Ramy Deeb](https://github.com/rdeeb)
