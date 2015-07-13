@@ -1,23 +1,26 @@
 <?php
 namespace Zerobase\Forms\Models;
 
+use Zerobase\Toolkit\Request;
+
 class MetadataModel extends AbstractModel
 {
 
     protected function getPostId()
     {
         global $post;
+        $request = Request::getInstance();
         if (!empty($post) && $post->ID)
         {
             return $post->ID;
         }
-        else if (isset($_REQUEST['post']))
+        else if ( $request->has( 'post' ) )
         {
-            return $_REQUEST['post'];
+            return $request->get( 'post' );
         }
-        else if (isset( $_POST['post_ID'] ))
+        else if ( $request->has( 'post_ID' ) )
         {
-            return $_POST['post_ID'];
+            return $request->get( 'post_ID' );
         }
     }
 
