@@ -18,8 +18,8 @@ wp_contents/plugins
 
 ### my_zb_plugin.php
 
-This file is your standard Wordpress plugin, this is where you are going to writ the only "required"
-piece of code that is used to activate your Zerobase Powered Plugin. This file will look something
+This file is your standard Wordpress plugin file, this is where you are going to write the only "required"
+pieces of code that are used to activate your Zerobase Powered Plugin. This file will look something
 like this:
 
 ``` php
@@ -51,7 +51,7 @@ Inside this function you will define your module, after you add it Zerobase will
 yaml files and convert them into the required PHP code that will create your Post Types, Taxonomies, Widgets
 even Settings pages.
 
-Lastly you will have to register your callback using the ``` php add_action( 'zerobase_load_modules', 'my_zb_module' );```
+Lastly you will have to register your callback using the ```add_action( 'zerobase_load_modules', 'my_zb_module' );```
 
 ## YAML Loaders
 
