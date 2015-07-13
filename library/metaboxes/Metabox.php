@@ -3,6 +3,7 @@ namespace Zerobase\Metaboxes;
 
 use Zerobase\Forms\Form;
 use Zerobase\Forms\FormFactory;
+use Zerobase\Toolkit\Request;
 
 class Metabox
 {
@@ -182,7 +183,7 @@ class Metabox
     private function getCurrentPostType()
     {
         global $post, $typenow, $current_screen;
-
+        $request = Request::getInstance();
         //we have a post so we can just get the post type from that
         if ( $post && $post->post_type )
         {
@@ -202,23 +203,23 @@ class Metabox
         }
 
         //lastly check the post_type querystring
-        elseif ( isset( $_REQUEST['post_type'] ) )
+        elseif ( $request->has( 'post_type' ) )
         {
-            return sanitize_key( $_REQUEST['post_type'] );
+            return sanitize_key( $request->get( 'post_type' ) );
         }
 
         else
         {
-            if ( isset( $_REQUEST['post'] ) )
+            if ( $request->has( 'post' ) )
             {
-                return get_post_type( $_REQUEST['post'] );
+                return $request->get( 'post' );
             }
 
             else
             {
-                if ( isset( $_REQUEST['post_ID'] ) )
+                if ( $request->get( 'post_ID' ) )
                 {
-                    return get_post_type( $_REQUEST['post_ID'] );
+                    return get_post_type( $request->get( 'post_ID' ) );
                 }
             }
         }

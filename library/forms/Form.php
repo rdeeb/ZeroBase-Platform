@@ -5,6 +5,7 @@ use Zerobase\Forms\Models\ModelInterface;
 use Zerobase\Forms\Renderers\RendererInterface;
 use Zerobase\Forms\Validators\ValidatorFactory;
 use Zerobase\Forms\Widgets\WidgetFactory;
+use Zerobase\Toolkit\Request;
 
 /**
  * Form
@@ -34,9 +35,10 @@ class Form
 
     private function loadDataFromRequest()
     {
-        if ( isset( $_REQUEST[$this->formName] ) )
+        $request = Request::getInstance();
+        if ( $request->has( $this->formName ) )
         {
-            $this->taintedValues = $_REQUEST[$this->formName];
+            $this->taintedValues = $request->get( $this->formName );
         }
         else
         {
@@ -101,14 +103,15 @@ class Form
         }
         else
         {
-            if ( $default != NULL && !( isset( $_REQUEST[$this->formName] ) && $widget->getType() == 'checkbox' ) )
+            $request = Request::getInstance();
+            if ( $default != NULL && !( $request->has( $this->formName ) && $widget->getType() == 'checkbox' ) )
             {
                 $widget->setValue( $default );
                 $this->values[$name] = $default;
             }
             else
             {
-                if ( isset( $_REQUEST[$this->formName] ) && $widget->getType() == 'checkbox' )
+                if ( $request->has( $this->formName ) && $widget->getType() == 'checkbox' )
                 {
                     $this->values[$name] = false;
                 }
