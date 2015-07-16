@@ -1,5 +1,7 @@
 <?php
-require_once(__DIR__ . '/ZB_BaseInputWidget.php');
+namespace Zerobase\Forms\Widgets;
+
+use Zerobase\Toolkit\HtmlToolkit;
 
 /**
  * InputDateWidget
@@ -9,7 +11,7 @@ require_once(__DIR__ . '/ZB_BaseInputWidget.php');
  * @author  Ramy Deeb <me@ramydeeb.com>
  * @license Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. http://creativecommons.org/licenses/by-nc-nd/3.0/.
  **/
-class InputDateWidget extends ZB_BaseInputWidget
+class InputDateWidget extends BaseInputWidget
 {
     /**
      * getType
@@ -41,6 +43,6 @@ class InputDateWidget extends ZB_BaseInputWidget
         $this->attr['data-dateFormat'] = get_option( 'date_format' );
         $this->attr['class'] .= ' datepicker';
 
-        return ZB_HtmlToolkit::buildTag( 'input', $this->attr, true );
+        return HtmlToolkit::buildTag( 'input', $this->attr, true );
     }
 }

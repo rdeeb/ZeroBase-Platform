@@ -1,5 +1,7 @@
 <?php
-require_once(__DIR__ . '/ZB_BaseInputWidget.php');
+namespace Zerobase\Forms\Widgets;
+
+use Zerobase\Toolkit\HtmlToolkit;
 
 /**
  * InputRadioListWidget
@@ -9,7 +11,7 @@ require_once(__DIR__ . '/ZB_BaseInputWidget.php');
  * @author  Ramy Deeb <me@ramydeeb.com>
  * @license Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. http://creativecommons.org/licenses/by-nc-nd/3.0/.
  **/
-class InputRadioListWidget extends ZB_BaseInputWidget
+class InputRadioListWidget extends BaseInputWidget
 {
     /**
      * getType
@@ -47,7 +49,7 @@ class InputRadioListWidget extends ZB_BaseInputWidget
                 $attrs['checked'] = 'checked';
             }
 
-            $content .= ZB_HtmlToolkit::buildTag( 'p', array(), false, ZB_HtmlToolkit::buildTag( 'label', array( 'class' => 'inline-block' ), false, ZB_HtmlToolkit::buildTag( 'input', $attrs, true ) . " $label" ));
+            $content .= HtmlToolkit::buildTag( 'p', array(), false, HtmlToolkit::buildTag( 'label', array( 'class' => 'inline-block' ), false, HtmlToolkit::buildTag( 'input', $attrs, true ) . " $label" ));
         }
 
         return $content;

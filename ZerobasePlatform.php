@@ -11,11 +11,12 @@
  * @author  Ramy Deeb <me@ramydeeb.com>
  * @package ZeroBase
  */
-require_once( __DIR__ . '/library/toolkit/ZB_Singleton.php' );
+require_once(__DIR__.'/autoloader.php');
 
-class ZerobasePlatform extends ZB_Singleton
+class ZerobasePlatform extends \Zerobase\Toolkit\Singleton
 {
     private $dataStorage = array();
+    protected $init = false;
     CONST ZEROBASE_ADMIN_PAGE_PREFIX = 'zerobase_settings_page_';
     
 
@@ -26,58 +27,23 @@ class ZerobasePlatform extends ZB_Singleton
      */
     protected function __construct()
     {
-        DEFINE( 'ZEROBASE_ROOT_DIR', plugin_dir_path( __FILE__ ));
-        DEFINE( 'ZEROBASE_LIBRARY_DIR', ZEROBASE_ROOT_DIR . '/library' );
-        DEFINE( 'ZEROBASE_VENDOR_DIR', ZEROBASE_ROOT_DIR . '/vendor' );
-        DEFINE( 'ZEROBASE_CACHE_DIR', ZEROBASE_ROOT_DIR . '/cache' );
-        //Load the files
-        $this->loadPlatformRequiredFiles();
-        //Install platform terms tables
-        $this->installPlatformTermsTables();
-        //Configure Options and Settings
-        $this->configurePlatformOptions();
-        //Set the required Wordpress hooks
-        $this->addWordpressActionHooks();
-        //Load the different locales
-        load_plugin_textdomain( 'zerobase', false, dirname( plugin_basename( __FILE__ ) ) . '/locales/' );
-        if ( !is_dir( ZEROBASE_CACHE_DIR ) ) {
-            mkdir( ZEROBASE_CACHE_DIR, 755 );
+        if ( !$this->init )
+        {
+            DEFINE( 'ZEROBASE_ROOT_DIR', plugin_dir_path( __FILE__ ));
+            DEFINE( 'ZEROBASE_LIBRARY_DIR', ZEROBASE_ROOT_DIR . '/library' );
+            DEFINE( 'ZEROBASE_VENDOR_DIR', ZEROBASE_ROOT_DIR . '/vendor' );
+            DEFINE( 'ZEROBASE_CACHE_DIR', ZEROBASE_ROOT_DIR . '/cache' );
+            //Install platform terms tables
+            $this->installPlatformTermsTables();
+            //Set the required Wordpress hooks
+            $this->addWordpressActionHooks();
+            //Load the different locales
+            load_plugin_textdomain( 'zerobase', false, dirname( plugin_basename( __FILE__ ) ) . '/locales/' );
+            if ( !is_dir( ZEROBASE_CACHE_DIR ) ) {
+                mkdir( ZEROBASE_CACHE_DIR, 755 );
+            }
+            $this->init = true;
         }
-    }
-
-    /**
-     * Loads the required files for the platform
-     */
-    private function loadPlatformRequiredFiles()
-    {
-        //Toolkit
-        require_once( ZEROBASE_LIBRARY_DIR . '/toolkit/ZB_HtmlToolkit.php' );
-        //Forms
-        require_once( ZEROBASE_LIBRARY_DIR . '/forms/widgets/ZB_WidgetFactory.php' );
-        require_once( ZEROBASE_LIBRARY_DIR . '/forms/validators/ZB_ValidatorFactory.php' );
-        require_once( ZEROBASE_LIBRARY_DIR . '/forms/models/ZB_ModelFactory.php' );
-        require_once( ZEROBASE_LIBRARY_DIR . '/forms/ZB_Form.php' );
-        require_once( ZEROBASE_LIBRARY_DIR . '/forms/ZB_FormFactory.php' );
-        //Metaboxes
-        require_once( ZEROBASE_LIBRARY_DIR . '/metaboxes/ZB_Metabox.php' );
-        //Post Types
-        require_once( ZEROBASE_LIBRARY_DIR . '/post-types/ZB_BasePostType.php' );
-        //Module handling
-        require_once( ZEROBASE_LIBRARY_DIR . '/modules/ZB_ModuleLoader.php' );
-        //Taxonomy extender
-        require_once( ZEROBASE_LIBRARY_DIR . '/taxonomies/ZB_TaxonomyExtender.php' );
-        //Widgets
-        require_once( ZEROBASE_LIBRARY_DIR . '/widgets/ZB_BaseWidget.php' );
-        //Settings
-        require_once( ZEROBASE_LIBRARY_DIR . '/settings/ZB_Settings.php' );
-        require_once( ZEROBASE_LIBRARY_DIR . '/settings/ZB_SettingsBag.php' );
-        //Vendor files
-        require_once( ZEROBASE_VENDOR_DIR . '/vendor_autoloader.php' );
-        //Cache files
-        require_once( ZEROBASE_LIBRARY_DIR . '/cache/ZB_FileCache.php' );
-        require_once( ZEROBASE_LIBRARY_DIR . '/cache/ZB_FileCacheBag.php' );
-        //Skeleton
-        require_once( ZEROBASE_LIBRARY_DIR . '/skeletons/ZB_SkeletonLoader.php' );
     }
 
     /**
@@ -98,7 +64,7 @@ class ZerobasePlatform extends ZB_Singleton
     /**
      * Sets up the options and settings of the platform
      */
-    private function configurePlatformOptions()
+    public function configurePlatformOptions()
     {
         $this->dataStorage = get_option( 'zerobase_platform_data_storage', array() );
         if ( empty( $this->dataStorage ) ) {
@@ -118,9 +84,8 @@ class ZerobasePlatform extends ZB_Singleton
         //Adding Actions;
         add_action( 'plugins_loaded', array( &$this, 'executeAfterPluginsSetupHooks' ), 1 );
         add_action( 'after_setup_theme', array( &$this, 'executeAfterThemeSetupHooks' ), 1 );
-        add_action( 'init', array( &$this, 'registerModules' ), 10 );
-        add_action( 'wp_enqueue_scripts', array( &$this, 'registerScripts' ), 10 );
-        add_action( 'wp_enqueue_scripts', array( &$this, 'enqueueScripts' ), 90 );
+        add_action( 'after_setup_theme', array( &$this, 'registerModules' ), 10 );
+        add_action( 'init', array( &$this, 'configurePlatformOptions' ), 11 );
         //Configuring the Admin panel
         if ( is_admin() ) {
             add_action( 'admin_menu', array( &$this, 'addAdminSettingsPage' ), 2 );
@@ -170,16 +135,10 @@ class ZerobasePlatform extends ZB_Singleton
         try
         {
             $this->validateModuleConfiguration( $config );
-            $module_loader = ZB_ModuleLoader::getInstance();
+            $module_loader = \Zerobase\Modules\ModuleLoader::getInstance();
             $module_loader->addModule( self::slugify( $config[ 'name' ] ), $config );
         }
         catch ( Exception $e ) {}
-    }
-
-    public function enqueueScripts()
-    {
-        $module_loader = ZB_ModuleLoader::getInstance();
-        $module_loader->enqueue();
     }
 
     /**
@@ -214,7 +173,7 @@ class ZerobasePlatform extends ZB_Singleton
 
     public function registerModules()
     {
-        $module_loader = ZB_ModuleLoader::getInstance();
+        $module_loader = \Zerobase\Modules\ModuleLoader::getInstance();
         $module_loader->load();
     }
 
@@ -337,32 +296,48 @@ class ZerobasePlatform extends ZB_Singleton
      */
     public function initSettingsBag()
     {
-        $settings = ZB_Settings::getInstance();
+        $settings = \Zerobase\Settings\Settings::getInstance();
         $settings->createBag( 'performance' );
         $settings->createBag( 'layout' );
-        $settings->createBag( 'post_types' );
+        $settings->createBag( 'zerobase-plugin' );
+        //Performance Options
         $performance = $settings->getBag( 'performance' );
         $performance
-            ->addSetting( 'platform_use_cdn', 'radio_list', array(
+            ->addSetting( 'zerobase_platform_use_cdn', 'radio_list', array(
                 'widget_options' => array(
                     'label' => 'Use CDN for JS library files',
                     'choices' => array(
-                        'cdn'   => __( 'CDN copies of the files (faster)', 'zerobase' ),
-                        'local' => __( 'Local copies of the libraries', 'zerobase' )
+                        '1'   => __( 'CDN copies of the files (faster)', 'zerobase' ),
+                        '0' => __( 'Local copies of the libraries', 'zerobase' )
                     )
                 ),
-                'default'        => 'local'
+                'default'        => '1'
             ) )
-            ->addSetting( 'cache', 'radio_list', array(
+            ->addSetting( 'zerobase_platform_cache', 'radio_list', array(
                 'widget_options' => array(
                     'choices' => array(
-                        'enabled'   => __( 'Enabled (Recomended)', 'zerobase' ),
-                        'disabled' => __( 'Disabled (For developing use only, hurts performance)', 'zerobase' )
+                        '1'   => __( 'Enabled (Recomended)', 'zerobase' ),
+                        '0' => __( 'Disabled (For developing use only, hurts performance)', 'zerobase' )
                     )
                 ),
-                'default'        => 'enabled'
+                'default'        => '1'
             ) )
         ;
+        $module_list = \Zerobase\Modules\ModuleLoader::getInstance()->getModuleList();
+        $module_bag = $settings->getBag( 'zerobase-plugin' );
+        foreach( $module_list as $module => $config )
+        {
+            $module_bag->addSetting( "zerobase_module_$module", 'checkbox', array(
+              'widget_options' => array(
+                'label' => $config['name'],
+                'choices' => array(
+                  '1'   => __( 'Enabled', 'zerobase' ),
+                  '0' => __( 'Disabled', 'zerobase' )
+                )
+              ),
+              'default'        => '1'
+            ) );
+        }
     }
 
     /**
@@ -371,7 +346,7 @@ class ZerobasePlatform extends ZB_Singleton
     public function addAdminSettingsPage()
     {
         add_menu_page( __( 'Zerobase Options', 'zerobase' ), __( 'Zerobase Options', 'zerobase' ), 'manage_options', 'zerobase-settings', array( $this, self::ZEROBASE_ADMIN_PAGE_PREFIX . 'performance' ), null, 100 );
-        $settings = ZB_Settings::getInstance();
+        $settings = \Zerobase\Settings\Settings::getInstance();
         foreach ( $settings as $key => $bag ) {
             /** @var $bag ZB_SettingsBag */
             if ( $key != 'performance' && !$bag->isEmpty() ) {
@@ -390,7 +365,7 @@ class ZerobasePlatform extends ZB_Singleton
         $dir = plugin_dir_path( __FILE__ );
         $lib_dir = $dir . '/library';
         $page_name = __( $bagName, 'zerobase' );
-        $settings = ZB_Settings::getInstance();
+        $settings = Zerobase\Settings\Settings::getInstance();
         $bag = $settings->getBag( $bagName );
         $settings_pages = $bag->getPages( $bagName );
         if ( $_SERVER[ 'REQUEST_METHOD' ] === 'POST' ) {

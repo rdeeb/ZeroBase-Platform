@@ -1,5 +1,7 @@
 <?php
-require_once(__DIR__ . '/ZB_BaseInputWidget.php');
+namespace Zerobase\Forms\Widgets;
+
+use Zerobase\Toolkit\HtmlToolkit;
 
 /**
  * InputGoogleMapsWidget
@@ -9,7 +11,7 @@ require_once(__DIR__ . '/ZB_BaseInputWidget.php');
  * @author  Ramy Deeb <me@ramydeeb.com>
  * @license Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. http://creativecommons.org/licenses/by-nc-nd/3.0/.
  **/
-class InputGoogleMapsWidget extends ZB_BaseInputWidget
+class InputGoogleMapsWidget extends BaseInputWidget
 {
     /**
      * getType
@@ -40,12 +42,12 @@ class InputGoogleMapsWidget extends ZB_BaseInputWidget
         $this->attr['type']  = $this->getType();
         $this->attr['class'] = isset( $this->attr['class'] ) ? $this->attr['class'].' gmap-latlong' : 'gmap-latlong';
 
-        $contents = ZB_HtmlToolkit::buildDiv( '', array(
+        $contents = HtmlToolkit::buildDiv( '', array(
             'class' => 'map-canvas'
         ) );
-        $contents .= ZB_HtmlToolkit::buildTag( 'input', $this->attr, true );
+        $contents .= HtmlToolkit::buildTag( 'input', $this->attr, true );
 
-        return ZB_HtmlToolkit::buildDiv( $contents ,array(
+        return HtmlToolkit::buildDiv( $contents ,array(
             'class' => 'map-selector'
         ));
     }
