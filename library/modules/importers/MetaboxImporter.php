@@ -36,7 +36,7 @@ class MetaboxImporter extends AbstractImporter
             ));
             $cache_bag->store( $key, $metabox_code );
         }
-        $obj = new Metabox( $config );
+        new Metabox( $config );
     }
 
     private static function sanitizeConfig( array $config ) {
