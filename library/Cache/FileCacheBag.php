@@ -15,11 +15,6 @@ class FileCacheBag implements CacheBagInterface
         }
     }
 
-    public function __destruct()
-    {
-        update_option( "zb_file_cache_{$this->name_space}_hashes", $this->hashes );
-    }
-
     /**
      * @inheritdoc
      */
@@ -68,6 +63,13 @@ class FileCacheBag implements CacheBagInterface
         {
             return false;
         }
+    }
+
+    public function has( $key )
+    {
+        $filename = $this->getCacheDir() . '/' . \ZerobasePlatform::slugify( $key ) . '.cache';
+        return file_exists( $filename );
+
     }
 
     private function getCacheDir()

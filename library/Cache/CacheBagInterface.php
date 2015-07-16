@@ -21,4 +21,10 @@ interface CacheBagInterface
      * @return bool True on success false on error
      */
     public function destroy($key);
+
+    /**
+     * @param string $key Key of the data to search
+     * @return bool True if exists, false if not
+     */
+    public function has($key);
 }

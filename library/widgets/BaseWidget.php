@@ -33,7 +33,7 @@ abstract class BaseWidget extends \WP_Widget
         extract( $args );
         foreach ( $instance as $name => $value )
         {
-            $instance[$name] = $this->sanitizeField( $name, $value );
+            $instance[ $name ] = $this->sanitizeField( $name, $value );
         }
         extract( $instance );
         include( $this->getTemplate() );
@@ -52,7 +52,7 @@ abstract class BaseWidget extends \WP_Widget
         $instance = array();
         foreach ( $new_instance as $name => $value )
         {
-            $instance[$name] = $this->sanitizeField( $name, $value );
+            $instance[ $name ] = $this->sanitizeField( $name, $value );
         }
 
         return $instance;
@@ -83,7 +83,7 @@ abstract class BaseWidget extends \WP_Widget
         $ret_arr = array();
         foreach ( $fields as $name => $options )
         {
-            $ret_arr[$name] = array_merge( array(
+            $ret_arr[ $name ] = array_merge( array(
                 'type'    => 'text',
                 'default' => ''
             ), $options );
@@ -103,7 +103,7 @@ abstract class BaseWidget extends \WP_Widget
     private function sanitizeField( $field, $value )
     {
         $fields = $this->widgetFields();
-        switch ( $fields[$field]['type'] )
+        switch ( $fields[ $field ][ 'type' ] )
         {
             case 'checkbox':
                 $value = (bool) $value;
@@ -123,14 +123,16 @@ abstract class BaseWidget extends \WP_Widget
     private function buildForm( $instance )
     {
         $fields = $this->widgetFields();
-        $form   = FormFactory::createForm(get_class( $this ), 'widget');
+        $form   = FormFactory::createForm( get_class( $this ), 'widget' );
         foreach ( $fields as $name => $options )
         {
             $args = array(
                 'id'   => $this->get_field_id( $name ),
                 'name' => $this->get_field_name( $name )
             );
-            $form->addWidget( $name, $options['type'], $args, isset($instance[$name]) ? $instance[$name] : null );
+            $args = array_merge( $options, $args );
+            unset( $args[ 'type' ], $args[ 'default' ] );
+            $form->addWidget( $name, $options[ 'type' ], $args, isset($instance[ $name ]) ? $instance[ $name ] : null );
         }
         return $form;
     }

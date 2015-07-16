@@ -6,6 +6,7 @@ use Zerobase\Cache\FileCache;
 use Zerobase\Modules\Importers\MetaboxImporter;
 use Zerobase\Modules\Importers\PostTypeImporter;
 use Zerobase\Modules\Importers\TaxonomyImporter;
+use Zerobase\Modules\Importers\WidgetImporter;
 use Zerobase\Toolkit\Singleton;
 
 class ModuleLoader extends Singleton {
@@ -15,6 +16,8 @@ class ModuleLoader extends Singleton {
     protected $metaboxes_loaded  = false;
     protected $widgets_loaded    = false;
     protected $scripts_loaded    = false;
+    protected $loaded_segments   = array();
+    protected $loaded            = false;
 
     public function addModule( $name, array $module_config ) {
         $this->modules[$name] = $module_config;
@@ -26,16 +29,21 @@ class ModuleLoader extends Singleton {
     }
 
     public function load() {
-        $cache_enabled = (bool) get_option( 'zerobase_platform_cache', TRUE );
-        //Load from Cache
-        if ( $cache_enabled )
+        if ( !$this->loaded )
         {
-            if ($this->tryLoadCache())
+            $cache_enabled = (bool) get_option( 'zerobase_platform_cache', TRUE );
+            //Load from Cache
+            if ( $cache_enabled )
             {
-                return true;
+                if ($this->tryLoadCache())
+                {
+                    $this->loaded = true;
+                    return true;
+                }
             }
+            $this->loaded = true;
+            return $this->loadYamlFiles();
         }
-        return $this->loadYamlFiles();
     }
 
     private function tryLoadCache()
@@ -55,26 +63,37 @@ class ModuleLoader extends Singleton {
 
     private function loadCacheSegment( $cache )
     {
-        $cache_bag = FileCache::getInstance()->createCache( 'config' );
-        $loaded_post_types = $cache_bag->retreive( 'cached_' . $cache );
-        if ( $loaded_post_types !== false )
+        if ( !isset( $this->loaded_segments[ $cache ] ) || $this->loaded_segments[ $cache ] == false )
         {
-            if ( !empty( $loaded_post_types ) )
+            $cache_bag = FileCache::getInstance()->createCache( 'config' );
+            $loaded_objects = $cache_bag->retreive( 'cached_' . $cache );
+            if ( $loaded_objects !== false )
             {
-                foreach( $loaded_post_types as $post_type_name )
+                if ( !empty( $loaded_objects ) )
                 {
-                    $cache_bag = FileCache::getInstance()->createCache( $cache );
-                    $post_type = $cache_bag->retreive( $post_type_name );
-                    if ( $post_type === false )
+                    foreach( $loaded_objects as $cache_key )
                     {
-                        return false;
+                        $cache_bag = FileCache::getInstance()->createCache( $cache );
+                        if ( $cache != 'widgets' || !class_exists( $cache_key )  )
+                        {
+                            $object = $cache_bag->retreive( $cache_key );
+                            if ( $object === false )
+                            {
+                                return false;
+                            }
+                        }
                     }
+                    $this->loaded_segments[ $cache ] = true;
+                    return true;
                 }
-                return true;
+                return false;
             }
             return false;
         }
-        return false;
+        else
+        {
+            return true;
+        }
     }
 
     private function loadYamlFiles()
@@ -101,6 +120,7 @@ class ModuleLoader extends Singleton {
                 }
                 else if ( strpos( $file, 'widget' ) !== false && !$this->widgets_loaded )
                 {
+                    $this->loadWidgetsFromYaml( $file, $cache_enabled );
                     $this->widgets_loaded = true;
                 }
                 else if ( strpos( $file, 'script' ) !== false && !$this->scripts_loaded )
@@ -185,6 +205,32 @@ class ModuleLoader extends Singleton {
                     }
                     $loaded_metaboxes[] = $metabox_name;
                     $cache_bag->store( 'cached_metaboxes', '<?php return ' . var_export( $loaded_metaboxes, true ) . ' ?>' );
+                }
+            }
+        }
+    }
+
+    private function loadWidgetsFromYaml( $file, $cache_enabled = true )
+    {
+        $file_contents = file_get_contents( $file );
+        $yaml_result = Yaml::parse($file_contents);
+        foreach ( $yaml_result as $widget_name => $widget_config )
+        {
+            if ( $widget_name )
+            {
+                $widget_config[ 'base_path' ] = plugin_dir_path( $file );
+                WidgetImporter::load( $widget_name, $widget_config );
+                if ( $cache_enabled )
+                {
+                    $cache_bag = FileCache::getInstance()->createCache( 'config' );
+                    $loaded_widgets = $cache_bag->retreive( 'cached_widgets' );
+                    echo plugin_dir_path( $file );
+                    if ( $loaded_widgets === false )
+                    {
+                        $loaded_widgets = array();
+                    }
+                    $loaded_widgets[] = $widget_name;
+                    $cache_bag->store( 'cached_widgets', '<?php return ' . var_export( $loaded_widgets, true ) . ' ?>' );
                 }
             }
         }

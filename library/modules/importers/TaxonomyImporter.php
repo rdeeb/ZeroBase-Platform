@@ -59,16 +59,11 @@ class TaxonomyImporter extends AbstractImporter
         {
             throw new \Exception('You need to specify the post types that this taxonomy will attach to');
         }
-        $arguments = $config[ 'arguments' ];
+        $arguments = self::getArguments( $config );
         $fields = array();
         if ( isset( $config[ 'fields' ] ) )
         {
             $fields = $config[ 'fields' ];
-        }
-        //If the labels array is outside of arguments, copy it inside of arguments
-        if ( isset( $config[ 'labels' ] ) )
-        {
-            $arguments[ 'labels' ] = $config[ 'labels' ];
         }
         $cache_enabled = (bool) get_option( 'zerobase_platform_cache', TRUE );
         if ( $cache_enabled )
@@ -110,5 +105,16 @@ class TaxonomyImporter extends AbstractImporter
             )
         );
         return array_merge( $default, $config );
+    }
+
+    private static function getArguments($config)
+    {
+        $arguments = $config[ 'arguments' ];
+        //If the labels array is outside of arguments, copy it inside of arguments
+        if ( isset( $config[ 'labels' ] ) )
+        {
+            $arguments[ 'labels' ] = $config[ 'labels' ];
+        }
+        return $arguments;
     }
 }

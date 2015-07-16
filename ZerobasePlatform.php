@@ -79,7 +79,7 @@ class ZerobasePlatform extends \Zerobase\Toolkit\Singleton
         //Adding Actions;
         add_action( 'plugins_loaded', array( &$this, 'executeAfterPluginsSetupHooks' ), 1 );
         add_action( 'after_setup_theme', array( &$this, 'executeAfterThemeSetupHooks' ), 1 );
-        add_action( 'init', array( &$this, 'registerModules' ), 10 );
+        add_action( 'after_setup_theme', array( &$this, 'registerModules' ), 10 );
         add_action( 'init', array( &$this, 'configurePlatformOptions' ), 11 );
         add_action( 'wp_enqueue_scripts', array( &$this, 'registerScripts' ), 10 );
         add_action( 'wp_enqueue_scripts', array( &$this, 'enqueueScripts' ), 90 );
