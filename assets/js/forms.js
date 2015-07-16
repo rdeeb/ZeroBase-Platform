@@ -41,6 +41,8 @@
             }
             if ($(item).hasClass('image_selector')) {
                 //Extend the wp.media object
+                /* global wp */
+                /* global forms_trans */
                 custom_uploader = wp.media.frames.file_frame = wp.media({
                     title:    forms_trans.image_title,
                     button:   {
@@ -62,9 +64,9 @@
 
             //When a file is selected, grab the URL and set it as the text field's value
             custom_uploader.on('select', function () {
-                attachment = custom_uploader.state().get('selection').first().toJSON();
+                var attachment = custom_uploader.state().get('selection').first().toJSON();
                 $(item).siblings('input[type="hidden"]').val(attachment.id);
-                if ($(item).parent().find('.preview').length == 0) {
+                if ($(item).parent().find('.preview').length === 0) {
                     if ($(item).hasClass('image_selector')) {
                         $(item).parent().append($('<img src="' + attachment.url + '" width="60" class="img preview" />'));
                     } else {
@@ -76,7 +78,7 @@
                     }
                 }
 
-                if ($(item).parent().find('.delete').length == 0) {
+                if ($(item).parent().find('.delete').length === 0) {
                     $(item).parent().append($(' <button class="button delete submitdelete">Remove File</button>'));
                 }
             });
@@ -85,9 +87,9 @@
                 var selection = custom_uploader.state().get('selection');
 
                 //Get ids array from
-                ids = $(item).siblings('input[type="hidden"]').val().split(',');
+                var ids = $(item).siblings('input[type="hidden"]').val().split(',');
                 ids.forEach(function (id) {
-                    attachment = wp.media.attachment(id);
+                    var attachment = wp.media.attachment(id);
                     attachment.fetch();
                     selection.add(attachment ? [ attachment ] : []);
                 });
@@ -150,11 +152,10 @@
 
                     if (attachment.id) {
                         attachments_ids = attachments_ids ? attachments_ids + "," + attachment.id : attachment.id;
-                        $gallery_preview.append('\
-                            <li class="image" data-attachment_id="' + attachment.id + '">\
-                                <img src="' + attachment.url + '" />\
-                                <a href="#" class="delete">Delete</a>\
-                            </li>');
+                        $gallery_preview.append('' +
+                        '<li class="image" data-attachment_id="' + attachment.id + '">' +
+                            '<img src="' + attachment.url + '" /> <a href="#" class="delete">Delete</a>' +
+                        '</li>');
                     }
 
                     $(item).siblings('input[type="hidden"]').val(attachments_ids);
@@ -166,7 +167,7 @@
                 var selection = custom_uploader.state().get('selection');
 
                 //Get ids array from
-                ids = $(item).siblings('input[type="hidden"]').val().split(',');
+                var ids = $(item).siblings('input[type="hidden"]').val().split(',');
                 ids.forEach(function (id) {
                     attachment = wp.media.attachment(id);
                     attachment.fetch();
@@ -193,7 +194,7 @@
             stop:                 function (event, ui) {
                 ui.item.removeAttr('style');
             },
-            update:               function (event, ui) {
+            update:               function () {
                 var attachment_ids = '';
 
                 $gallery_preview.find('.image').each(function () {
@@ -209,11 +210,12 @@
     });
 
     $('.map-selector').each(function(i, item){
+        /* global google */
         var mapOptions = {
             center: new google.maps.LatLng(9.040860, -79.483337),
             zoom: 13
-        }
-        if ($(item).find('.gmap-latlong').val() != "")
+        };
+        if ($(item).find('.gmap-latlong').val() !== "")
         {
             mapOptions.center = getLatLngFromString($(item).find('.gmap-latlong').val());
         }
@@ -231,7 +233,7 @@
             // 3 seconds after the center of the map has changed, pan back to the
             // marker.
             window.setTimeout(function() {
-                marker.setPosition(e.latLng)
+                marker.setPosition(e.latLng);
                 $(item).find('.gmap-latlong').val(e.latLng);
             }, 100);
         });
@@ -250,7 +252,7 @@
         });
 
         function getLatLngFromString(ll) {
-            var latlng = ll.split(',')
+            var latlng = ll.split(',');
             return new google.maps.LatLng(parseFloat(latlng[0]), parseFloat(latlng[1]));
         }
     });
