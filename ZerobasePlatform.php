@@ -15,7 +15,6 @@ require_once(__DIR__.'/autoloader.php');
 
 class ZerobasePlatform extends \Zerobase\Toolkit\Singleton
 {
-    private $dataStorage = array();
     protected $init = false;
     CONST ZEROBASE_ADMIN_PAGE_PREFIX = 'zerobase_settings_page_';
     
@@ -66,10 +65,6 @@ class ZerobasePlatform extends \Zerobase\Toolkit\Singleton
      */
     public function configurePlatformOptions()
     {
-        $this->dataStorage = get_option( 'zerobase_platform_data_storage', array() );
-        if ( empty( $this->dataStorage ) ) {
-            $this->storeKeyValueData( 'version', '0.5' );
-        }
         //Configure the basic settings bag
         if ( is_admin() ) {
             $this->initSettingsBag();
@@ -91,35 +86,6 @@ class ZerobasePlatform extends \Zerobase\Toolkit\Singleton
             add_action( 'admin_menu', array( &$this, 'addAdminSettingsPage' ), 2 );
             //Register the framework scripts and styles
             add_action( 'admin_enqueue_scripts', array( &$this, 'registerAdminScripts' ), 1 );
-        }
-    }
-
-    /**
-     * Stores a key value pair set of data
-     *
-     * @param $key
-     * @param $value
-     */
-    private function storeKeyValueData( $key, $value )
-    {
-        $this->dataStorage[ $key ] = $value;
-        add_option( 'zerobase_platform_data_storage', $this->dataStorage );
-    }
-
-    /**
-     * Retreive the value of a key
-     *
-     * @param string $key
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    private function retreiveKeyValueData( $key, $default = null )
-    {
-        if ( isset( $this->dataStorage[ $key ] ) ) {
-            return $this->dataStorage[ $key ];
-        } else {
-            return $default;
         }
     }
 
