@@ -5,7 +5,7 @@ function <?php echo $key ?>_script_loader()
     wp_enqueue_scripts(
     <?php echo $name ?>,
     <?php echo $config['path'] ?>,
-    <?php var_export( $config['dependencies'] ) ?>,
+    <?php echo var_export( $config['dependencies'], true ) ?>,
     <?php echo $config['version'] ?>,
     <?php echo $config['in_footer'] ?>
     );

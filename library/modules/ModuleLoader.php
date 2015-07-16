@@ -64,7 +64,7 @@ class ModuleLoader extends Singleton {
 
     private function loadCacheSegment( $cache )
     {
-        if ( !isset( $this->loaded_segments[ $cache ] ) || $this->loaded_segments[ $cache ] == false )
+        if ( !isset( $this->loaded_segments[ $cache ] ) || $this->loaded_segments[ $cache ] === false )
         {
             $cache_bag = FileCache::getInstance()->createCache( 'config' );
             $loaded_objects = $cache_bag->retreive( 'cached_' . $cache );
