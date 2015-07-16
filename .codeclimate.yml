@@ -6,6 +6,7 @@ languages:
   Python: false
 exclude_paths:
  - "assets/js/colorpicker.min.js"
+ - "assets/js/colorpicker.js"
  - "assets/js/eye.js"
  - "assets/js/layout.js"
  - "assets/js/utils.js"
