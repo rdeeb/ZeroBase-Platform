@@ -2,6 +2,7 @@ ZeroBase Platform
 =================
 
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/cfec1da2-f9e8-4933-a134-4e9242c9ef2a/small.png)](https://insight.sensiolabs.com/projects/cfec1da2-f9e8-4933-a134-4e9242c9ef2a)
+[![Code Climate](https://codeclimate.com/github/rdeeb/ZeroBase-Platform/badges/gpa.svg)](https://codeclimate.com/github/rdeeb/ZeroBase-Platform)
 
 ## Introduction
 
@@ -13,7 +14,7 @@ with metaboxes and taxonomies without having to write a single line of code to a
 ## Installation
 
 To install the platform you can download the package zip, and extract it in your ```wp_content/plugins```
-folder. And activate it in your Wordpress site, when installed Zerobase by itself won't modify in anyway
+folder, and activate it in your Wordpress site, when installed Zerobase by itself won't modify in anyway
 your Wordpress site, this is the job of Zerobase powered plugins.
  
 ## Usage

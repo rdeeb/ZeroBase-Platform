@@ -5,6 +5,7 @@ use Symfony\Component\Yaml\Yaml;
 use Zerobase\Cache\FileCache;
 use Zerobase\Modules\Importers\MetaboxImporter;
 use Zerobase\Modules\Importers\PostTypeImporter;
+use Zerobase\Modules\Importers\ScriptsImporter;
 use Zerobase\Modules\Importers\TaxonomyImporter;
 use Zerobase\Modules\Importers\WidgetImporter;
 use Zerobase\Toolkit\Singleton;
@@ -125,6 +126,7 @@ class ModuleLoader extends Singleton {
                 }
                 else if ( strpos( $file, 'script' ) !== false && !$this->scripts_loaded )
                 {
+                    $this->loadScriptsFromYaml( $file, $cache_enabled );
                     $this->scripts_loaded = true;
                 }
             }
@@ -224,7 +226,6 @@ class ModuleLoader extends Singleton {
                 {
                     $cache_bag = FileCache::getInstance()->createCache( 'config' );
                     $loaded_widgets = $cache_bag->retreive( 'cached_widgets' );
-                    echo plugin_dir_path( $file );
                     if ( $loaded_widgets === false )
                     {
                         $loaded_widgets = array();
@@ -236,33 +237,22 @@ class ModuleLoader extends Singleton {
         }
     }
 
-    public function enqueue() {
-        foreach( $this->modules as $index => $config )
+    private function loadScriptsFromYaml( $file, $cache_enabled = true )
+    {
+        $file_contents = file_get_contents( $file );
+        $yaml_result = Yaml::parse($file_contents);
+        if ( $cache_enabled )
         {
-            $this->enqueueScripts( $config );
+            $cache_bag = FileCache::getInstance()->createCache( 'config' );
+            ScriptsImporter::load( $file, $yaml_result );
+            $loaded_scripts = $cache_bag->retreive( 'cached_scriptss' );
+            if ( $loaded_scripts === false )
+            {
+                $loaded_scripts = array();
+            }
+            $loaded_scripts[] = $file;
+            $cache_bag->store( 'cached_scriptss', '<?php return ' . var_export( $loaded_scripts, true ) . ' ?>' );
         }
-    }
-
-    private function enqueueScripts( array $config ) {
-        foreach( $config['scripts'] as $script_name ) {
-            wp_enqueue_script( $script_name );
-        }
-    }
-
-    private function registerScript( $name, array $config ) {
-        $default = array(
-          'dependencies'    => array(),
-          'version'         => null,
-          'in_footer'       => true
-        );
-        $config = array_merge( $config, $default );
-        wp_register_script(
-          $name,
-          $config['path'],
-          $config['dependencies'],
-          $config['version'],
-          $config['in_footer']
-        );
     }
 
     private function getYamlFilesFromDir( $path, $mask = '.yml' ) {

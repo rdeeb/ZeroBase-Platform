@@ -16,6 +16,7 @@ require_once(__DIR__.'/autoloader.php');
 class ZerobasePlatform extends \Zerobase\Toolkit\Singleton
 {
     private $dataStorage = array();
+    protected $init = false;
     CONST ZEROBASE_ADMIN_PAGE_PREFIX = 'zerobase_settings_page_';
     
 
@@ -26,18 +27,22 @@ class ZerobasePlatform extends \Zerobase\Toolkit\Singleton
      */
     protected function __construct()
     {
-        DEFINE( 'ZEROBASE_ROOT_DIR', plugin_dir_path( __FILE__ ));
-        DEFINE( 'ZEROBASE_LIBRARY_DIR', ZEROBASE_ROOT_DIR . '/library' );
-        DEFINE( 'ZEROBASE_VENDOR_DIR', ZEROBASE_ROOT_DIR . '/vendor' );
-        DEFINE( 'ZEROBASE_CACHE_DIR', ZEROBASE_ROOT_DIR . '/cache' );
-        //Install platform terms tables
-        $this->installPlatformTermsTables();
-        //Set the required Wordpress hooks
-        $this->addWordpressActionHooks();
-        //Load the different locales
-        load_plugin_textdomain( 'zerobase', false, dirname( plugin_basename( __FILE__ ) ) . '/locales/' );
-        if ( !is_dir( ZEROBASE_CACHE_DIR ) ) {
-            mkdir( ZEROBASE_CACHE_DIR, 755 );
+        if ( !$this->init )
+        {
+            DEFINE( 'ZEROBASE_ROOT_DIR', plugin_dir_path( __FILE__ ));
+            DEFINE( 'ZEROBASE_LIBRARY_DIR', ZEROBASE_ROOT_DIR . '/library' );
+            DEFINE( 'ZEROBASE_VENDOR_DIR', ZEROBASE_ROOT_DIR . '/vendor' );
+            DEFINE( 'ZEROBASE_CACHE_DIR', ZEROBASE_ROOT_DIR . '/cache' );
+            //Install platform terms tables
+            $this->installPlatformTermsTables();
+            //Set the required Wordpress hooks
+            $this->addWordpressActionHooks();
+            //Load the different locales
+            load_plugin_textdomain( 'zerobase', false, dirname( plugin_basename( __FILE__ ) ) . '/locales/' );
+            if ( !is_dir( ZEROBASE_CACHE_DIR ) ) {
+                mkdir( ZEROBASE_CACHE_DIR, 755 );
+            }
+            $this->init = true;
         }
     }
 
@@ -81,8 +86,6 @@ class ZerobasePlatform extends \Zerobase\Toolkit\Singleton
         add_action( 'after_setup_theme', array( &$this, 'executeAfterThemeSetupHooks' ), 1 );
         add_action( 'after_setup_theme', array( &$this, 'registerModules' ), 10 );
         add_action( 'init', array( &$this, 'configurePlatformOptions' ), 11 );
-        add_action( 'wp_enqueue_scripts', array( &$this, 'registerScripts' ), 10 );
-        add_action( 'wp_enqueue_scripts', array( &$this, 'enqueueScripts' ), 90 );
         //Configuring the Admin panel
         if ( is_admin() ) {
             add_action( 'admin_menu', array( &$this, 'addAdminSettingsPage' ), 2 );
@@ -136,12 +139,6 @@ class ZerobasePlatform extends \Zerobase\Toolkit\Singleton
             $module_loader->addModule( self::slugify( $config[ 'name' ] ), $config );
         }
         catch ( Exception $e ) {}
-    }
-
-    public function enqueueScripts()
-    {
-        $module_loader = \Zerobase\Modules\ModuleLoader::getInstance();
-        $module_loader->enqueue();
     }
 
     /**
