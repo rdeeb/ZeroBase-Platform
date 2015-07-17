@@ -58,7 +58,7 @@ Lastly you will have to register your callback using the ```add_action( 'zerobas
 The platform offers a set of configuration loaders that will transform YAML files into usable Wordpress
 components, as of right now you can create the following components from YAML files:
 
-* Post Types
+* [Post Types](Post-Types.md)
 * Metaboxes
 * Taxonomies
 * Widgets
