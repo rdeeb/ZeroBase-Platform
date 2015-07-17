@@ -19,7 +19,7 @@ your Wordpress site, this is the job of Zerobase powered plugins.
  
 ## Usage
 
-For a complete usage guide read the documentation [here](https://github.com/rdeeb/ZeroBase-Platform/blob/develop/docs/index.md)
+For a complete usage guide read the documentation [here](docs/index.md)
 
 ## Credits
 
