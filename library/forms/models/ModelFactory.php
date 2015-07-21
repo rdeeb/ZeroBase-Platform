@@ -15,9 +15,9 @@ class ModelFactory extends Singleton
 
     private function loadDefaultModels()
     {
-        $this->addWidgetModel('memory', 'Zerobase\Forms\Models\MemoryModel' );
-        $this->addWidgetModel('metadata', 'Zerobase\Forms\Models\MetadataModel' );
-        $this->addWidgetModel('option', 'Zerobase\Forms\Models\OptionsModel' );
+        $this->addWidgetModel( 'memory', 'Zerobase\Forms\Models\MemoryModel' );
+        $this->addWidgetModel( 'metadata', 'Zerobase\Forms\Models\MetadataModel' );
+        $this->addWidgetModel( 'option', 'Zerobase\Forms\Models\OptionsModel' );
     }
 
     /**
@@ -25,15 +25,15 @@ class ModelFactory extends Singleton
      * @param string $className
      * @throws \Exception
      */
-    public function addWidgetModel($name, $className)
+    public function addWidgetModel( $name, $className )
     {
-        if (!$this->checkClassImplements($className))
+        if ( !$this->checkClassImplements( $className ) )
         {
-            throw new \Exception("The class \"$className\" must implement the Zerobase\\Forms\\Models\\ModelInterface");
+            throw new \Exception( "The class \"$className\" must implement the Zerobase\\Forms\\Models\\ModelInterface" );
         }
         else
         {
-            $this->models[$name] = $className;
+            $this->models[ $name ] = $className;
         }
     }
 
@@ -41,9 +41,9 @@ class ModelFactory extends Singleton
      * @param string $name
      * @return bool
      */
-    public function modelExists($name)
+    public function modelExists( $name )
     {
-        return array_key_exists($name, $this->models);
+        return array_key_exists( $name, $this->models );
     }
 
     /**
@@ -51,16 +51,17 @@ class ModelFactory extends Singleton
      * @throws \Exception
      * @return ModelInterface
      */
-    public function createModel($name)
+    public function createModel( $name )
     {
-        if ($this->modelExists($name))
+        if ( $this->modelExists( $name ) )
         {
-            $className = $this->models[$name];
+            $className = $this->models[ $name ];
+
             return new $className();
         }
         else
         {
-            throw new \Exception("The Model \"$name\" doesn't exists");
+            throw new \Exception( "The Model \"$name\" doesn't exists" );
         }
     }
 
@@ -69,17 +70,18 @@ class ModelFactory extends Singleton
      * @return bool
      * @throws \Exception
      */
-    private function checkClassImplements($className)
+    private function checkClassImplements( $className )
     {
-        if (!class_exists($className))
+        if ( !class_exists( $className ) )
         {
-            throw new \Exception("The class \"$className\" doesn't exists");
+            throw new \Exception( "The class \"$className\" doesn't exists" );
         }
-        $implements = class_implements($className);
-        if (in_array('Zerobase\Forms\Models\ModelInterface', $implements))
+        $implements = class_implements( $className );
+        if ( in_array( 'Zerobase\Forms\Models\ModelInterface', $implements ) )
         {
             return true;
         }
+
         return false;
     }
 }
