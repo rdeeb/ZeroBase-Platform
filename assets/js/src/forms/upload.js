@@ -4,20 +4,25 @@
     /* global forms_trans */
     var addAttachmentHtml = function(attachment, item, gallery) {
         if (gallery) {
+            var $gallery_preview = $(item).siblings('.gallery-preview');
             $gallery_preview.append('' +
             '<li class="image" data-attachment_id="' + attachment.id + '">' +
             '<img src="' + attachment.url + '" /> <a href="#" class="delete">Delete</a>' +
             '</li>');
         } else {
-            $(item).parent().find('.preview').remove();
-            if ($(item).hasClass('image_selector')) {
-                $(item).parent().append($('<img src="' + attachment.url + '" width="60" class="img preview" />'));
-            } else {
-                $(item).parent().append($('<div class="doc preview" />'));
-            }
-            if ($(item).parent().find('.delete').length === 0) {
-                $(item).parent().append($(' <button class="button delete submitdelete">Remove File</button>'));
-            }
+            singleFileHtml();
+        }
+    };
+
+    var singleFileHtml = function(attachment, item) {
+        $(item).parent().find('.preview').remove();
+        if ($(item).hasClass('image_selector')) {
+            $(item).parent().append($('<img src="' + attachment.url + '" width="60" class="img preview" />'));
+        } else {
+            $(item).parent().append($('<div class="doc preview" />'));
+        }
+        if ($(item).parent().find('.delete').length === 0) {
+            $(item).parent().append($(' <button class="button delete submitdelete">Remove File</button>'));
         }
     };
 
@@ -79,7 +84,7 @@
     var createUploader = function(item, gallery) {
         var custom_uploader;
 
-        if (gallery == undefined) {
+        if (gallery === undefined) {
             gallery = false;
         }
 
@@ -119,7 +124,7 @@
                 e.preventDefault();
 
                 //If the uploader object has already been created, reopen the dialog
-                if (custom_uploader == null) {
+                if (custom_uploader === null) {
                     custom_uploader = createUploader();
                 }
 
@@ -146,7 +151,7 @@
                 e.preventDefault();
 
                 //If the uploader object has already been created, reopen the dialog
-                if (custom_uploader == null) {
+                if (custom_uploader === null) {
                     custom_uploader = createUploader();
                 }
 
