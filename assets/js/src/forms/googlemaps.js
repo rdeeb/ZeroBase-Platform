@@ -32,23 +32,24 @@
                 }, 100);
             });
 
-            function getLatLngFromString(ll) {
-                var latlng = ll.split(',');
-                return new google.maps.LatLng(parseFloat(latlng[0]), parseFloat(latlng[1]));
-            }
+            $(document).on('uk.tab.change', function(event, item){
+                // Nasty solution for a wrong resize
+                window.setTimeout(function() {
+                    $('.map-selector').css('width', '99%');
+                    google.maps.event.trigger(map, 'resize');
+                }, 10);
+                window.setTimeout(function() {
+                    $('.map-selector').css('width', '100%');
+                    google.maps.event.trigger(map, 'resize');
+                    map.center(getLatLngFromString($(item).find('.gmap-latlong').val()));
+                }, 50);
+            });
         });
 
-        $(document).on('uk.tab.change', function(event, item){
-            // Nasty solution for a wrong resize
-            window.setTimeout(function() {
-                $('.map-selector').css('width', '99%');
-                google.maps.event.trigger(map, 'resize');
-            }, 10);
-            window.setTimeout(function() {
-                $('.map-selector').css('width', '100%');
-                google.maps.event.trigger(map, 'resize');
-                map.center(getLatLngFromString($(item).find('.gmap-latlong').val()));
-            }, 50);
-        });
+
+        function getLatLngFromString(ll) {
+            var latlng = ll.split(',')
+            return new google.maps.LatLng(parseFloat(latlng[0]), parseFloat(latlng[1]));
+        }
     });
 })(jQuery);
