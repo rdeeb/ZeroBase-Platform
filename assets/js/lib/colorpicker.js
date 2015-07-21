@@ -7,12 +7,9 @@
  *
  */
 (function ($) {
-    var ColorPicker = function () {
+    var ColorPicker = (function () {
         var
-            ids = {},
-            inAction,
             charMin = 65,
-            visible,
             tpl = '<div class="colorpicker"><div class="colorpicker_color"><div><div></div></div></div><div class="colorpicker_hue"><div></div></div><div class="colorpicker_new_color"></div><div class="colorpicker_current_color"></div><div class="colorpicker_hex"><input type="text" maxlength="6" size="6" /></div><div class="colorpicker_rgb_r colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_rgb_g colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_rgb_b colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_hsb_h colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_hsb_s colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_hsb_b colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_submit"></div></div>',
             defaults = {
                 eventName: 'click',
@@ -100,7 +97,7 @@
                 setNewColor(col, cal.get(0));
                 cal.data('colorpicker').onChange.apply(cal, [col, HSBToHex(col), HSBToRGB(col)]);
             },
-            blur = function (ev) {
+            blur = function () {
                 var cal = $(this).parent().parent();
                 cal.data('colorpicker').fields.parent().removeClass('colorpicker_focus');
             },
@@ -136,7 +133,7 @@
                 $(document).unbind('mousemove', moveIncrement);
                 return false;
             },
-            downHue = function (ev) {
+            downHue = function () {
                 var current = {
                     cal: $(this).parent(),
                     y: $(this).offset().top
@@ -163,7 +160,7 @@
                 $(document).unbind('mousemove', moveHue);
                 return false;
             },
-            downSelector = function (ev) {
+            downSelector = function () {
                 var current = {
                     cal: $(this).parent(),
                     pos: $(this).offset()
@@ -193,20 +190,20 @@
                 $(document).unbind('mousemove', moveSelector);
                 return false;
             },
-            enterSubmit = function (ev) {
+            enterSubmit = function () {
                 $(this).addClass('colorpicker_focus');
             },
-            leaveSubmit = function (ev) {
+            leaveSubmit = function () {
                 $(this).removeClass('colorpicker_focus');
             },
-            clickSubmit = function (ev) {
+            clickSubmit = function () {
                 var cal = $(this).parent();
                 var col = cal.data('colorpicker').color;
                 cal.data('colorpicker').origColor = col;
                 setCurrentColor(col, cal.get(0));
                 cal.data('colorpicker').onSubmit(col, HSBToHex(col), HSBToRGB(col), cal.data('colorpicker').el);
             },
-            show = function (ev) {
+            show = function () {
                 var cal = $('#' + $(this).data('colorpickerId'));
                 cal.data('colorpicker').onBeforeShow.apply(this, [cal.get(0)]);
                 var pos = $(this).offset();
@@ -245,7 +242,7 @@
                     return !!(parentEl.compareDocumentPosition(el) & 16);
                 }
                 var prEl = el.parentNode;
-                while (prEl && prEl != container) {
+                while (prEl && prEl !== container) {
                     if (prEl === parentEl)
                         return true;
                     prEl = prEl.parentNode;
@@ -304,9 +301,6 @@
                 var max = Math.max(rgb.r, rgb.g, rgb.b);
                 var delta = max - min;
                 hsb.b = max;
-                if (max !== 0) {
-
-                }
                 hsb.s = max !== 0 ? 255 * delta / max : 0;
                 if (hsb.s !== 0) {
                     if (rgb.r === max) {
@@ -338,7 +332,9 @@
                     var t1 = v;
                     var t2 = (255 - s) * v / 255;
                     var t3 = (t1 - t2) * (h % 60) / 60;
-                    if (h === 360) h = 0;
+                    if (h === 360) {
+                        h = 0;
+                    }
                     if (h < 60) {
                         rgb.r = t1;
                         rgb.b = t2;
@@ -507,7 +503,7 @@
                 });
             }
         };
-    }();
+    })();
     $.fn.extend({
         ColorPicker: ColorPicker.init,
         ColorPickerHide: ColorPicker.hidePicker,

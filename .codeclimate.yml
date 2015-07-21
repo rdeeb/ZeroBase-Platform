@@ -11,3 +11,4 @@ exclude_paths:
  - "assets/js/forms.js"
  - "assets/js/forms.min.js"
  - "assets/lib"
+ - "assets/js/lib/colorpicker.js"
