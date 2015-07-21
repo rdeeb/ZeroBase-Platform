@@ -5,9 +5,7 @@ languages:
   PHP: true
   Python: false
 exclude_paths:
- - "assets/js/colorpicker.min.js"
- - "assets/js/colorpicker.js"
- - "assets/js/eye.js"
- - "assets/js/layout.js"
- - "assets/js/utils.js"
+ - "assets/js/lib"
+ - "assets/js/libs.js"
+ - "assets/js/libs.min.js"
  - "assets/lib"
