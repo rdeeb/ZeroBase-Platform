@@ -176,10 +176,13 @@ class ZerobasePlatform extends \Zerobase\Toolkit\Singleton
                 'zerobase_uikit'
             )
         );
-        wp_register_script(
-            'zerobase_google_maps',
-            '//maps.googleapis.com/maps/api/js?key=AIzaSyCNDR8-dYvuAmUyFRImtpAHfYznAeTolH4&sensor=true'
-        );
+        if ( get_option( 'zerobase_platform_google_maps_key' ) )
+        {
+            wp_register_script(
+              'zerobase_google_maps',
+              '//maps.googleapis.com/maps/api/js?key=' . get_option( 'zerobase_platform_google_maps_key' ) . '&sensor=true'
+            );
+        }
         wp_register_script(
             'zerobase_uikit_js',
             plugins_url( '/assets/lib/uikit/js/uikit.min.js', __FILE__ ),
@@ -188,8 +191,17 @@ class ZerobasePlatform extends \Zerobase\Toolkit\Singleton
             true
         );
         wp_register_script(
+          'zerobase_js_libs',
+          plugins_url( '/assets/js/libs.min.js', __FILE__ ),
+          array(
+            'jquery'
+          ),
+          null,
+          true
+        );
+        wp_register_script(
             'zerobase_js_forms',
-            plugins_url( '/assets/js/forms.js', __FILE__ ),
+            plugins_url( '/assets/js/forms.min.js', __FILE__ ),
             array(
                 'jquery',
                 'jquery-ui-core',
@@ -198,7 +210,8 @@ class ZerobasePlatform extends \Zerobase\Toolkit\Singleton
                 'media-upload',
                 'thickbox',
                 'zerobase_google_maps',
-                'zerobase_uikit_js'
+                'zerobase_uikit_js',
+                'zerobase_js_libs'
             ),
             null,
             true
@@ -210,7 +223,17 @@ class ZerobasePlatform extends \Zerobase\Toolkit\Singleton
             'image_submit'   => __( 'Choose image', 'zerobase' ),
             'file_title'     => __( 'Select a file', 'zerobase' ),
             'file_submit'    => __( 'Choose file', 'zerobase' ),
+            'map' => array(
+                'click_to_zoom' => __( 'Click to zoom', 'zerobase' ),
+            )
         ) );
+        if ( get_option( 'zerobase_platform_google_maps_key', NULL ) )
+        {
+            wp_localize_script( 'zerobase_google_maps', 'maps_config', array(
+              'latitude'  => get_option( 'zerobase_platform_google_maps_latitude', '9.040860' ),
+              'longitude' => get_option( 'zerobase_platform_google_maps_longitude', '-79.483337' ),
+            ) );
+        }
         wp_register_style(
             'zerobase_css_forms',
             plugins_url( '/assets/css/forms.css', __FILE__ ),
@@ -263,12 +286,12 @@ class ZerobasePlatform extends \Zerobase\Toolkit\Singleton
     public function initSettingsBag()
     {
         $settings = \Zerobase\Settings\Settings::getInstance();
-        $settings->createBag( 'performance' );
+        $settings->createBag( 'platform' );
         $settings->createBag( 'layout' );
         $settings->createBag( 'zerobase-plugin' );
         //Performance Options
-        $performance = $settings->getBag( 'performance' );
-        $performance
+        $platform = $settings->getBag( 'platform' );
+        $platform
             ->addSetting( 'zerobase_platform_use_cdn', 'radio_list', array(
                 'widget_options' => array(
                     'label' => 'Use CDN for JS library files',
@@ -278,7 +301,7 @@ class ZerobasePlatform extends \Zerobase\Toolkit\Singleton
                     )
                 ),
                 'default'        => '1'
-            ) )
+            ), 'Performance' )
             ->addSetting( 'zerobase_platform_cache', 'radio_list', array(
                 'widget_options' => array(
                     'choices' => array(
@@ -287,8 +310,30 @@ class ZerobasePlatform extends \Zerobase\Toolkit\Singleton
                     )
                 ),
                 'default'        => '1'
-            ) )
+            ), 'Performance' )
+            ->addSetting( 'zerobase_platform_google_maps_key', 'text', array(
+                'widget_options' => array(
+                    'label' => 'Google Maps API Key'
+                ),
+                'default'        => ''
+            ), 'google-maps' )
         ;
+        if ( get_option( 'zerobase_platform_google_maps_key' ) )
+        {
+            $platform
+              ->addSetting( 'zerobase_platform_google_maps_latitude', 'text', array(
+                'widget_options' => array(
+                  'label' => 'Default latitude'
+                ),
+                'default'        => '9.040860'
+              ), 'google-maps' )
+              ->addSetting( 'zerobase_platform_google_maps_longitude', 'text', array(
+                'widget_options' => array(
+                  'label' => 'Default longitude'
+                ),
+                'default'        => '-79.483337'
+              ), 'google-maps' );
+        }
         $module_list = \Zerobase\Modules\ModuleLoader::getInstance()->getModuleList();
         $module_bag = $settings->getBag( 'zerobase-plugin' );
         foreach( $module_list as $module => $config )
@@ -311,7 +356,7 @@ class ZerobasePlatform extends \Zerobase\Toolkit\Singleton
      */
     public function addAdminSettingsPage()
     {
-        add_menu_page( __( 'Zerobase Options', 'zerobase' ), __( 'Zerobase Options', 'zerobase' ), 'manage_options', 'zerobase-settings', array( $this, self::ZEROBASE_ADMIN_PAGE_PREFIX . 'performance' ), null, 100 );
+        add_menu_page( __( 'Zerobase Options', 'zerobase' ), __( 'Zerobase Options', 'zerobase' ), 'manage_options', 'zerobase-settings', array( $this, self::ZEROBASE_ADMIN_PAGE_PREFIX . 'platform' ), null, 100 );
         $settings = \Zerobase\Settings\Settings::getInstance();
         foreach ( $settings as $key => $bag ) {
             /** @var $bag ZB_SettingsBag */

@@ -2,8 +2,9 @@ module.exports = function(grunt) {
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
+
         jshint: {
-            files: ['Gruntfile.js', 'js/**/*.js'],
+            files: ['Gruntfile.js', 'js/src/*.js', 'js/lib/*.js'],
             options: {
                 globals: {
                     jQuery: true,
@@ -12,8 +13,9 @@ module.exports = function(grunt) {
                 }
             }
         },
+
         concat: {
-            libs: {
+            files: {
                 src: [
                     'js/lib/*.js'
                 ],
@@ -21,11 +23,12 @@ module.exports = function(grunt) {
             },
             forms: {
                 src: [
-                    'js/src/*.js'
+                    'js/src/forms/*.js'
                 ],
                 dest: 'js/forms.js'
             }
         },
+
         uglify: {
             libs: {
                 src: 'js/libs.js',
@@ -36,6 +39,7 @@ module.exports = function(grunt) {
                 dest: 'js/forms.min.js'
             }
         },
+
         watch: {
             scripts: {
                 files: ['<%= jshint.files %>'],
@@ -51,6 +55,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-concat');
+
     grunt.registerTask('default', ['concat']);
 
 };

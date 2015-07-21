@@ -1,7 +1,62 @@
+/** @File: googlemaps.js */
+(function ($) {
+    /* global google */
+    /* global maps_config */
+    /* global forms_trans */
+    $(document).ready(function(){
+        $('.map-selector').each(function(i, item){
+            var mapOptions = {
+                center: new google.maps.LatLng(maps_config.latitude, maps_config.longitude),
+                zoom: 13
+            };
+            if ($(item).find('.gmap-latlong').val() !== "")
+            {
+                mapOptions.center = getLatLngFromString($(item).find('.gmap-latlong').val());
+            }
+
+            var canvas = $(item).find('.map-canvas');
+            var map = new google.maps.Map(canvas[0], mapOptions);
+
+            var marker = new google.maps.Marker({
+                position: map.getCenter(),
+                map: map,
+                title: form_trans.map.click_to_zoom
+            });
+
+            google.maps.event.addListener(map, 'click', function(e) {
+                // 3 seconds after the center of the map has changed, pan back to the
+                // marker.
+                window.setTimeout(function() {
+                    marker.setPosition(e.latLng);
+                    $(item).find('.gmap-latlong').val(e.latLng);
+                }, 100);
+            });
+
+            function getLatLngFromString(ll) {
+                var latlng = ll.split(',');
+                return new google.maps.LatLng(parseFloat(latlng[0]), parseFloat(latlng[1]));
+            }
+        });
+    });
+
+    $(document).on('uk.tab.change', function(event, item){
+        // Nasty solution for a wrong resize
+        window.setTimeout(function() {
+            $('.map-selector').css('width', '99%');
+            google.maps.event.trigger(map, 'resize');
+        }, 10);
+        window.setTimeout(function() {
+            $('.map-selector').css('width', '100%');
+            google.maps.event.trigger(map, 'resize');
+            map.center(getLatLngFromString($(item).find('.gmap-latlong').val()));
+        }, 50);
+    });
+})(jQuery);
+
+/** @File: upload.js */
 (function ($) {
     /* global wp */
     /* global forms_trans */
-    /* global google */
     var handleUpload = function(custom_uploader, item) {
         var attachment = custom_uploader.state().get('selection').first().toJSON();
         $(item).siblings('input[type="hidden"]').val(attachment.id);
@@ -27,28 +82,6 @@
     };
 
     $(document).ready(function(){
-        $('.datepicker').datepicker();
-        $('.colorselector').each(function (i, item) {
-            $(item).css('background', $(item).val());
-            $(item).ColorPicker({
-                color:       $(item).val(),
-                livePreview: true,
-                onSubmit:    function (hsb, hex, rgb, el) {
-                    $(el).val('#' + hex);
-                    $(el).ColorPickerHide();
-                },
-                onChange:    function (hsb, hex) {
-                    if (hsb.b < 40) {
-                        $(item).css('color', '#fff');
-                    } else {
-                        $(item).css('color', '#000');
-                    }
-                    $(item).css('background', '#' + hex);
-                    $(item).val('#' + hex.toUpperCase());
-                }
-            });
-        });
-
         $('.uploader, .image_selector').each(function (i, item) {
             //Handle the delete
             $(item).parent('.form-field, .form_row').delegate('.delete', 'click', function (e) {
@@ -196,53 +229,35 @@
             });
 
         });
+    });
 
-        $('.map-selector').each(function(i, item){
-            var mapOptions = {
-                center: new google.maps.LatLng(9.040860, -79.483337),
-                zoom: 13
-            };
-            if ($(item).find('.gmap-latlong').val() !== "")
-            {
-                mapOptions.center = getLatLngFromString($(item).find('.gmap-latlong').val());
-            }
+})(jQuery);
 
-            var canvas = $(item).find('.map-canvas');
-            var map = new google.maps.Map(canvas[0], mapOptions);
-
-            var marker = new google.maps.Marker({
-                position: map.getCenter(),
-                map: map,
-                title: 'Click to zoom'
+/** @File: widgets.js */
+(function ($) {
+    $(document).ready(function(){
+        // Attaching the calendars
+        $('.datepicker').datepicker();
+        // Attaching the color selectors
+        $('.colorselector').each(function (i, item) {
+            $(item).css('background', $(item).val());
+            $(item).ColorPicker({
+                color:       $(item).val(),
+                livePreview: true,
+                onSubmit:    function (hsb, hex, rgb, el) {
+                    $(el).val('#' + hex);
+                    $(el).ColorPickerHide();
+                },
+                onChange:    function (hsb, hex) {
+                    if (hsb.b < 40) {
+                        $(item).css('color', '#fff');
+                    } else {
+                        $(item).css('color', '#000');
+                    }
+                    $(item).css('background', '#' + hex);
+                    $(item).val('#' + hex.toUpperCase());
+                }
             });
-
-            google.maps.event.addListener(map, 'click', function(e) {
-                // 3 seconds after the center of the map has changed, pan back to the
-                // marker.
-                window.setTimeout(function() {
-                    marker.setPosition(e.latLng);
-                    $(item).find('.gmap-latlong').val(e.latLng);
-                }, 100);
-            });
-
-            function getLatLngFromString(ll) {
-                var latlng = ll.split(',');
-                return new google.maps.LatLng(parseFloat(latlng[0]), parseFloat(latlng[1]));
-            }
         });
     });
-
-    $(document).on('uk.tab.change', function(event, item){
-        // Nasty solution for a wrong resize
-        window.setTimeout(function() {
-            $('.map-selector').css('width', '99%');
-            google.maps.event.trigger(map, 'resize');
-        }, 10);
-        window.setTimeout(function() {
-            $('.map-selector').css('width', '100%');
-            google.maps.event.trigger(map, 'resize');
-            map.center(getLatLngFromString($(item).find('.gmap-latlong').val()));
-        }, 50);
-    });
-
 })(jQuery);
