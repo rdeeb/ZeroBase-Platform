@@ -360,7 +360,7 @@ class ZerobasePlatform extends \Zerobase\Toolkit\Singleton
         $settings = \Zerobase\Settings\Settings::getInstance();
         foreach ( $settings as $key => $bag ) {
             /** @var $bag ZB_SettingsBag */
-            if ( $key != 'performance' && !$bag->isEmpty() ) {
+            if ( $key != 'platform' && !$bag->isEmpty() ) {
                 add_submenu_page( 'zerobase-settings', __( $key, 'zerobase' ), __( $key, 'zerobase' ), 'manage_options', 'zerobase-settings-' . $key, array( $this, self::ZEROBASE_ADMIN_PAGE_PREFIX . $key ) );
             }
         }
