@@ -29,6 +29,7 @@
     var handleUpload = function(custom_uploader, item, gallery) {
         var attachments = custom_uploader.state().get('selection');
         if (gallery) {
+            var $gallery_preview = $(item).siblings('.gallery-preview');
             $gallery_preview.html('');
         }
         attachments.map(function (attachment) {
