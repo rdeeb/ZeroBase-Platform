@@ -37,7 +37,7 @@
                     $('.map-selector').css('width', '99%');
                     google.maps.event.trigger(map, 'resize');
                 }, 10);
-                
+
                 window.setTimeout(function() {
                     $('.map-selector').css('width', '100%');
                     google.maps.event.trigger(map, 'resize');

@@ -4,7 +4,7 @@
         var currentTab = $('ul.navigationTabs a')
             .bind('click', showTab)
             .filter('a[rel=' + hash + ']');
-        if (currentTab.size() == 0) {
+        if (currentTab.size() === 0) {
             currentTab = $('ul.navigationTabs a:first');
         }
         showTab.apply(currentTab.get(0));
@@ -64,4 +64,4 @@
     };
 
     EYE.register(initLayout, 'init');
-})(jQuery)
+})(jQuery);

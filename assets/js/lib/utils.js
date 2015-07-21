@@ -11,9 +11,9 @@
             var y = 0;
             var es = e.style;
             var restoreStyles = false;
+            var oldVisibility = es.visibility;
+            var oldPosition = es.position;
             if (forceIt && jQuery.curCSS(e, 'display') == 'none') {
-                var oldVisibility = es.visibility;
-                var oldPosition = es.position;
                 restoreStyles = true;
                 es.visibility = 'hidden';
                 es.display = 'block';
@@ -48,7 +48,7 @@
                     el = el.parentNode;
                 }
             }
-            if (restoreStyles == true) {
+            if (restoreStyles === true) {
                 es.display = 'none';
                 es.position = oldPosition;
                 es.visibility = oldVisibility;
@@ -181,18 +181,12 @@
         },
         getExtraWidth:  function (el) {
             if ($.boxModel)
-                return (parseInt($.curCSS(el, 'paddingLeft')) || 0)
-                    + (parseInt($.curCSS(el, 'paddingRight')) || 0)
-                    + (parseInt($.curCSS(el, 'borderLeftWidth')) || 0)
-                    + (parseInt($.curCSS(el, 'borderRightWidth')) || 0);
+                return (parseInt($.curCSS(el, 'paddingLeft')) || 0) + (parseInt($.curCSS(el, 'paddingRight')) || 0) + (parseInt($.curCSS(el, 'borderLeftWidth')) || 0) + (parseInt($.curCSS(el, 'borderRightWidth')) || 0);
             return 0;
         },
         getExtraHeight: function (el) {
             if ($.boxModel)
-                return (parseInt($.curCSS(el, 'paddingTop')) || 0)
-                    + (parseInt($.curCSS(el, 'paddingBottom')) || 0)
-                    + (parseInt($.curCSS(el, 'borderTopWidth')) || 0)
-                    + (parseInt($.curCSS(el, 'borderBottomWidth')) || 0);
+                return (parseInt($.curCSS(el, 'paddingTop')) || 0) + (parseInt($.curCSS(el, 'paddingBottom')) || 0) + (parseInt($.curCSS(el, 'borderTopWidth')) || 0) + (parseInt($.curCSS(el, 'borderBottomWidth')) || 0);
             return 0;
         },
         isChildOf:      function (parentEl, el, container) {

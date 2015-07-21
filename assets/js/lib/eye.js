@@ -17,7 +17,7 @@
             },
             extend:   function (prop) {
                 for (var i in prop) {
-                    if (prop[i] != undefined) {
+                    if (prop[i] !== undefined) {
                         this[i] = prop[i];
                     }
                 }
