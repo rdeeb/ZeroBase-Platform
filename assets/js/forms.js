@@ -3,7 +3,7 @@
     $(document).ready(function(){
         /* global google */
         /* global maps_config */
-        /* global form_trans */
+        /* global forms_trans */
         $('.map-selector').each(function(i, item){
             var mapOptions = {
                 center: new google.maps.LatLng(maps_config.latitude, maps_config.longitude),
@@ -17,11 +17,12 @@
 
             var canvas = $(item).find('.map-canvas');
             var map = new google.maps.Map(canvas[0], mapOptions);
+            //map.center();
 
             var marker = new google.maps.Marker({
                 position: map.getCenter(),
                 map: map,
-                title: form_trans.map.click_to_zoom
+                title: forms_trans.map.click_to_zoom
             });
 
             google.maps.event.addListener(map, 'click', function(e) {
@@ -48,6 +49,7 @@
 
 
         function getLatLngFromString(ll) {
+            ll = ll.toString();
             var latlng = ll.split(',');
             return new google.maps.LatLng(parseFloat(latlng[0]), parseFloat(latlng[1]));
         }
@@ -182,7 +184,7 @@
 
                 //If the uploader object has already been created, reopen the dialog
                 if (custom_uploader === null) {
-                    custom_uploader = createUploader();
+                    custom_uploader = createUploader(item);
                 }
 
                 //Open the uploader dialog
@@ -209,7 +211,7 @@
 
                 //If the uploader object has already been created, reopen the dialog
                 if (custom_uploader === null) {
-                    custom_uploader = createUploader();
+                    custom_uploader = createUploader(item, true);
                 }
 
                 //Open the uploader dialog

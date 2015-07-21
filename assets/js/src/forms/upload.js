@@ -126,7 +126,7 @@
 
                 //If the uploader object has already been created, reopen the dialog
                 if (custom_uploader === null) {
-                    custom_uploader = createUploader();
+                    custom_uploader = createUploader(item);
                 }
 
                 //Open the uploader dialog
@@ -153,7 +153,7 @@
 
                 //If the uploader object has already been created, reopen the dialog
                 if (custom_uploader === null) {
-                    custom_uploader = createUploader();
+                    custom_uploader = createUploader(item, true);
                 }
 
                 //Open the uploader dialog
