@@ -5,7 +5,7 @@ languages:
   PHP: true
   Python: false
 exclude_paths:
- - "assets/js/lib"
+ - "assets/js/lib/"
  - "assets/js/libs.js"
  - "assets/js/libs.min.js"
  - "assets/lib"

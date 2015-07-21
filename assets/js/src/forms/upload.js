@@ -2,18 +2,41 @@
 (function ($) {
     /* global wp */
     /* global forms_trans */
-    var handleUpload = function(custom_uploader, item) {
-        var attachment = custom_uploader.state().get('selection').first().toJSON();
-        $(item).siblings('input[type="hidden"]').val(attachment.id);
-        $(item).parent().find('.preview').remove();
-        if ($(item).hasClass('image_selector')) {
-            $(item).parent().append($('<img src="' + attachment.url + '" width="60" class="img preview" />'));
+    var addAttachmentHtml = function(attachment, item, gallery) {
+        if (gallery) {
+            $gallery_preview.append('' +
+            '<li class="image" data-attachment_id="' + attachment.id + '">' +
+            '<img src="' + attachment.url + '" /> <a href="#" class="delete">Delete</a>' +
+            '</li>');
         } else {
-            $(item).parent().append($('<div class="doc preview" />'));
+            $(item).parent().find('.preview').remove();
+            if ($(item).hasClass('image_selector')) {
+                $(item).parent().append($('<img src="' + attachment.url + '" width="60" class="img preview" />'));
+            } else {
+                $(item).parent().append($('<div class="doc preview" />'));
+            }
+            if ($(item).parent().find('.delete').length === 0) {
+                $(item).parent().append($(' <button class="button delete submitdelete">Remove File</button>'));
+            }
         }
-        if ($(item).parent().find('.delete').length === 0) {
-            $(item).parent().append($(' <button class="button delete submitdelete">Remove File</button>'));
+    };
+
+    var handleUpload = function(custom_uploader, item, gallery) {
+        var attachments = custom_uploader.state().get('selection');
+        if (gallery) {
+            $gallery_preview.html('');
         }
+        attachments.map(function (attachment) {
+            //Handle the gallery attachments
+            attachment = attachment.toJSON();
+
+            if (attachment.id) {
+                addAttachmentHtml(attachment, item, gallery);
+            }
+
+            $(item).siblings('input[type="hidden"]').val(updateGalleryIds(item));
+
+        });
     };
 
     var updateGalleryIds = function(item) {
@@ -24,6 +47,61 @@
             attachment_ids = attachment_ids + attachment_id + ',';
         });
         return attachment_ids;
+    };
+
+    var createUploaderConfig = function(item, gallery) {
+        var uploader_config = {
+            title:    forms_trans.file_title,
+            button:   {
+                text: forms_trans.file_submit
+            },
+            multiple: gallery
+        };
+
+        if ($(item).hasClass('image_selector')) {
+            uploader_config.title = forms_trans.image_title;
+            uploader_config.button = {
+                text: forms_trans.image_submit
+            };
+            uploader_config.library = { type: 'image' };
+        }
+
+        if (gallery) {
+            uploader_config.title = forms_trans.gallery_title;
+            uploader_config.button = {
+                text: forms_trans.gallery_submit
+            };
+            uploader_config.library = { type: 'image' };
+        }
+        return uploader_config;
+    };
+
+    var createUploader = function(item, gallery) {
+        var custom_uploader;
+
+        if (gallery == undefined) {
+            gallery = false;
+        }
+
+        custom_uploader = wp.media.frames.file_frame = wp.media(createUploaderConfig(item, gallery));
+
+        //When a file is selected, grab the URL and set it as the text field's value
+        custom_uploader.on('select', function () {
+            handleUpload(custom_uploader, item, gallery);
+        });
+
+        custom_uploader.on('open', function () {
+            var selection = custom_uploader.state().get('selection');
+
+            //Get ids array from
+            var ids = $(item).siblings('input[type="hidden"]').val().split(',');
+            ids.forEach(function (id) {
+                var attachment = wp.media.attachment(id);
+                attachment.fetch();
+                selection.add(attachment ? [ attachment ] : []);
+            });
+        });
+        return custom_uploader;
     };
 
     $(document).ready(function(){
@@ -37,46 +115,13 @@
             });
             //Handle the selector
             $(item).click(function (e) {
-                var custom_uploader;
+                var custom_uploader = null;
                 e.preventDefault();
 
                 //If the uploader object has already been created, reopen the dialog
-                if (custom_uploader) {
-                    custom_uploader.open();
-                    return;
+                if (custom_uploader == null) {
+                    custom_uploader = createUploader();
                 }
-                var uploader_config = {
-                    title:    forms_trans.file_title,
-                    button:   {
-                        text: forms_trans.file_submit
-                    },
-                    multiple: false
-                };
-                if ($(item).hasClass('image_selector')) {
-                    uploader_config.title = forms_trans.image_title;
-                    uploader_config.button = {
-                        text: forms_trans.image_submit
-                    };
-                    uploader_config.library = { type: 'image' };
-                }
-                custom_uploader = wp.media.frames.file_frame = wp.media(uploader_config);
-
-                //When a file is selected, grab the URL and set it as the text field's value
-                custom_uploader.on('select', function () {
-                    handleUpload(custom_uploader, item);
-                });
-
-                custom_uploader.on('open', function () {
-                    var selection = custom_uploader.state().get('selection');
-
-                    //Get ids array from
-                    var ids = $(item).siblings('input[type="hidden"]').val().split(',');
-                    ids.forEach(function (id) {
-                        var attachment = wp.media.attachment(id);
-                        attachment.fetch();
-                        selection.add(attachment ? [ attachment ] : []);
-                    });
-                });
 
                 //Open the uploader dialog
                 custom_uploader.open();
@@ -97,57 +142,13 @@
             });
             //Handle the gallery selector
             $(item).click(function (e) {
-                var custom_uploader;
+                var custom_uploader = null;
                 e.preventDefault();
 
                 //If the uploader object has already been created, reopen the dialog
-                if (custom_uploader) {
-                    custom_uploader.open();
-                    return;
+                if (custom_uploader == null) {
+                    custom_uploader = createUploader();
                 }
-                //Extend the wp.media object
-                custom_uploader = wp.media.frames.file_frame = wp.media({
-                    title:    forms_trans.gallery_title,
-                    button:   {
-                        text: forms_trans.gallery_submit
-                    },
-                    library:  { type: 'image' },
-                    multiple: true
-                });
-
-                //When a file is selected, grab the URL and set it as the text field's value
-                custom_uploader.on('select', function () {
-
-                    var attachments_ids = '';
-                    var attachments = custom_uploader.state().get('selection');
-                    $gallery_preview.html('');
-                    attachments.map(function (attachment) {
-                        //Handle the gallery attachments
-                        attachment = attachment.toJSON();
-
-                        if (attachment.id) {
-                            $gallery_preview.append('' +
-                            '<li class="image" data-attachment_id="' + attachment.id + '">' +
-                            '<img src="' + attachment.url + '" /> <a href="#" class="delete">Delete</a>' +
-                            '</li>');
-                        }
-
-                        $(item).siblings('input[type="hidden"]').val(updateGalleryIds(item));
-
-                    });
-                });
-
-                custom_uploader.on('open', function () {
-                    var selection = custom_uploader.state().get('selection');
-
-                    //Get ids array from
-                    var ids = $(item).siblings('input[type="hidden"]').val().split(',');
-                    ids.forEach(function (id) {
-                        var attachment = wp.media.attachment(id);
-                        attachment.fetch();
-                        selection.add(attachment ? [ attachment ] : []);
-                    });
-                });
 
                 //Open the uploader dialog
                 custom_uploader.open();
