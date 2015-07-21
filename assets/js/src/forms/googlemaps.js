@@ -37,7 +37,7 @@
                 return new google.maps.LatLng(parseFloat(latlng[0]), parseFloat(latlng[1]));
             }
         });
-        
+
         $(document).on('uk.tab.change', function(event, item){
             // Nasty solution for a wrong resize
             window.setTimeout(function() {
