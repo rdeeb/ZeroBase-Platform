@@ -22,7 +22,7 @@ class InputGoogleMapsWidget extends BaseInputWidget
      **/
     public function getType()
     {
-        return 'text';
+        return 'hidden';
     }
 
     /**

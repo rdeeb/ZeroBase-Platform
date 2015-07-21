@@ -3,13 +3,13 @@ namespace Zerobase\Forms\Models;
 
 class OptionsModel extends AbstractModel
 {
-    protected function storeData($name, $value)
+    protected function storeData( $name, $value )
     {
-        update_option($name, $value);
+        update_option( $name, $value, false );
     }
 
-    protected function retreiveData($name, $default)
+    protected function retreiveData( $name, $default )
     {
-        return get_option($name, $default);
+        return get_option( $name, $default );
     }
 }

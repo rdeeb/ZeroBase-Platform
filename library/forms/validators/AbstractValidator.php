@@ -10,8 +10,11 @@ abstract class AbstractValidator implements ValidatorInterface
 
     public function __construct(array $options = array(), array $errorMessages = array())
     {
-        $this->setConfiguration($options);
-        $this->setErrorMessages($errorMessages);
+        if ( !empty( $options ) )
+        {
+            $this->setConfiguration($options);
+            $this->setErrorMessages($errorMessages);
+        }
     }
 
     protected function setErrorMessages(array $errorMessages)
