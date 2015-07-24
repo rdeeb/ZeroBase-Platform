@@ -28,6 +28,8 @@ class WidgetFactory extends Singleton
         $this->addFormWidget('file', 'InputFileWidget' );
         $this->addFormWidget('gallery', 'InputGalleryWidget' );
         $this->addFormWidget('google_map', 'InputGoogleMapsWidget' );
+        $this->addFormWidget('pages', 'InputPagesWidget' );
+        $this->addFormWidget('posts', 'InputPostsWidget' );
     }
 
     /**

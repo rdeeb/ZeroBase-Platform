@@ -32,4 +32,4 @@ function <?php echo $key ?>_script_admin_loader()
 add_action( 'wp_enqueue_scripts', '<?php echo $key ?>_script_loader' );
 <?php if ( !empty( $admin ) ): ?>
 add_action( 'admin_enqueue_scripts', '<?php echo $key ?>_script_admin_loader' );
-<?php endif; ?>
+<?php endif;

@@ -192,7 +192,7 @@ class ZerobasePlatform extends \Zerobase\Toolkit\Singleton
         );
         wp_register_script(
           'zerobase_js_libs',
-          plugins_url( '/assets/js/libs.min.js', __FILE__ ),
+          plugins_url( '/assets/js/libs.js', __FILE__ ),
           array(
             'jquery'
           ),
@@ -201,7 +201,7 @@ class ZerobasePlatform extends \Zerobase\Toolkit\Singleton
         );
         wp_register_script(
             'zerobase_js_forms',
-            plugins_url( '/assets/js/forms.min.js', __FILE__ ),
+            plugins_url( '/assets/js/forms.js', __FILE__ ),
             array(
                 'jquery',
                 'jquery-ui-core',

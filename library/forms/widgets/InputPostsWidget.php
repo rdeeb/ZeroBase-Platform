@@ -3,8 +3,16 @@ namespace Zerobase\Forms\Widgets;
 
 use Zerobase\Toolkit\HtmlToolkit;
 
-class InputColorWidget extends BaseInputWidget
+class InputPostsWidget extends BaseInputWidget
 {
+
+    protected function supportedParams()
+    {
+        return array_merge(array(
+          'post_type'
+        ), parent::supportedParams());
+    }
+
     /**
      * getType
      * Returns this widget type
@@ -14,7 +22,7 @@ class InputColorWidget extends BaseInputWidget
      **/
     public function getType()
     {
-        return 'color';
+        return 'text';
     }
 
     /**
@@ -26,14 +34,9 @@ class InputColorWidget extends BaseInputWidget
      **/
     public function renderWidget()
     {
-        if ( isset( $this->params['required'] ) && $this->params['required'] )
-        {
-            $this->attr['required'] = 'required';
-        }
-        $this->attr['value'] = $this->getValue();
-        $this->attr['type']  = 'text';
-        $this->attr['class'] .= ' colorselector';
-
+        $this->attr['type'] = 'text';
+        $this->attr['class'] = 'uk-autocomplete uk-form';
+        $this->attr['data-uk-autocomplete'] = '{ source: post_autocomplete_callback }';
         return HtmlToolkit::buildTag( 'input', $this->attr, true );
     }
 }

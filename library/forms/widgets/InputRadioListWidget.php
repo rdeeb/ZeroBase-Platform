@@ -3,14 +3,6 @@ namespace Zerobase\Forms\Widgets;
 
 use Zerobase\Toolkit\HtmlToolkit;
 
-/**
- * InputRadioListWidget
- * Renders a radio input box
- *
- * @package ZeroBase
- * @author  Ramy Deeb <me@ramydeeb.com>
- * @license Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. http://creativecommons.org/licenses/by-nc-nd/3.0/.
- **/
 class InputRadioListWidget extends BaseInputWidget
 {
     /**

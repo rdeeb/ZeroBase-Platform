@@ -72,7 +72,7 @@ abstract class BaseInputWidget implements WidgetInterface
         return $this->value;
     }
 
-    private function supportedParams()
+    protected function supportedParams()
     {
         return array(
             'id',
@@ -90,9 +90,9 @@ abstract class BaseInputWidget implements WidgetInterface
     /**
      * @param array $params
      * @return bool
-     * @throws Exception
+     * @throws \Exception
      */
-    private function validateParams( array $params )
+    protected function validateParams( array $params )
     {
         $supported = $this->supportedParams();
         foreach ( $params as $key => $trash )
