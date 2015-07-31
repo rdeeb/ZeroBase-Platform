@@ -39,9 +39,9 @@ class FileCacheTest extends PHPUnit_Framework_TestCase
 
     public function testStoreInCache()
     {
-        $this->mockGetHashes();
         $cache = $this->getCacheInstance();
         $bag = $cache->createCache( 'file_cache_test' );
+        $this->assertTrue( $bag->store( 'test_cache', '$my_test_data = "Hello World"' ) );
     }
 
     public function __destruct()
