@@ -1,5 +1,5 @@
 <?php
-
+echo __DIR__."/n";
 spl_autoload_register( function ( $class ) {
     if ( stripos( $class, 'zerobase' ) !== FALSE )
     {
