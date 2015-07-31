@@ -16,7 +16,7 @@ class FileCacheTest extends PHPUnit_Framework_TestCase
         return Zerobase\Cache\FileCache::getInstance();
     }
 
-    protected function mockGetHashes()
+    public function testCreateCache()
     {
         \WP_Mock::wpFunction( 'get_option', array(
             'args' => array(
@@ -26,12 +26,6 @@ class FileCacheTest extends PHPUnit_Framework_TestCase
             'times' => 1,
             'return' => array()
         ) );
-
-    }
-
-    public function testCreateCache()
-    {
-        $this->mockGetHashes();
         $cache = $this->getCacheInstance();
         $bag = $cache->createCache( 'file_cache_test' );
         $this->assertTrue( $cache->cacheExists( 'file_cache_test' ) );
@@ -39,6 +33,14 @@ class FileCacheTest extends PHPUnit_Framework_TestCase
 
     public function testStoreInCache()
     {
+        \WP_Mock::wpFunction( 'update_option', array(
+            'args' => array(
+                'zb_file_cache_file_cache_test_hashes',
+                array()
+            ),
+            'times' => 1,
+            'return' => array()
+        ) );
         $cache = $this->getCacheInstance();
         $bag = $cache->createCache( 'file_cache_test' );
         $this->assertTrue( $bag->store( 'test_cache', '$my_test_data = "Hello World"' ) );

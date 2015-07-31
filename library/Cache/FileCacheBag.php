@@ -20,7 +20,7 @@ class FileCacheBag implements CacheBagInterface
      */
     public function store( $key, $data )
     {
-        $filename = $this->getCacheDir() . '/' . \ZerobasePlatform::slugify( $key ) . '.cache';
+        $filename = $this->getCacheDir() . '/' . \Zerobase\Toolkit\HtmlToolkit::slugify( $key ) . '.cache';
         file_put_contents( $filename, $data );
         $this->hashes[ $filename ] = md5_file( $filename );
         update_option( "zb_file_cache_{$this->name_space}_hashes", $this->hashes );
@@ -31,7 +31,7 @@ class FileCacheBag implements CacheBagInterface
      */
     public function retreive( $key )
     {
-        $filename = $this->getCacheDir() . '/' . \ZerobasePlatform::slugify( $key ) . '.cache';
+        $filename = $this->getCacheDir() . '/' . \Zerobase\Toolkit\HtmlToolkit::slugify( $key ) . '.cache';
         if ( file_exists( $filename ) )
         {
             if ( isset( $this->hashes[ $filename ] ) && md5_file( $filename ) == $this->hashes[ $filename ] )
@@ -48,7 +48,7 @@ class FileCacheBag implements CacheBagInterface
      */
     public function destroy( $key )
     {
-        $filename = $this->getCacheDir() . '/' . \ZerobasePlatform::slugify( $key ) . '.cache';
+        $filename = $this->getCacheDir() . '/' . \Zerobase\Toolkit\HtmlToolkit::slugify( $key ) . '.cache';
         try
         {
             if ( file_exists( $filename ) )
@@ -67,7 +67,7 @@ class FileCacheBag implements CacheBagInterface
 
     public function has( $key )
     {
-        $filename = $this->getCacheDir() . '/' . \ZerobasePlatform::slugify( $key ) . '.cache';
+        $filename = $this->getCacheDir() . '/' . \Zerobase\Toolkit\HtmlToolkit::slugify( $key ) . '.cache';
         return file_exists( $filename );
 
     }
