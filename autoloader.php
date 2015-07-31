@@ -35,34 +35,30 @@ class ZB_Autoloader
         // get the relative class name
         $relative_class = substr($class, $len);
 
-        // replace the namespace prefix with the base directory, replace namespace
-        // separators with directory separators in the relative class name, append
-        // with .php
-        $file = $base_dir . str_replace('\\', '/', $relative_class) . '.php';
-
-
         // if the file exists, require it
-        if (file_exists($file)) {
-            try
-            {
-                require $file;
-            }
-            catch (Exception $e)
-            {
-                //Try with a lower case version
-                self::loadAlternateFile( $relative_class, $base_dir );
-            }
-        } else {
-            //Try with a lower case version
-            self::loadAlternateFile( $relative_class, $base_dir );
+        if ( !self::loadLowerCase( $relative_class, $base_dir ) )
+        {
+            self::loadUpperCase( $relative_class, $base_dir );
         }
     }
 
-    protected static function loadAlternateFile( $relative_class, $base_dir )
+    protected static function loadLowerCase( $relative_class, $base_dir )
     {
         $file = $base_dir . strtolower( str_replace('\\', '/', $relative_class) ) . '.php';
         if (file_exists($file)) {
             require $file;
+            return TRUE;
         }
+        return FALSE;
+    }
+
+    protected static function loadUpperCase( $relative_class, $base_dir )
+    {
+        $file = $base_dir . str_replace('\\', '/', $relative_class) . '.php';
+        if (file_exists($file)) {
+            require $file;
+            return TRUE;
+        }
+        return FALSE;
     }
 }
