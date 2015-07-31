@@ -1,5 +1,5 @@
 <?php
-echo __DIR__."/n";
+
 spl_autoload_register( function ( $class ) {
     if ( stripos( $class, 'zerobase' ) !== FALSE )
     {
@@ -38,7 +38,7 @@ class ZB_Autoloader
         // replace the namespace prefix with the base directory, replace namespace
         // separators with directory separators in the relative class name, append
         // with .php
-        $file = $base_dir . str_replace('\\', '/', $relative_class) . '.php';
+        $file = $base_dir . strtolower( str_replace('\\', '/', $relative_class) ) . '.php';
 
         // if the file exists, require it
         if (file_exists($file)) {
