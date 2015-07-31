@@ -4,3 +4,6 @@
 [submodule "vendor/10up"]
 	path = vendor/10up
 	url = https://github.com/10up/wp_mock.git
+[submodule "vendor/mockery"]
+	path = vendor/mockery
+	url = https://github.com/padraic/mockery.git

@@ -10,29 +10,28 @@ abstract class AbstractCache extends Singleton implements CacheInterface
     /**
      * @inheritdoc
      */
-    public function cacheExists($name_space)
+    public function cacheExists( $name_space )
     {
-        return isset($this->bags[$name_space]);
+        return isset( $this->bags[ $name_space ] );
     }
 
     /**
      * @inheritdoc
      */
-    public function destroyCache($name_space)
+    public function destroyCache( $name_space )
     {
-        unset($this->bags[$name_space]);
+        unset( $this->bags[ $name_space ] );
     }
 
     /**
      * @inheritdoc
      */
-    public function retreiveCache($name_space)
+    public function retreiveCache( $name_space )
     {
-        if ($this->cacheExists($name_space))
+        if ( $this->cacheExists( $name_space ) )
         {
-            return $this->bags[$name_space];
+            return $this->bags[ $name_space ];
         }
-
 
         return false;
     }
