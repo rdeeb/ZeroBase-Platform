@@ -43,13 +43,26 @@ class ZB_Autoloader
 
         // if the file exists, require it
         if (file_exists($file)) {
-            require $file;
-        } else {
-            //Try with a lower case version
-            $file = $base_dir . strtolower( str_replace('\\', '/', $relative_class) ) . '.php';
-            if (file_exists($file)) {
+            try
+            {
                 require $file;
             }
+            catch (Exception $e)
+            {
+                //Try with a lower case version
+                self::loadAlternateFile( $relative_class, $base_dir );
+            }
+        } else {
+            //Try with a lower case version
+            self::loadAlternateFile( $relative_class, $base_dir );
+        }
+    }
+
+    protected static function loadAlternateFile( $relative_class, $base_dir )
+    {
+        $file = $base_dir . strtolower( str_replace('\\', '/', $relative_class) ) . '.php';
+        if (file_exists($file)) {
+            require $file;
         }
     }
 }
