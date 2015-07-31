@@ -21,6 +21,7 @@ abstract class AbstractCache extends Singleton implements CacheInterface
     public function destroyCache( $name_space )
     {
         unset( $this->bags[ $name_space ] );
+        return true;
     }
 
     /**

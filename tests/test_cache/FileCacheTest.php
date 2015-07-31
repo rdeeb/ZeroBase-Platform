@@ -36,14 +36,30 @@ class FileCacheTest extends PHPUnit_Framework_TestCase
         \WP_Mock::wpFunction( 'update_option', array(
             'args' => array(
                 'zb_file_cache_file_cache_test_hashes',
-                array()
+                array(
+                    ZEROBASE_CACHE_DIR . '/file_cache_test/test-cache.cache' => '8cdd9bc3b28656cde3c70e0c1d4f9dbc'
+                )
             ),
             'times' => 1,
             'return' => array()
         ) );
         $cache = $this->getCacheInstance();
-        $bag = $cache->createCache( 'file_cache_test' );
-        $this->assertTrue( $bag->store( 'test_cache', '$my_test_data = "Hello World"' ) );
+        $bag = $cache->retreiveCache( 'file_cache_test' );
+        $this->assertTrue( $bag->store( 'test_cache', '<?php return "Hello World" ?>' ) );
+    }
+
+    public function testRetreiveCache()
+    {
+        $cache = $this->getCacheInstance();
+        $bag = $cache->retreiveCache( 'file_cache_test' );
+        $value = $bag->retreive( 'test_cache' );
+        $this->assertEquals( 'Hello World', $value );
+    }
+
+    public function testDestroyCache()
+    {
+        $cache = $this->getCacheInstance();
+        $this->assertTrue( $cache->destroyCache( 'file_cache_test' ) );
     }
 
     public function __destruct()
