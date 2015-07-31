@@ -38,11 +38,11 @@ class InputTextareaWidget extends BaseInputWidget
      **/
     public function renderWidget()
     {
-        if ( isset( $this->params['required'] ) && $this->params['required'] )
+        if ( isset( $this->params[ 'required' ] ) && $this->params[ 'required' ] )
         {
-            $this->attr['required'] = 'required';
+            $this->attr[ 'required' ] = 'required';
         }
 
-        return HtmlToolkit::buildTag( 'textarea', $this->attr, false, $this->getValue() );
+        return HtmlToolkit::buildTag( 'textarea', $this->attr, FALSE, $this->getValue() );
     }
 }

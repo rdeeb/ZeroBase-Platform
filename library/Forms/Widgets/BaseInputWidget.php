@@ -3,14 +3,6 @@ namespace Zerobase\Forms\Widgets;
 
 use Zerobase\Toolkit\HtmlToolkit;
 
-/**
- * BaseInputWidget
- * An abstract class that handles the base functionalities of a widget
- *
- * @package ZeroBase
- * @author  Ramy Deeb <me@ramydeeb.com>
- * @license Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. http://creativecommons.org/licenses/by-nc-nd/3.0/.
- **/
 abstract class BaseInputWidget implements WidgetInterface
 {
     //Internal variables
@@ -23,15 +15,16 @@ abstract class BaseInputWidget implements WidgetInterface
      * Creates the widget with the options defined for it
      *
      * @param $options array
+     *
      * @author Ramy Deeb
      **/
     public function __construct( array $options = array() )
     {
         if ( $this->validateParams( $options ) )
         {
-            if ( isset( $options['attr'] ) && is_array( $options['attr'] ) )
+            if ( isset( $options[ 'attr' ] ) && is_array( $options[ 'attr' ] ) )
             {
-                $this->attr = $options['attr'];
+                $this->attr = $options[ 'attr' ];
             }
             $this->params = $options;
         }
@@ -45,18 +38,19 @@ abstract class BaseInputWidget implements WidgetInterface
         return $this->params;
     }
 
-    public function setAttr($name, $value)
+    public function setAttr( $name, $value )
     {
-        $this->attr[$name] = $value;
+        $this->attr[ $name ] = $value;
     }
 
-    public function getAttr($name)
+    public function getAttr( $name )
     {
-        return $this->attr[$name];
+        return $this->attr[ $name ];
     }
 
     /**
      * @param mixed $v
+     *
      * @return void
      **/
     public function setValue( $v )
@@ -89,6 +83,7 @@ abstract class BaseInputWidget implements WidgetInterface
 
     /**
      * @param array $params
+     *
      * @return bool
      * @throws \Exception
      */
@@ -97,23 +92,23 @@ abstract class BaseInputWidget implements WidgetInterface
         $supported = $this->supportedParams();
         foreach ( $params as $key => $trash )
         {
-            if ( !in_array( $key, $supported, true ) && $key != 'attr' )
+            if ( !in_array( $key, $supported, TRUE ) && $key != 'attr' )
             {
                 throw new \Exception( "The parameter $key is not supported by this widget" );
             }
         }
 
-        return true;
+        return TRUE;
     }
 
-    public function setErrors($v)
+    public function setErrors( $v )
     {
         $this->errors = $v;
     }
 
     public function hasErrors()
     {
-        return !empty($this->errors);
+        return !empty( $this->errors );
     }
 
     public function getErrors()
@@ -127,13 +122,13 @@ abstract class BaseInputWidget implements WidgetInterface
     public function render()
     {
         $widget = $this->renderWidget();
-        if ( isset( $this->params['append'] ) && $this->params['append'] )
+        if ( isset( $this->params[ 'append' ] ) && $this->params[ 'append' ] )
         {
-            $widget .= '<span class="append">' . $this->params['append'] . '</span>';
+            $widget .= '<span class="append">' . $this->params[ 'append' ] . '</span>';
         }
-        if ( isset( $this->params['prepend'] ) && $this->params['prepend'] )
+        if ( isset( $this->params[ 'prepend' ] ) && $this->params[ 'prepend' ] )
         {
-            $widget = '<span class="prepend">' . $this->params['prepend'] . '</span>' . $widget;
+            $widget = '<span class="prepend">' . $this->params[ 'prepend' ] . '</span>' . $widget;
         }
 
         return $widget;
@@ -145,9 +140,9 @@ abstract class BaseInputWidget implements WidgetInterface
     public function renderLabel()
     {
         return HtmlToolkit::buildLabel(
-            $this->params['label'],
+            $this->params[ 'label' ],
             array(
-                'for' => isset($this->params['name']) ? $this->params['name'] : ''
+                'for' => isset( $this->params[ 'name' ] ) ? $this->params[ 'name' ] : ''
             )
         );
     }
@@ -158,12 +153,13 @@ abstract class BaseInputWidget implements WidgetInterface
     public function renderErrors()
     {
         $liTags = '';
-        foreach ($this->errors as $error)
+        foreach ( $this->errors as $error )
         {
-            $liTags .= HtmlToolkit::buildTag('li', array(), false, $error)."\n";
+            $liTags .= HtmlToolkit::buildTag( 'li', array(), FALSE, $error ) . "\n";
         }
-        return HtmlToolkit::buildTag('ul', array(
+
+        return HtmlToolkit::buildTag( 'ul', array(
             'class' => 'errors'
-        ), false, $liTags);
+        ), FALSE, $liTags );
     }
 }
