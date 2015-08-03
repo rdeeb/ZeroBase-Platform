@@ -27,23 +27,23 @@ class InputSelectWidget extends BaseInputWidget
     public function renderWidget()
     {
         $content = '';
-        foreach ( $this->params['choices'] as $key => $name )
+        foreach ( $this->params[ 'choices' ] as $key => $name )
         {
             if ( $this->getValue() == $key )
             {
                 $content .= HtmlToolkit::buildTag( 'option', array(
                     'value'    => $key,
                     'selected' => 'selected'
-                ), false, $name );
+                ), FALSE, $name );
             }
             else
             {
                 $content .= HtmlToolkit::buildTag( 'option', array(
                     'value' => $key
-                ), false, $name );
+                ), FALSE, $name );
             }
         }
 
-        return HtmlToolkit::buildTag( 'select', $this->attr, false, $content );
+        return HtmlToolkit::buildTag( 'select', $this->attr, FALSE, $content );
     }
 }

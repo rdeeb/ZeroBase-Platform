@@ -3,22 +3,32 @@ namespace Zerobase\Toolkit;
 
 abstract class Singleton
 {
-    protected function __construct(){}
+    protected function __construct()
+    {
+    }
+
     /**
      * @return static
      */
     static function getInstance()
     {
-        static $instance = null;
-        if (null === $instance) {
+        static $instance = NULL;
+        if ( NULL === $instance )
+        {
             $instance = new static();
         }
+
         return $instance;
     }
 
     /**
      * This functions prevents the cloning of the instance
      */
-    private function __clone() {}
-    private function __wakeup() {}
+    private function __clone()
+    {
+    }
+
+    private function __wakeup()
+    {
+    }
 }

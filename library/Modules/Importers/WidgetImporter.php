@@ -8,14 +8,14 @@ use Zerobase\Skeletons\SkeletonLoader;
 class WidgetImporter extends AbstractImporter
 {
     protected $allowed_keys = array(
-      'name',
-      'description',
-      'fields',
-      'type',
-      'default',
-      'label',
-      'choices',
-      'template',
+        'name',
+        'description',
+        'fields',
+        'type',
+        'default',
+        'label',
+        'choices',
+        'template',
     );
 
     public static function load( $key, array $config )
@@ -24,17 +24,17 @@ class WidgetImporter extends AbstractImporter
         $config = self::sanitizeConfig( $config );
         if ( !class_exists( $key ) )
         {
-            $cache_enabled = (bool) get_option( 'zerobase_platform_cache', TRUE );
-            $cache_bag = FileCache::getInstance()->createCache( 'widgets' );
-            if (  !$cache_bag->has( $key ) || !$cache_enabled )
+            $cache_enabled = (bool)get_option( 'zerobase_platform_cache', TRUE );
+            $cache_bag     = FileCache::getInstance()->createCache( 'widgets' );
+            if ( !$cache_bag->has( $key ) || !$cache_enabled )
             {
                 $widget_code = SkeletonLoader::load( 'widget', array(
-                  'class_name' => $key,
-                  'name' => $config[ 'name' ],
-                  'description' => $config[ 'description' ],
-                  'fields' => $config[ 'fields' ],
-                  'template' => $config[ 'base_path' ] . '/' . $config[ 'template' ]
-                ));
+                    'class_name'  => $key,
+                    'name'        => $config[ 'name' ],
+                    'description' => $config[ 'description' ],
+                    'fields'      => $config[ 'fields' ],
+                    'template'    => $config[ 'base_path' ] . '/' . $config[ 'template' ]
+                ) );
                 $cache_bag->store( $key, $widget_code );
             }
 
@@ -43,10 +43,13 @@ class WidgetImporter extends AbstractImporter
 
     }
 
-    private static function sanitizeConfig( array $config ) {
-        if ( !isset( $config['template'] ) ) {
-            throw new ParseException('The template dir is required');
+    private static function sanitizeConfig( array $config )
+    {
+        if ( !isset( $config[ 'template' ] ) )
+        {
+            throw new ParseException( 'The template dir is required' );
         }
+
         return $config;
     }
 }

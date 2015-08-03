@@ -23,6 +23,7 @@ class ModelFactory extends Singleton
     /**
      * @param string $name
      * @param string $className
+     *
      * @throws \Exception
      */
     public function addWidgetModel( $name, $className )
@@ -39,6 +40,7 @@ class ModelFactory extends Singleton
 
     /**
      * @param string $name
+     *
      * @return bool
      */
     public function modelExists( $name )
@@ -48,6 +50,7 @@ class ModelFactory extends Singleton
 
     /**
      * @param string $name
+     *
      * @throws \Exception
      * @return ModelInterface
      */
@@ -67,6 +70,7 @@ class ModelFactory extends Singleton
 
     /**
      * @param string $className
+     *
      * @return bool
      * @throws \Exception
      */
@@ -79,9 +83,9 @@ class ModelFactory extends Singleton
         $implements = class_implements( $className );
         if ( in_array( 'Zerobase\Forms\Models\ModelInterface', $implements ) )
         {
-            return true;
+            return TRUE;
         }
 
-        return false;
+        return FALSE;
     }
 }

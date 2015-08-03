@@ -12,10 +12,16 @@ class Metabox
      **/
     public function __construct( array $options )
     {
-        $defaults = $this->getPostTypeDefaults();
+        $defaults      = $this->getPostTypeDefaults();
         $this->options = array_merge( $defaults, $options );
-        add_action( 'add_meta_boxes', array( &$this, 'registerMetaboxes' ) );
-        add_action( 'save_post', array( &$this, 'saveMetaInfo' ), 10, 2 );
+        add_action( 'add_meta_boxes', array(
+            &$this,
+            'registerMetaboxes'
+        ) );
+        add_action( 'save_post', array(
+            &$this,
+            'saveMetaInfo'
+        ), 10, 2 );
     }
 
     private function getPostTypeDefaults()
@@ -33,17 +39,20 @@ class Metabox
 
     public function registerMetaboxes()
     {
-        foreach ( $this->options['post_type'] as $post_type )
+        foreach ( $this->options[ 'post_type' ] as $post_type )
         {
             if ( $post_type == $this->getCurrentPostType() )
             {
                 add_meta_box(
-                    $this->options['id'],
-                    $this->options['title'],
-                    array( &$this, 'renderMetaBox' ),
+                    $this->options[ 'id' ],
+                    $this->options[ 'title' ],
+                    array(
+                        &$this,
+                        'renderMetaBox'
+                    ),
                     $post_type,
-                    $this->options['context'],
-                    $this->options['priority']
+                    $this->options[ 'context' ],
+                    $this->options[ 'priority' ]
                 );
             }
         }
@@ -51,15 +60,18 @@ class Metabox
 
     /**
      * Saves the custom meta info for the post
-     * @param int $post_id The Post ID
-     * @param WP_Post $post The Post Object
+     *
+     * @param int     $post_id The Post ID
+     * @param WP_Post $post    The Post Object
+     *
      * @return mixed
      **/
     public function saveMetaInfo( $post_id, \WP_Post $post )
     {
         $options = $this->options;
 
-        if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+        if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE )
+        {
             return $post_id;
         }
 
@@ -68,10 +80,10 @@ class Metabox
             return $post_id;
         }
 
-        if ( in_array( $post->post_type, $options['post_type'] ) )
+        if ( in_array( $post->post_type, $options[ 'post_type' ] ) )
         {
-            $form    = $this->getForm( $post_id );
-            if ($form->isValid())
+            $form = $this->getForm( $post_id );
+            if ( $form->isValid() )
             {
                 $form->save();
             }
@@ -85,13 +97,13 @@ class Metabox
     public function renderMetaBox( \WP_Post $post )
     {
         $form  = $this->getForm( $post->ID );
-        $nonce = wp_nonce_field( $this->options['id'], 'ZB_Metabox' );
-        switch ( $this->options['template'] )
+        $nonce = wp_nonce_field( $this->options[ 'id' ], 'ZB_Metabox' );
+        switch ( $this->options[ 'template' ] )
         {
             case 'tabbed':
                 extract( $this->options );
                 $renderer = $form->getRenderer();
-                $tabs = $this->getTabs();
+                $tabs     = $this->getTabs();
                 require( __DIR__ . '/templates/zerobase_metabox_tabbed.php' );
                 break;
             case 'default':
@@ -109,42 +121,43 @@ class Metabox
      **/
     private function getForm( $post_id )
     {
-        $form     = FormFactory::createForm( $this->options['id'], 'default', 'metadata' );
+        $form     = FormFactory::createForm( $this->options[ 'id' ], 'default', 'metadata' );
         $defaults = array(
             'type'    => 'text',
             'default' => NULL
         );
-        foreach ( $this->options['fields'] as $name => $options )
+        foreach ( $this->options[ 'fields' ] as $name => $options )
         {
             $options = array_merge( $defaults, $options );
-            $type    = $options['type'];
+            $type    = $options[ 'type' ];
             if ( $type == 'tabs' )
             {
-                if (!isset($options['label']) || !$options['label']) {
-                    throw new \Exception('Every tab must implement a Label');
+                if ( !isset( $options[ 'label' ] ) || !$options[ 'label' ] )
+                {
+                    throw new \Exception( 'Every tab must implement a Label' );
                 }
-                foreach ( $options['fields'] as $field => $field_ops )
+                foreach ( $options[ 'fields' ] as $field => $field_ops )
                 {
                     $field_ops = array_merge( $defaults, $field_ops );
-                    $type    = $field_ops['type'];
-                    $default = $field_ops['default'];
-                    $value   = get_post_meta( $post_id, $field, true );
-                    $value   = $value ? $value : $default;
+                    $type      = $field_ops[ 'type' ];
+                    $default   = $field_ops[ 'default' ];
+                    $value     = get_post_meta( $post_id, $field, TRUE );
+                    $value     = $value ? $value : $default;
                     unset(
-                        $field_ops['type'],
-                        $field_ops['default']
+                        $field_ops[ 'type' ],
+                        $field_ops[ 'default' ]
                     );
                     $form->addWidget( $field, $type, $field_ops, $value );
                 }
             }
             else
             {
-                $default = $options['default'];
-                $value   = get_post_meta( $post_id, $name, true );
+                $default = $options[ 'default' ];
+                $value   = get_post_meta( $post_id, $name, TRUE );
                 $value   = $value ? $value : $default;
                 unset(
-                    $options['type'],
-                    $options['default']
+                    $options[ 'type' ],
+                    $options[ 'default' ]
                 );
                 $form->addWidget( $name, $type, $options, $value );
             }
@@ -156,22 +169,23 @@ class Metabox
     private function getTabs()
     {
         $tabs_array = array();
-        foreach ( $this->options['fields'] as $name => $options )
+        foreach ( $this->options[ 'fields' ] as $name => $options )
         {
-            $type = $options['type'];
+            $type = $options[ 'type' ];
             if ( $type == 'tabs' )
             {
-                $tabs_array[$name] = array(
-                    'label' => $options['label'],
-                    'icon' => isset($options['icon']) ? $options['icon'] : NULL,
+                $tabs_array[ $name ] = array(
+                    'label'  => $options[ 'label' ],
+                    'icon'   => isset( $options[ 'icon' ] ) ? $options[ 'icon' ] : NULL,
                     'fields' => array()
                 );
-                foreach ( $options['fields'] as $field => $field_ops )
+                foreach ( $options[ 'fields' ] as $field => $field_ops )
                 {
-                    $tabs_array[$name]['fields'][] = $field;
+                    $tabs_array[ $name ][ 'fields' ][] = $field;
                 }
             }
         }
+
         return $tabs_array;
     }
 

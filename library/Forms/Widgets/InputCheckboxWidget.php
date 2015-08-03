@@ -26,17 +26,17 @@ class InputCheckboxWidget extends BaseInputWidget
      **/
     public function renderWidget()
     {
-        if ( isset( $this->params['required'] ) && $this->params['required'] )
+        if ( isset( $this->params[ 'required' ] ) && $this->params[ 'required' ] )
         {
-            $this->attr['required'] = 'required';
+            $this->attr[ 'required' ] = 'required';
         }
-        $this->attr['value'] = 1;
-        if ( $this->getValue() === true || $this->getValue() == 1 )
+        $this->attr[ 'value' ] = 1;
+        if ( $this->getValue() === TRUE || $this->getValue() == 1 )
         {
-            $this->attr['checked'] = 'checked';
+            $this->attr[ 'checked' ] = 'checked';
         }
-        $this->attr['type'] = $this->getType();
+        $this->attr[ 'type' ] = $this->getType();
 
-        return HtmlToolkit::buildTag( 'input', $this->attr, true );
+        return HtmlToolkit::buildTag( 'input', $this->attr, TRUE );
     }
 }

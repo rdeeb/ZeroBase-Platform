@@ -8,41 +8,43 @@ abstract class AbstractRenderer implements RendererInterface
 {
     protected $widgets = array();
 
-    public function __construct(array $widgets = array())
+    public function __construct( array $widgets = array() )
     {
-        $this->addWidgets($widgets);
+        $this->addWidgets( $widgets );
     }
 
-    public function addWidget($name, WidgetInterface $widget)
+    public function addWidget( $name, WidgetInterface $widget )
     {
-        $this->widgets[$name] = $widget;
+        $this->widgets[ $name ] = $widget;
     }
 
-    public function addWidgets(array $widgets)
+    public function addWidgets( array $widgets )
     {
-        if (!empty($widgets))
+        if ( !empty( $widgets ) )
         {
-            foreach ($widgets as $name => $widget) {
-                $this->addWidget($name, $widget);
+            foreach ( $widgets as $name => $widget )
+            {
+                $this->addWidget( $name, $widget );
             }
         }
     }
 
     public function render()
     {
-        if (empty($this->widgets))
+        if ( empty( $this->widgets ) )
         {
             return '';
         }
         $returnString = '';
-        foreach($this->widgets as $name => $widget)
+        foreach ( $this->widgets as $name => $widget )
         {
-            $returnString .= $this->renderRow( $name )."\n";
+            $returnString .= $this->renderRow( $name ) . "\n";
         }
+
         return $returnString;
     }
 
-    public function renderRow($widgetName)
+    public function renderRow( $widgetName )
     {
         return HtmlToolkit::buildDiv(
             $this->renderLabel( $widgetName )
@@ -61,32 +63,34 @@ abstract class AbstractRenderer implements RendererInterface
 
     public function renderLabel( $widgetName )
     {
-        if ($this->widgetExists($widgetName))
+        if ( $this->widgetExists( $widgetName ) )
         {
-            $widget = $this->widgets[$widgetName];
+            $widget = $this->widgets[ $widgetName ];
+
             return $widget->renderLabel();
         }
         else
         {
-            throw new \Exception("The widget \"$widgetName\" doesn't exists.");
+            throw new \Exception( "The widget \"$widgetName\" doesn't exists." );
         }
     }
 
     public function renderWidget( $widgetName )
     {
-        if ($this->widgetExists($widgetName))
+        if ( $this->widgetExists( $widgetName ) )
         {
-            $widget = $this->widgets[$widgetName];
+            $widget = $this->widgets[ $widgetName ];
+
             return $widget->renderWidget();
         }
         else
         {
-            throw new \Exception("The widget \"$widgetName\" doesn't exists.");
+            throw new \Exception( "The widget \"$widgetName\" doesn't exists." );
         }
     }
 
     public function widgetExists( $widgetName )
     {
-        return isset($this->widgets[$widgetName]);
+        return isset( $this->widgets[ $widgetName ] );
     }
 }

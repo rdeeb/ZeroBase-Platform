@@ -8,9 +8,9 @@ class TaxonomyRenderer extends AbstractRenderer
     public function renderRow( $widgetName )
     {
         return HtmlToolkit::buildTag( 'div', array(
-                'class' => "form-field term-$widgetName-wrap"
-            ), false,
-            $this->renderLabel( $widgetName ).$this->renderWidget( $widgetName )
+            'class' => "form-field term-$widgetName-wrap"
+        ), FALSE,
+            $this->renderLabel( $widgetName ) . $this->renderWidget( $widgetName )
         );
     }
 }

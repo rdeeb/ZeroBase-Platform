@@ -7,6 +7,7 @@ class WidgetRenderer extends AbstractRenderer
 {
     public function renderRow( $widgetName )
     {
-        return HtmlToolkit::buildTag( 'p', array(), false, $this->renderLabel( $widgetName ) . "\n" . $this->renderWidget( $widgetName ) );
+        return HtmlToolkit::buildTag( 'p', array(), FALSE,
+            $this->renderLabel( $widgetName ) . "\n" . $this->renderWidget( $widgetName ) );
     }
 }

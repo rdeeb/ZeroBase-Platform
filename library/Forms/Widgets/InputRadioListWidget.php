@@ -26,22 +26,24 @@ class InputRadioListWidget extends BaseInputWidget
      **/
     public function renderWidget()
     {
-        if ( isset( $this->params['required'] ) && $this->params['required'] )
+        if ( isset( $this->params[ 'required' ] ) && $this->params[ 'required' ] )
         {
-            $this->attr['required'] = 'required';
+            $this->attr[ 'required' ] = 'required';
         }
-        $this->attr['type'] = $this->getType();
-        $content            = '';
-        foreach ( $this->params['choices'] as $key => $label )
+        $this->attr[ 'type' ] = $this->getType();
+        $content              = '';
+        foreach ( $this->params[ 'choices' ] as $key => $label )
         {
-            $attrs          = $this->attr;
-            $attrs['value'] = $key;
+            $attrs            = $this->attr;
+            $attrs[ 'value' ] = $key;
             if ( $this->getValue() == $key )
             {
-                $attrs['checked'] = 'checked';
+                $attrs[ 'checked' ] = 'checked';
             }
 
-            $content .= HtmlToolkit::buildTag( 'p', array(), false, HtmlToolkit::buildTag( 'label', array( 'class' => 'inline-block' ), false, HtmlToolkit::buildTag( 'input', $attrs, true ) . " $label" ));
+            $content .= HtmlToolkit::buildTag( 'p', array(), FALSE,
+                HtmlToolkit::buildTag( 'label', array( 'class' => 'inline-block' ), FALSE,
+                    HtmlToolkit::buildTag( 'input', $attrs, TRUE ) . " $label" ) );
         }
 
         return $content;

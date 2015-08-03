@@ -67,7 +67,7 @@ abstract class BaseWidget extends \WP_Widget
      **/
     public function form( $instance )
     {
-        $form = $this->buildForm( $instance );
+        $form     = $this->buildForm( $instance );
         $renderer = $form->getRenderer();
         echo $renderer->render();
     }
@@ -106,12 +106,13 @@ abstract class BaseWidget extends \WP_Widget
         switch ( $fields[ $field ][ 'type' ] )
         {
             case 'checkbox':
-                $value = (bool) $value;
+                $value = (bool)$value;
                 break;
             default:
                 $value = strip_tags( $value );
                 break;
         }
+
         return $value;
     }
 
@@ -132,8 +133,10 @@ abstract class BaseWidget extends \WP_Widget
             );
             $args = array_merge( $options, $args );
             unset( $args[ 'type' ], $args[ 'default' ] );
-            $form->addWidget( $name, $options[ 'type' ], $args, isset($instance[ $name ]) ? $instance[ $name ] : null );
+            $form->addWidget( $name, $options[ 'type' ], $args,
+                isset( $instance[ $name ] ) ? $instance[ $name ] : NULL );
         }
+
         return $form;
     }
 }

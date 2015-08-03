@@ -26,16 +26,26 @@ class InputFileWidget extends BaseInputWidget
      **/
     public function renderWidget()
     {
-        if ( isset( $this->params['required'] ) && $this->params['required'] )
+        if ( isset( $this->params[ 'required' ] ) && $this->params[ 'required' ] )
         {
-            $this->attr['required'] = 'required';
+            $this->attr[ 'required' ] = 'required';
         }
-        $this->attr['value'] = $this->getValue();
-        $this->attr['type']  = 'hidden';
-        $base_widget         = HtmlToolkit::buildTag( 'input', $this->attr, true ) . HtmlToolkit::buildTag( 'button', array( 'type' => 'button', 'class' => 'button action uploader' ), false, __( 'Select File', 'zerobase' ) );
+        $this->attr[ 'value' ] = $this->getValue();
+        $this->attr[ 'type' ]  = 'hidden';
+        $base_widget           = HtmlToolkit::buildTag( 'input', $this->attr, TRUE ) . HtmlToolkit::buildTag( 'button',
+                array(
+                    'type'  => 'button',
+                    'class' => 'button action uploader'
+                ), FALSE, __( 'Select File', 'zerobase' ) );
         if ( $this->getValue() )
         {
-            return wp_get_attachment_image( $this->getValue(), array( 60, 60 ), true, array( 'class' => 'doc preview' ) ) . $base_widget . HtmlToolkit::buildTag( 'button', array( 'type' => 'button', 'class' => 'button delete' ), false, __( 'Remove File', 'zerobase' ) );
+            return wp_get_attachment_image( $this->getValue(), array(
+                60,
+                60
+            ), TRUE, array( 'class' => 'doc preview' ) ) . $base_widget . HtmlToolkit::buildTag( 'button', array(
+                'type'  => 'button',
+                'class' => 'button delete'
+            ), FALSE, __( 'Remove File', 'zerobase' ) );
         }
 
         return $base_widget;

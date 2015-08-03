@@ -3,7 +3,7 @@ namespace Zerobase\Skeletons;
 
 class SkeletonLoader
 {
-    static public function load($skeleton, $variables)
+    static public function load( $skeleton, $variables )
     {
         $filename = ZEROBASE_LIBRARY_DIR . '/skeletons/' . $skeleton . '.skeleton.php';
         if ( file_exists( $filename ) )
@@ -13,8 +13,9 @@ class SkeletonLoader
             include( $filename );
             $data = ob_get_contents();
             ob_end_clean();
+
             return "<?php $data ?>";
         }
-        throw new Exception("Skeleton $skeleton was not found.");
+        throw new Exception( "Skeleton $skeleton was not found." );
     }
 }

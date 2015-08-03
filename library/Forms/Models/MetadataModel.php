@@ -10,7 +10,7 @@ class MetadataModel extends AbstractModel
     {
         global $post;
         $request = Request::getInstance();
-        if (!empty($post) && $post->ID)
+        if ( !empty( $post ) && $post->ID )
         {
             return $post->ID;
         }
@@ -24,14 +24,15 @@ class MetadataModel extends AbstractModel
         }
     }
 
-    protected function storeData($name, $value)
+    protected function storeData( $name, $value )
     {
-        update_post_meta($this->getPostId(), $name, $value);
+        update_post_meta( $this->getPostId(), $name, $value );
     }
 
-    protected function retreiveData($name, $default)
+    protected function retreiveData( $name, $default )
     {
-        $value = get_post_meta($this->getPostId(), $name, true);
-        return empty($value) ? $default : $value;
+        $value = get_post_meta( $this->getPostId(), $name, TRUE );
+
+        return empty( $value ) ? $default : $value;
     }
 }

@@ -3,13 +3,13 @@ namespace Zerobase\Forms\Models;
 
 class MemoryModel extends AbstractModel
 {
-    protected function storeData($name, $value)
+    protected function storeData( $name, $value )
     {
-        return null;
+        return NULL;
     }
 
-    protected function retreiveData($name, $default)
+    protected function retreiveData( $name, $default )
     {
-        return null;
+        return NULL;
     }
 }

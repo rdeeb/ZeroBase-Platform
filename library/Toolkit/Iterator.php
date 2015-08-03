@@ -9,7 +9,7 @@ abstract class Iterator extends ArrayAccess implements \Iterator
 
     public function isEmpty()
     {
-        return empty($this->data);
+        return empty( $this->data );
     }
 
     public function rewind()
@@ -19,12 +19,12 @@ abstract class Iterator extends ArrayAccess implements \Iterator
 
     public function current()
     {
-        return $this->data[$this->indexes[$this->position]];
+        return $this->data[ $this->indexes[ $this->position ] ];
     }
 
     public function key()
     {
-        return $this->indexes[$this->position];
+        return $this->indexes[ $this->position ];
     }
 
     public function next()
@@ -34,6 +34,6 @@ abstract class Iterator extends ArrayAccess implements \Iterator
 
     public function valid()
     {
-        return isset($this->data[$this->indexes[$this->position]]);
+        return isset( $this->data[ $this->indexes[ $this->position ] ] );
     }
 }

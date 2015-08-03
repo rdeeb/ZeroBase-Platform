@@ -26,13 +26,13 @@ class InputHiddenWidget extends BaseInputWidget
      **/
     public function renderWidget()
     {
-        if ( isset( $this->params['required'] ) && $this->params['required'] )
+        if ( isset( $this->params[ 'required' ] ) && $this->params[ 'required' ] )
         {
-            $this->attr['required'] = 'required';
+            $this->attr[ 'required' ] = 'required';
         }
-        $this->attr['value'] = $this->getValue();
-        $this->attr['type']  = $this->getType();
+        $this->attr[ 'value' ] = $this->getValue();
+        $this->attr[ 'type' ]  = $this->getType();
 
-        return HtmlToolkit::buildTag( 'input', $this->attr, true );
+        return HtmlToolkit::buildTag( 'input', $this->attr, TRUE );
     }
 }

@@ -7,9 +7,9 @@ class InputPagesWidget extends BaseInputWidget
 {
     protected function supportedParams()
     {
-        return array_merge(array(
-          'add_blank'
-        ), parent::supportedParams());
+        return array_merge( array(
+            'add_blank'
+        ), parent::supportedParams() );
     }
 
     /**
@@ -34,8 +34,9 @@ class InputPagesWidget extends BaseInputWidget
     public function renderWidget()
     {
         $content = '';
-        if ( !isset( $this->params['add_blank'] ) || $this->params['add_blank'] !== false ) {
-            $content .= HtmlToolkit::buildTag( 'option', array(), false, '' );;
+        if ( !isset( $this->params[ 'add_blank' ] ) || $this->params[ 'add_blank' ] !== FALSE )
+        {
+            $content .= HtmlToolkit::buildTag( 'option', array(), FALSE, '' );;
         }
         foreach ( get_pages() as $key => $page )
         {
@@ -47,18 +48,18 @@ class InputPagesWidget extends BaseInputWidget
             if ( $this->getValue() == $page->ID )
             {
                 $content .= HtmlToolkit::buildTag( 'option', array(
-                  'value'    => $page->ID,
-                  'selected' => 'selected'
-                ), false, $page_title );
+                    'value'    => $page->ID,
+                    'selected' => 'selected'
+                ), FALSE, $page_title );
             }
             else
             {
                 $content .= HtmlToolkit::buildTag( 'option', array(
-                  'value' => $page->ID
-                ), false, $page_title );
+                    'value' => $page->ID
+                ), FALSE, $page_title );
             }
         }
 
-        return HtmlToolkit::buildTag( 'select', $this->attr, false, $content );
+        return HtmlToolkit::buildTag( 'select', $this->attr, FALSE, $content );
     }
 }

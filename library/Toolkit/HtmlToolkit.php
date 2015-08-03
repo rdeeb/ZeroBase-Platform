@@ -1,12 +1,14 @@
 <?php
 namespace Zerobase\Toolkit;
+
 /**
  * HtmlToolkit
  * This file helps in building html tags
  *
  * @author  Ramy Deeb <me@ramydeeb.com>
  * @package ZeroBase
- * @license Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License. http://creativecommons.org/licenses/by-nc-nd/3.0/.
+ * @license Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License.
+ *          http://creativecommons.org/licenses/by-nc-nd/3.0/.
  */
 
 class HtmlToolkit
@@ -14,13 +16,15 @@ class HtmlToolkit
 
     /**
      * Builds an html tag using the passed parameters
-     * @param string $tag       the tag to generate i.e.: div
-     * @param array $attr       the list of attributes for the tags
-     * @param bool $single      is the a single tag? i.e.: <br />
-     * @param string $content   the content to render inside the tags
+     *
+     * @param string $tag     the tag to generate i.e.: div
+     * @param array  $attr    the list of attributes for the tags
+     * @param bool   $single  is the a single tag? i.e.: <br />
+     * @param string $content the content to render inside the tags
+     *
      * @return string
      **/
-    public static function buildTag( $tag, array $attr = array(), $single = true, $content = NULL )
+    public static function buildTag( $tag, array $attr = array(), $single = TRUE, $content = NULL )
     {
         $attrs = ' ';
         foreach ( $attr as $key => $value )
@@ -40,38 +44,45 @@ class HtmlToolkit
 
     /**
      * Builds a div tag
-     * @param string $content   the content to render inside the tags
-     * @param array $attr       the list of attributes for the tags
+     *
+     * @param string $content the content to render inside the tags
+     * @param array  $attr    the list of attributes for the tags
+     *
      * @return string
      **/
     public static function buildDiv( $content, $attr = array() )
     {
-        return self::buildTag( 'div', $attr, false, $content );
+        return self::buildTag( 'div', $attr, FALSE, $content );
     }
 
     /**
      * Builds an input tag
-     * @param string $content   the content to render inside the tags
-     * @param array $attr       the list of attributes for the tags
+     *
+     * @param string $content the content to render inside the tags
+     * @param array  $attr    the list of attributes for the tags
+     *
      * @return string
      **/
     public static function buildInput( $content, $attr = array() )
     {
-        return self::buildTag( 'input', $attr, true, $content );
+        return self::buildTag( 'input', $attr, TRUE, $content );
     }
 
     /**
      * Builds a label tag
-     * @param string $content   the content to render inside the tags
-     * @param array $attr       the list of attributes for the tags
+     *
+     * @param string $content the content to render inside the tags
+     * @param array  $attr    the list of attributes for the tags
+     *
      * @return string
      **/
     public static function buildLabel( $content, $attr = array() )
     {
-        $attr = array_merge(array(
+        $attr = array_merge( array(
             'class' => 'uk-form-label'
-        ), $attr);
-        return self::buildTag( 'label', $attr, false, $content );
+        ), $attr );
+
+        return self::buildTag( 'label', $attr, FALSE, $content );
     }
 
     /**
@@ -99,7 +110,8 @@ class HtmlToolkit
         // remove unwanted characters
         $text = preg_replace( '~[^-\w]+~', '', $text );
 
-        if ( empty( $text ) ) {
+        if ( empty( $text ) )
+        {
             return 'n-a';
         }
 

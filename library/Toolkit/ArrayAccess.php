@@ -7,27 +7,30 @@ abstract class ArrayAccess implements \ArrayAccess
     protected $indexes = array();
     protected $position = 0;
 
-    public function offsetExists($offset)
+    public function offsetExists( $offset )
     {
-        return isset($this->data[$offset]);
+        return isset( $this->data[ $offset ] );
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet( $offset, $value )
     {
-        if (is_null($offset)) {
+        if ( is_null( $offset ) )
+        {
             $this->data[] = $value;
-        } else {
-            $this->data[$offset] = $value;
+        }
+        else
+        {
+            $this->data[ $offset ] = $value;
         }
     }
 
-    public function offsetGet($offset)
+    public function offsetGet( $offset )
     {
-        return $this->offsetExists($offset) ? $this->data[$offset] : null;
+        return $this->offsetExists( $offset ) ? $this->data[ $offset ] : NULL;
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset( $offset )
     {
-        unset($this->data[$offset]);
+        unset( $this->data[ $offset ] );
     }
 }

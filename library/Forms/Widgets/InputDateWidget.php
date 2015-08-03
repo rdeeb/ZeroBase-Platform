@@ -26,15 +26,16 @@ class InputDateWidget extends BaseInputWidget
      **/
     public function renderWidget()
     {
-        if ( isset( $this->params['required'] ) && $this->params['required'] )
+        if ( isset( $this->params[ 'required' ] ) && $this->params[ 'required' ] )
         {
-            $this->attr['required'] = 'required';
+            $this->attr[ 'required' ] = 'required';
         }
-        $this->attr['value']           = $this->getValue();
-        $this->attr['type']            = 'text';
-        $this->attr['data-dateFormat'] = get_option( 'date_format' );
-        $this->attr['class'] = isset( $this->attr['class'] ) ? $this->attr['class'] . ' datepicker' : 'datepicker';
+        $this->attr[ 'value' ]           = $this->getValue();
+        $this->attr[ 'type' ]            = 'text';
+        $this->attr[ 'data-dateFormat' ] = get_option( 'date_format' );
+        $this->attr[ 'class' ]           = isset( $this->attr[ 'class' ] ) ? $this->attr[ 'class' ] .
+                                                                             ' datepicker' : 'datepicker';
 
-        return HtmlToolkit::buildTag( 'input', $this->attr, true );
+        return HtmlToolkit::buildTag( 'input', $this->attr, TRUE );
     }
 }

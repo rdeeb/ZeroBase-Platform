@@ -5,7 +5,7 @@ class OptionsModel extends AbstractModel
 {
     protected function storeData( $name, $value )
     {
-        update_option( $name, $value, false );
+        update_option( $name, $value, FALSE );
     }
 
     protected function retreiveData( $name, $default )

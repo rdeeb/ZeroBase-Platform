@@ -8,7 +8,7 @@ class FileCacheBag implements CacheBagInterface
     public function __construct( $name_space )
     {
         $this->name_space = $name_space;
-        $this->hashes = get_option( "zb_file_cache_{$this->name_space}_hashes", array() );
+        $this->hashes     = get_option( "zb_file_cache_{$this->name_space}_hashes", array() );
         if ( !is_dir( $this->getCacheDir() ) )
         {
             mkdir( $this->getCacheDir(), 755 );
@@ -24,6 +24,7 @@ class FileCacheBag implements CacheBagInterface
         file_put_contents( $filename, $data );
         $this->hashes[ $filename ] = md5_file( $filename );
         update_option( "zb_file_cache_{$this->name_space}_hashes", $this->hashes );
+
         return TRUE;
     }
 
@@ -39,9 +40,11 @@ class FileCacheBag implements CacheBagInterface
             {
                 return require( $filename );
             }
-            return false;
+
+            return FALSE;
         }
-        return false;
+
+        return FALSE;
     }
 
     /**
@@ -58,17 +61,19 @@ class FileCacheBag implements CacheBagInterface
                 unset( $this->hashes[ $filename ] );
                 update_option( "zb_file_cache_{$this->name_space}_hashes", $this->hashes );
             }
-            return true;
+
+            return TRUE;
         }
         catch ( \Exception $e )
         {
-            return false;
+            return FALSE;
         }
     }
 
     public function has( $key )
     {
         $filename = $this->getCacheDir() . '/' . \Zerobase\Toolkit\HtmlToolkit::slugify( $key ) . '.cache';
+
         return file_exists( $filename );
 
     }

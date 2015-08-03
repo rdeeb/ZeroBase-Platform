@@ -8,9 +8,9 @@ class InputPostsWidget extends BaseInputWidget
 
     protected function supportedParams()
     {
-        return array_merge(array(
-          'post_type'
-        ), parent::supportedParams());
+        return array_merge( array(
+            'post_type'
+        ), parent::supportedParams() );
     }
 
     /**
@@ -34,9 +34,10 @@ class InputPostsWidget extends BaseInputWidget
      **/
     public function renderWidget()
     {
-        $this->attr['type'] = 'text';
-        $this->attr['class'] = 'uk-autocomplete uk-form';
-        $this->attr['data-uk-autocomplete'] = '{ source: post_autocomplete_callback }';
-        return HtmlToolkit::buildTag( 'input', $this->attr, true );
+        $this->attr[ 'type' ]                 = 'text';
+        $this->attr[ 'class' ]                = 'uk-autocomplete uk-form';
+        $this->attr[ 'data-uk-autocomplete' ] = '{ source: post_autocomplete_callback }';
+
+        return HtmlToolkit::buildTag( 'input', $this->attr, TRUE );
     }
 }

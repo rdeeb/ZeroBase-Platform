@@ -27,17 +27,17 @@ class TaxonomyExtender
 
     /**
      * @param string $name
-     * @param array $options
+     * @param array  $options
      */
     public function addField( $name, $options )
     {
-        $options = array_merge( array(
-            'type' => 'text',
+        $options                       = array_merge( array(
+            'type'    => 'text',
             'default' => '',
             'options' => array(),
-            'single' => true
+            'single'  => TRUE
         ), $options );
-        $this->taxonomyFields[$name] = $options;
+        $this->taxonomyFields[ $name ] = $options;
     }
 
     /**
@@ -50,7 +50,7 @@ class TaxonomyExtender
         {
             foreach ( $this->taxonomyFields as $name => $options )
             {
-                $term_meta[$name] = get_metadata( 'zerobase_term', $term->term_id, $name, $options['single'] );
+                $term_meta[ $name ] = get_metadata( 'zerobase_term', $term->term_id, $name, $options[ 'single' ] );
             }
         }
         $project = $this->getForm( $term_meta );
@@ -71,7 +71,7 @@ class TaxonomyExtender
         {
             foreach ( $this->taxonomyFields as $name => $options )
             {
-                $term_meta[$name] = get_metadata( 'zerobase_term', $term->term_id, $name, $options['single'] );
+                $term_meta[ $name ] = get_metadata( 'zerobase_term', $term->term_id, $name, $options[ 'single' ] );
             }
         }
         $client = $this->getForm( $term_meta );
@@ -103,10 +103,11 @@ class TaxonomyExtender
      **/
     private function getForm( $term = array() )
     {
-        $object = FormFactory::createForm($this->taxonomyName, 'Taxonomy');
+        $object = FormFactory::createForm( $this->taxonomyName, 'Taxonomy' );
         foreach ( $this->taxonomyFields as $name => $options )
         {
-            $object->addWidget( $name, $options['type'], $options['options'], isset( $term[$this->taxonomyName] ) ? $term[$this->taxonomyName] : '' );
+            $object->addWidget( $name, $options[ 'type' ], $options[ 'options' ],
+                isset( $term[ $this->taxonomyName ] ) ? $term[ $this->taxonomyName ] : '' );
         }
 
         return $object;
@@ -122,9 +123,21 @@ class TaxonomyExtender
     public function register()
     {
         //Hook the custom fields for the taxonomy fields
-        add_action( $this->taxonomyName . '_add_form_fields', array( &$this, 'showFields' ), 10, 2 );
-        add_action( $this->taxonomyName . '_edit_form_fields', array( &$this, 'editFields' ), 10, 2 );
-        add_action( 'created_' . $this->taxonomyName, array( &$this, 'fieldSave' ), 10, 2 );
-        add_action( 'edited_' . $this->taxonomyName, array( &$this, 'fieldSave' ), 10, 2 );
+        add_action( $this->taxonomyName . '_add_form_fields', array(
+            &$this,
+            'showFields'
+        ), 10, 2 );
+        add_action( $this->taxonomyName . '_edit_form_fields', array(
+            &$this,
+            'editFields'
+        ), 10, 2 );
+        add_action( 'created_' . $this->taxonomyName, array(
+            &$this,
+            'fieldSave'
+        ), 10, 2 );
+        add_action( 'edited_' . $this->taxonomyName, array(
+            &$this,
+            'fieldSave'
+        ), 10, 2 );
     }
 }

@@ -38,23 +38,36 @@ class InputGalleryWidget extends BaseInputWidget
      **/
     public function renderWidget()
     {
-        if ( isset( $this->params['required'] ) && $this->params['required'] )
+        if ( isset( $this->params[ 'required' ] ) && $this->params[ 'required' ] )
         {
-            $this->attr['required'] = 'required';
+            $this->attr[ 'required' ] = 'required';
         }
-        $this->attr['value'] = $this->getValue();
-        $this->attr['type']  = 'hidden';
-        $base_widget         = HtmlToolkit::buildTag( 'input', $this->attr, true ) . HtmlToolkit::buildTag( 'button', array( 'type' => 'button', 'class' => 'button action gallery' ), false, __( 'Select a gallery', 'zerobase' ) );
-        $contents            = '';
+        $this->attr[ 'value' ] = $this->getValue();
+        $this->attr[ 'type' ]  = 'hidden';
+        $base_widget           = HtmlToolkit::buildTag( 'input', $this->attr, TRUE ) . HtmlToolkit::buildTag( 'button',
+                array(
+                    'type'  => 'button',
+                    'class' => 'button action gallery'
+                ), FALSE, __( 'Select a gallery', 'zerobase' ) );
+        $contents              = '';
         if ( $this->getValue() )
         {
-            $remove_link = HtmlToolkit::buildTag( 'a', array( 'href' => '#', 'class' => 'delete' ), false, __( 'Delete' ) );
+            $remove_link = HtmlToolkit::buildTag( 'a', array(
+                'href'  => '#',
+                'class' => 'delete'
+            ), FALSE, __( 'Delete' ) );
             foreach ( explode( ',', $this->getValue() ) as $id )
             {
-                $contents .= HtmlToolkit::buildTag( 'li', array( 'class' => 'image', 'data-attachment_id' => $id ), false, wp_get_attachment_image( $id, array( 60, 60 ), false, array() ) . $remove_link );
+                $contents .= HtmlToolkit::buildTag( 'li', array(
+                    'class'              => 'image',
+                    'data-attachment_id' => $id
+                ), FALSE, wp_get_attachment_image( $id, array(
+                        60,
+                        60
+                    ), FALSE, array() ) . $remove_link );
             }
         }
 
-        return HtmlToolkit::buildTag( 'ul', array( 'class' => 'gallery-preview' ), false, $contents ) . $base_widget;
+        return HtmlToolkit::buildTag( 'ul', array( 'class' => 'gallery-preview' ), FALSE, $contents ) . $base_widget;
     }
 }
