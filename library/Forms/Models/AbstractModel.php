@@ -63,9 +63,17 @@ abstract class AbstractModel implements ModelInterface
 
     public function save()
     {
-        foreach ( $this->model as $name => $options )
+        try
         {
-            $this->storeData( $name, $this->values[ $name ] );
+            foreach ( $this->model as $name => $options )
+            {
+                $this->storeData( $name, $this->values[ $name ] );
+            }
         }
+        catch(\Exception $e)
+        {
+            return FALSE;
+        }
+        return TRUE;
     }
 }

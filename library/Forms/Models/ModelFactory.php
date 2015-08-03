@@ -18,6 +18,7 @@ class ModelFactory extends Singleton
         $this->addWidgetModel( 'memory', 'Zerobase\Forms\Models\MemoryModel' );
         $this->addWidgetModel( 'metadata', 'Zerobase\Forms\Models\MetadataModel' );
         $this->addWidgetModel( 'option', 'Zerobase\Forms\Models\OptionsModel' );
+        $this->addWidgetModel( 'user_metadata', 'Zerobase\Forms\Models\UserMetadataModel' );
     }
 
     /**
