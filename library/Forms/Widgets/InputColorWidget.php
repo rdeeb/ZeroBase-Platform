@@ -32,7 +32,7 @@ class InputColorWidget extends BaseInputWidget
         }
         $this->attr['value'] = $this->getValue();
         $this->attr['type']  = 'text';
-        $this->attr['class'] .= ' colorselector';
+        $this->attr['class'] = isset( $this->attr['class'] ) ? $this->attr['class'] . ' colorselector' : 'colorselector';
 
         return HtmlToolkit::buildTag( 'input', $this->attr, true );
     }

@@ -33,7 +33,7 @@ class InputDateWidget extends BaseInputWidget
         $this->attr['value']           = $this->getValue();
         $this->attr['type']            = 'text';
         $this->attr['data-dateFormat'] = get_option( 'date_format' );
-        $this->attr['class'] .= ' datepicker';
+        $this->attr['class'] = isset( $this->attr['class'] ) ? $this->attr['class'] . ' datepicker' : 'datepicker';
 
         return HtmlToolkit::buildTag( 'input', $this->attr, true );
     }
