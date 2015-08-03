@@ -30,6 +30,10 @@ class InputCheckboxListWidget extends BaseInputWidget
         $name     = $this->attr['name'];
         $contents = '';
         $values   = $this->getValue();
+        if ( !isset($this->params[ 'choices' ]) || empty( $this->params[ 'choices' ] ) )
+        {
+            throw new \Exception( 'You must define a set of choices' );
+        }
         foreach ( $this->params['choices'] as $key => $label )
         {
             $options                  = $this->params;

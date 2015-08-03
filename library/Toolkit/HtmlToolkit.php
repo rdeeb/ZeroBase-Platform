@@ -25,7 +25,7 @@ class HtmlToolkit
         $attrs = ' ';
         foreach ( $attr as $key => $value )
         {
-            $attrs .= "$key=\"$value\" ";
+            $attrs .= "$key=\"" . trim( $value ) . "\" ";
         }
         $attrs = rtrim( $attrs );
         if ( $single )
