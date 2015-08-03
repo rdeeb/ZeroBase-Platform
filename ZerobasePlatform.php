@@ -102,7 +102,7 @@ class ZerobasePlatform extends \Zerobase\Toolkit\Singleton
         {
             $this->validateModuleConfiguration( $config );
             $module_loader = \Zerobase\Modules\ModuleLoader::getInstance();
-            $module_loader->addModule( self::slugify( $config[ 'name' ] ), $config );
+            $module_loader->addModule( \Zerobase\Toolkit\HtmlToolkit::slugify( $config[ 'name' ] ), $config );
         }
         catch ( Exception $e ) {}
     }
@@ -244,39 +244,6 @@ class ZerobasePlatform extends \Zerobase\Toolkit\Singleton
         );
         wp_enqueue_style( 'zerobase_css_forms' );
         wp_enqueue_script( 'zerobase_js_forms' );
-    }
-
-    /**
-     * slugify
-     * Creates a slug from a string
-     *
-     * @param $text Text to slugify
-     *
-     * @return string
-     * @author Ramy Deeb
-     */
-    static function slugify( $text )
-    {
-        // replace non letter or digits by -
-        $text = preg_replace( '~[^\\pL\d]+~u', '-', $text );
-
-        // trim
-        $text = trim( $text, '-' );
-
-        // transliterate
-        $text = iconv( 'utf-8', 'us-ascii//TRANSLIT', $text );
-
-        // lowercase
-        $text = strtolower( $text );
-
-        // remove unwanted characters
-        $text = preg_replace( '~[^-\w]+~', '', $text );
-
-        if ( empty( $text ) ) {
-            return 'n-a';
-        }
-
-        return $text;
     }
 
     /**

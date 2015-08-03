@@ -1,0 +1,54 @@
+<?php
+namespace Zerobase\Forms\Widgets;
+
+use Zerobase\Toolkit\HtmlToolkit;
+
+class InputCheckboxListWidget extends BaseInputWidget
+{
+    /**
+     * getType
+     * Returns this widget type
+     *
+     * @return string
+     * @author Ramy Deeb
+     **/
+    public function getType()
+    {
+        return 'checkbox_list';
+    }
+
+    /**
+     * render
+     * Returns the tag html code
+     *
+     * @return array
+     * @author Ramy Deeb
+     **/
+    public function renderWidget()
+    {
+        $id       = isset( $this->attr[ 'id' ] ) ? $this->attr[ 'id' ] : NULL;
+        $name     = isset( $this->attr[ 'name' ] ) ? $this->attr[ 'name' ] : NULL;
+        $contents = '';
+        $values   = $this->getValue();
+        if ( !isset( $this->params[ 'choices' ] ) || empty( $this->params[ 'choices' ] ) )
+        {
+            throw new \Exception( 'You must define a set of choices' );
+        }
+        foreach ( $this->params[ 'choices' ] as $key => $label )
+        {
+            $options                      = $this->params;
+            $options[ 'attr' ]            = $this->attr;
+            $options[ 'attr' ][ 'id' ]    = $id . "_$key";
+            $options[ 'attr' ][ 'name' ]  = $name . "[$key]";
+            $options[ 'attr' ][ 'value' ] = $key;
+            if ( isset( $values[ $key ] ) && $values[ $key ] )
+            {
+                $options[ 'attr' ][ 'checked' ] = 'checked';
+            }
+            $widget = new InputCheckboxWidget( $options );
+            $contents .= HtmlToolkit::buildTag( 'label', array(), FALSE, $widget->render() . ' ' . $label );
+        }
+
+        return $contents;
+    }
+}

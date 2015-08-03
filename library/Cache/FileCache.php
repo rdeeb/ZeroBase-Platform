@@ -12,6 +12,7 @@ class FileCache extends AbstractCache
         {
             $this->bags[ $name_space ] = new FileCacheBag( $name_space );
         }
+
         return $this->bags[ $name_space ];
     }
 
