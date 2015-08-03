@@ -26,8 +26,8 @@ class InputCheckboxListWidget extends BaseInputWidget
      **/
     public function renderWidget()
     {
-        $id       = isset( $this->attr['id'] ) ? $this->attr['id'] : 'null';
-        $name     = isset( $this->attr['name'] ) ? $this->attr['name'] : 'null';
+        $id       = isset( $this->attr['id'] ) ? $this->attr['id'] : null;
+        $name     = isset( $this->attr['name'] ) ? $this->attr['name'] : null;
         $contents = '';
         $values   = $this->getValue();
         if ( !isset($this->params[ 'choices' ]) || empty( $this->params[ 'choices' ] ) )
